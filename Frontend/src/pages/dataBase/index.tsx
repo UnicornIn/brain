@@ -1,34 +1,21 @@
 "use client"
 
-import type React from "react"
-
 import { useState } from "react"
 import { Button } from "../../components/ui/button"
 import { Input } from "../../components/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/tabs"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../components/ui/table"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../../components/ui/card"
-import { Badge } from "../../components/ui/badge"
 import {
     AlertCircle,
     ArrowUpDown,
     Check,
     Download,
-    Edit,
     FileSpreadsheet,
     Filter,
-    MoreHorizontal,
+    Plus,
     Search,
-    X,
 } from "lucide-react"
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "../../components/ui/dropdown-menu"
 import { Alert, AlertDescription, AlertTitle } from "../../components/ui/alert"
 
 export default function BaseDatosPage() {
@@ -36,6 +23,14 @@ export default function BaseDatosPage() {
     const [dragActive, setDragActive] = useState(false)
     const [fileUploaded, setFileUploaded] = useState(false)
     const [fileName, setFileName] = useState("")
+    const [showAddForm, setShowAddForm] = useState(false)
+    const [newClient, setNewClient] = useState({
+        name: "",
+        email: "",
+        phone: "",
+        origin: "",
+        status: "active"
+    })
 
     const handleDrag = (e: React.DragEvent) => {
         e.preventDefault()
@@ -65,6 +60,27 @@ export default function BaseDatosPage() {
             setFileName(file.name)
             setFileUploaded(true)
         }
+    }
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target
+        setNewClient(prev => ({
+            ...prev,
+            [name]: value
+        }))
+    }
+
+    const handleAddClient = () => {
+        // Aquí iría la lógica para agregar el cliente a la base de datos
+        console.log("Nuevo cliente:", newClient)
+        setShowAddForm(false)
+        setNewClient({
+            name: "",
+            email: "",
+            phone: "",
+            origin: "",
+            status: "active"
+        })
     }
 
     return (
@@ -172,10 +188,71 @@ export default function BaseDatosPage() {
                     <TabsContent value="gestionar" className="mt-4">
                         <Card>
                             <CardHeader>
-                                <CardTitle>Gestionar Datos de Clientes</CardTitle>
-                                <CardDescription>Visualiza, edita y valida los datos de tus clientes</CardDescription>
+                                <div className="flex justify-between items-start">
+                                    <div>
+                                        <CardTitle>Gestionar Datos de Clientes</CardTitle>
+                                        <CardDescription>Visualiza, edita y valida los datos de tus clientes</CardDescription>
+                                    </div>
+                                    <Button onClick={() => setShowAddForm(true)}>
+                                        <Plus className="h-4 w-4 mr-2" />
+                                        Agregar Cliente
+                                    </Button>
+                                </div>
                             </CardHeader>
                             <CardContent>
+                                {showAddForm && (
+                                    <div className="mb-6 p-4 border rounded-lg bg-muted/50">
+                                        <h3 className="font-medium mb-4">Agregar nuevo cliente</h3>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div>
+                                                <label className="text-sm font-medium mb-1 block">Nombre</label>
+                                                <Input 
+                                                    name="name"
+                                                    value={newClient.name}
+                                                    onChange={handleInputChange}
+                                                    placeholder="Nombre completo"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="text-sm font-medium mb-1 block">Email</label>
+                                                <Input 
+                                                    name="email"
+                                                    type="email"
+                                                    value={newClient.email}
+                                                    onChange={handleInputChange}
+                                                    placeholder="correo@ejemplo.com"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="text-sm font-medium mb-1 block">Teléfono</label>
+                                                <Input 
+                                                    name="phone"
+                                                    value={newClient.phone}
+                                                    onChange={handleInputChange}
+                                                    placeholder="+1234567890"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="text-sm font-medium mb-1 block">Origen</label>
+                                                <Input 
+                                                    name="origin"
+                                                    value={newClient.origin}
+                                                    onChange={handleInputChange}
+                                                    placeholder="Web, WhatsApp, etc."
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="flex justify-end gap-2 mt-4">
+                                            <Button variant="outline" onClick={() => setShowAddForm(false)}>
+                                                Cancelar
+                                            </Button>
+                                            <Button onClick={handleAddClient}>
+                                                Guardar Cliente
+                                            </Button>
+                                        </div>
+                                    </div>
+                                )}
+
                                 <div className="flex items-center justify-between mb-4">
                                     <div className="flex items-center gap-2 w-full max-w-sm">
                                         <div className="relative flex-1">
@@ -189,9 +266,6 @@ export default function BaseDatosPage() {
                                     </div>
 
                                     <div className="flex items-center gap-2">
-                                        <Badge variant="outline" className="gap-1">
-                                            <AlertCircle className="h-3 w-3 text-amber-500" />5 errores
-                                        </Badge>
                                         <Button variant="outline" size="sm">
                                             Validar Datos
                                         </Button>
@@ -218,65 +292,22 @@ export default function BaseDatosPage() {
                                             </TableRow>
                                         </TableHeader>
                                         <TableBody>
-                                            {Array.from({ length: 5 }).map((_, index) => (
-                                                <TableRow key={index} className={index === 1 || index === 3 ? "bg-amber-50" : ""}>
-                                                    <TableCell>{index + 1}</TableCell>
-                                                    <TableCell className="font-medium">
-                                                        {index === 1 ? (
-                                                            <div className="flex items-center gap-1">
-                                                                <span>Juan</span>
-                                                                <AlertCircle className="h-4 w-4 text-amber-500" />
-                                                            </div>
-                                                        ) : (
-                                                            `Cliente ${index + 1}`
-                                                        )}
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        {index === 3 ? (
-                                                            <div className="flex items-center gap-1">
-                                                                <span>email_invalido</span>
-                                                                <AlertCircle className="h-4 w-4 text-amber-500" />
-                                                            </div>
-                                                        ) : (
-                                                            `cliente${index + 1}@ejemplo.com`
-                                                        )}
-                                                    </TableCell>
-                                                    <TableCell>{`+34 6${index}${index} ${index}${index}${index} ${index}${index}${index}`}</TableCell>
-                                                    <TableCell>
-                                                        <Badge variant="outline">
-                                                            {index % 2 === 0 ? "WhatsApp" : index % 3 === 0 ? "Instagram" : "Web"}
-                                                        </Badge>
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <Badge variant={index % 3 === 0 ? "secondary" : "default"}>
-                                                            {index % 3 === 0 ? "Inactivo" : "Activo"}
-                                                        </Badge>
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <div className="flex items-center gap-1">
-                                                            <Button variant="ghost" size="icon">
-                                                                <Edit className="h-4 w-4" />
-                                                                <span className="sr-only">Editar</span>
-                                                            </Button>
-                                                            <Button variant="ghost" size="icon">
-                                                                <X className="h-4 w-4" />
-                                                                <span className="sr-only">Eliminar</span>
-                                                            </Button>
-                                                        </div>
-                                                    </TableCell>
-                                                </TableRow>
-                                            ))}
+                                            <TableRow>
+                                                <TableCell colSpan={7} className="text-center py-8">
+                                                    No hay datos de clientes para mostrar
+                                                </TableCell>
+                                            </TableRow>
                                         </TableBody>
                                     </Table>
                                 </div>
 
                                 <div className="flex items-center justify-between mt-4">
-                                    <p className="text-sm text-muted-foreground">Mostrando 5 de 120 registros</p>
+                                    <p className="text-sm text-muted-foreground">Mostrando 0 registros</p>
                                     <div className="flex items-center gap-2">
                                         <Button variant="outline" size="sm" disabled>
                                             Anterior
                                         </Button>
-                                        <Button variant="outline" size="sm">
+                                        <Button variant="outline" size="sm" disabled>
                                             Siguiente
                                         </Button>
                                     </div>
@@ -286,7 +317,7 @@ export default function BaseDatosPage() {
                                 <Button variant="outline" onClick={() => setActiveTab("importar")}>
                                     Volver
                                 </Button>
-                                <Button>Guardar Cambios</Button>
+                                <Button disabled>Guardar Cambios</Button>
                             </CardFooter>
                         </Card>
                     </TabsContent>
@@ -311,62 +342,11 @@ export default function BaseDatosPage() {
                                             </TableRow>
                                         </TableHeader>
                                         <TableBody>
-                                            {Array.from({ length: 5 }).map((_, index) => (
-                                                <TableRow key={index}>
-                                                    <TableCell>{new Date(2023, 3, 15 - index).toLocaleDateString()}</TableCell>
-                                                    <TableCell>Admin Usuario</TableCell>
-                                                    <TableCell>
-                                                        <Badge
-                                                            variant={
-                                                                index === 0
-                                                                    ? "default"
-                                                                    : index === 1
-                                                                        ? "secondary"
-                                                                        : index === 2
-                                                                            ? "destructive"
-                                                                            : "outline"
-                                                            }
-                                                        >
-                                                            {index === 0
-                                                                ? "Importación"
-                                                                : index === 1
-                                                                    ? "Actualización"
-                                                                    : index === 2
-                                                                        ? "Eliminación"
-                                                                        : "Exportación"}
-                                                        </Badge>
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        {index === 0
-                                                            ? "Importación masiva de clientes"
-                                                            : index === 1
-                                                                ? "Actualización de datos de contacto"
-                                                                : index === 2
-                                                                    ? "Eliminación de registros duplicados"
-                                                                    : "Exportación para informe mensual"}
-                                                    </TableCell>
-                                                    <TableCell>{120 - index * 15}</TableCell>
-                                                    <TableCell>
-                                                        <DropdownMenu>
-                                                            <DropdownMenuTrigger asChild>
-                                                                <Button variant="ghost" size="icon">
-                                                                    <MoreHorizontal className="h-4 w-4" />
-                                                                    <span className="sr-only">Acciones</span>
-                                                                </Button>
-                                                            </DropdownMenuTrigger>
-                                                            <DropdownMenuContent align="end">
-                                                                <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                                                                <DropdownMenuSeparator />
-                                                                <DropdownMenuItem>Ver detalles</DropdownMenuItem>
-                                                                <DropdownMenuItem>Descargar log</DropdownMenuItem>
-                                                                {index < 3 && (
-                                                                    <DropdownMenuItem className="text-destructive">Revertir cambios</DropdownMenuItem>
-                                                                )}
-                                                            </DropdownMenuContent>
-                                                        </DropdownMenu>
-                                                    </TableCell>
-                                                </TableRow>
-                                            ))}
+                                            <TableRow>
+                                                <TableCell colSpan={6} className="text-center py-8">
+                                                    No hay historial de cambios
+                                                </TableCell>
+                                            </TableRow>
                                         </TableBody>
                                     </Table>
                                 </div>
