@@ -1,20 +1,20 @@
 from motor.motor_asyncio import AsyncIOMotorClient
-from dotenv import load_dotenv
 import os
+from dotenv import load_dotenv
 
-# Cargar .env por si se usa este archivo directamente
 load_dotenv()
 
-client = None
-db = None
+# Inicializa la conexión inmediatamente
+uri = os.getenv("MONGODB_URI")
+db_name = os.getenv("MONGODB_NAME", "DataUser")
 
+if not uri:
+    raise RuntimeError("MONGODB_URI no está definida en .env")
+
+client = AsyncIOMotorClient(uri)
+db = client[db_name]
+contacts_collection = db["contacts"]
+
+# Esta función ya no es necesaria, pero la mantenemos por compatibilidad
 def connect_to_mongo():
-    global client, db
-    uri = os.getenv("MONGODB_URI")
-    db_name = os.getenv("MONGODB_NAME", "DatabaseInventory")
-
-    if not uri:
-        raise Exception("La variable MONGODB_URI no está definida en el .env")
-
-    client = AsyncIOMotorClient(uri)
-    db = client[db_name]
+    pass
