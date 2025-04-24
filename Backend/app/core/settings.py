@@ -1,22 +1,25 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware  # Importa el middleware CORS
 from dotenv import load_dotenv
-import os
 
-from app.database.mongo import connect_to_mongo
 from app.auth.routes import router as auth_router
 from app.manychat.routes import router as manychat_router
-from app.agents.upload import router as upload_router
-# Cargar variables de entorno
+from app.client.routes import router as subscribers_router
+
 load_dotenv()
 
-# Crear instancia de FastAPI
 app = FastAPI()
 
-# Conexión a la base de datos
-connect_to_mongo()
+# Configuración de CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  # Permite todos los orígenes (en producción, especifica los dominios correctos)
+    allow_credentials=True,
+    allow_methods=["*"],  # Permite todos los métodos
+    allow_headers=["*"],  # Permite todos los headers
+)
 
-# Incluir rutas
+# Incluye todos los routers
 app.include_router(auth_router, prefix="/auth", tags=["Auth"])
 app.include_router(manychat_router, prefix="/manychat", tags=["Manychat"])
-app.include_router(upload_router)
-
+app.include_router(subscribers_router, prefix="/subscribers", tags=["Subscribers"])
