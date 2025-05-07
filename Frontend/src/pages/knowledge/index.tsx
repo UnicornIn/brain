@@ -10,6 +10,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "..
 import { Badge } from "../../components/ui/badge";
 import { AlertCircle, BookOpen, Clock, Edit, FileInput, Mic, Plus, Save, Search, Upload } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "../../components/ui/alert";
+import { useToast } from "../../hooks/use-toast";
 
 interface Category {
     id: string;
@@ -32,6 +33,8 @@ export default function ConocimientoPage() {
     const [content, setContent] = useState("");
     const [isRecording, setIsRecording] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
+    const [isUploading, setIsUploading] = useState(false);
+    const { toast } = useToast();
 
     const handleCategoryClick = (categoryId: string) => {
         setSelectedCategory(categoryId);
@@ -49,23 +52,59 @@ export default function ConocimientoPage() {
         setContent(item?.content || "");
     };
 
-    const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const files = event.target.files;
         if (!files?.length) return;
 
         const file = files[0];
-        const reader = new FileReader();
+        
+        // Validate file type
+        const allowedTypes = [".pdf", ".txt", ".md", ".docx"];
+        const fileExtension = file.name.split('.').pop()?.toLowerCase();
+        if (!fileExtension || !allowedTypes.includes(`.${fileExtension}`)) {
+            toast({
+                title: "Error",
+                description: "Tipo de archivo no permitido. Solo se aceptan PDF, TXT, MD o DOCX.",
+                variant: "destructive",
+            });
+            return;
+        }
 
-        reader.onload = (e) => {
-            try {
-                const content = e.target?.result as string;
-                setContent(content);
-            } catch (error) {
-                console.error("Error al leer el archivo:", error);
+        const formData = new FormData();
+        formData.append("file", file);
+
+        try {
+            setIsUploading(true);
+            const response = await fetch("http://127.0.0.1:8000/upload/upload-doc", {
+                method: "POST",
+                body: formData,
+            });
+
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status}`);
             }
-        };
 
-        reader.readAsText(file);
+            const result = await response.json();
+            toast({
+                title: "Éxito",
+                description: result.message || "Archivo cargado exitosamente",
+            });
+            
+            // You might want to update the UI or state here with the new file info
+            console.log("File uploaded successfully:", result);
+            
+        } catch (error) {
+            console.error("Error uploading file:", error);
+            toast({
+                title: "Error",
+                description: "Hubo un problema al cargar el archivo",
+                variant: "destructive",
+            });
+        } finally {
+            setIsUploading(false);
+            // Reset the file input
+            event.target.value = "";
+        }
     };
 
     const handleSave = () => {
@@ -77,7 +116,6 @@ export default function ConocimientoPage() {
             category.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
             category.items.some((item) => item.title.toLowerCase().includes(searchTerm.toLowerCase()))
     );
-
 
     return (
         <div className="flex flex-col h-full">
@@ -92,7 +130,8 @@ export default function ConocimientoPage() {
                                 type="file"
                                 className="hidden"
                                 onChange={handleFileUpload}
-                                accept=".txt,.pdf,.doc,.docx,.md"
+                                accept=".pdf,.txt,.md,.docx"
+                                disabled={isUploading}
                             />
                         </label>
                     </Button>
@@ -240,9 +279,18 @@ export default function ConocimientoPage() {
                                             <label className="cursor-pointer">
                                                 <Upload className="h-4 w-4 mr-2" />
                                                 Seleccionar archivo
-                                                <input type="file" className="hidden" onChange={handleFileUpload} multiple />
+                                                <input 
+                                                    type="file" 
+                                                    className="hidden" 
+                                                    onChange={handleFileUpload} 
+                                                    accept=".pdf,.txt,.md,.docx"
+                                                    disabled={isUploading}
+                                                />
                                             </label>
                                         </Button>
+                                        {isUploading && (
+                                            <p className="text-sm text-muted-foreground">Cargando archivo...</p>
+                                        )}
                                     </div>
                                 </TabsContent>
                             </Tabs>
@@ -252,7 +300,7 @@ export default function ConocimientoPage() {
                                 <AlertCircle className="h-4 w-4" />
                                 <AlertTitle>Sugerencia</AlertTitle>
                                 <AlertDescription>
-                                    Puedes importar archivos en formatos TXT, PDF, DOC, DOCX o MD para agregar contenido rápidamente.
+                                    Puedes importar archivos en formatos PDF, TXT, MD o DOCX para agregar contenido rápidamente.
                                 </AlertDescription>
                             </Alert>
                         </CardFooter>
