@@ -14,6 +14,7 @@ if not uri:
 client = AsyncIOMotorClient(uri)
 db = client[db_name]
 contacts_collection = db["contacts"]
+messages_collection = db["message"]
 
 # Esta función ya no es necesaria, pero la mantenemos por compatibilidad
 def connect_to_mongo():
