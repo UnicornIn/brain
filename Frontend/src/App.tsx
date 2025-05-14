@@ -1,71 +1,75 @@
-import { Routes, Route } from "react-router-dom"
-import { AuthProvider } from "./context/auth-context"
-import { AuthGuard } from "./components/auth-guard"
-import { AppSidebar } from "./components/app-sidebar"
-import { Toaster } from "./components/ui/toaster"
-import Dashboard from "./pages/dashboard"
-import ClientPage from "./pages/client"
-import DataBasePage from "./pages/dataBase"
-import KnowledgePage from "./pages/knowledge"
-import AgentPage from "./pages/agent"
-import AdminPage from "./pages/admin"
-import InteractionPage from "./pages/interaction"
-import AlertPage from "./pages/alert"
-import ProfilePage from "./pages/profile"
-import LoginPage from "./pages/auth/login"
-import ResetPasswordPage from "./pages/auth/reset-password"
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom"
+import { AuthProvider } from "./contexts/AuthContext"
+import ProtectedRoute from "./components/ProtectedRoute"
+import LoginPage from "./pages/LoginPage"
+import DashboardPage from "./pages/DashboardPage"
+import DatabasePage from "./pages/DatabasePage"
+import BusinessPage from "./pages/BusinessPage"
+import OmnichannelPage from "./pages/OmnichannelPage"
+import IntelligencePage from "./pages/IntelligencePage"
+import Layout from "./components/Layout"
+import "./App.css"
 
 function App() {
   return (
     <AuthProvider>
-      <Routes>
-        {/* Public routes */}
-        <Route path="/auth/login" element={<LoginPage />} />
-        <Route path="/auth/reset-password" element={<ResetPasswordPage />} />
-
-        {/* Protected routes */}
-        <Route
-          element={
-            <AuthGuard>
-              <Layout />
-            </AuthGuard>
-          }
-        >
-          <Route index element={<Dashboard />} />
-          <Route path="/clientes" element={<ClientPage />} />
-          <Route path="/interacciones" element={<InteractionPage />} />
-          <Route path="/alertas" element={<AlertPage />} />
-          <Route path="/base-datos" element={<DataBasePage />} />
-          <Route path="/conocimiento" element={<KnowledgePage />} />
-          <Route path="/agente" element={<AgentPage />} />
-          <Route path="/admin" element={<AdminPage />} />
-          <Route path="/profile" element={<ProfilePage />} />
-        </Route>
-      </Routes>
-      <Toaster />
-    </AuthProvider>
-  )
-}
-
-// Layout component that wraps all protected routes
-function Layout() {
-  return (
-    <div className="flex h-screen">
-      <AppSidebar />
-      <main className="flex-1 overflow-auto">
+      <Router>
         <Routes>
-          <Route index element={<Dashboard />} />
-          <Route path="/clientes" element={<ClientPage />} />
-          <Route path="/interacciones" element={<InteractionPage />} />
-          <Route path="/alertas" element={<AlertPage />} />
-          <Route path="/base-datos" element={<DataBasePage />} />
-          <Route path="/conocimiento" element={<KnowledgePage />} />
-          <Route path="/agente" element={<AgentPage />} />
-          <Route path="/admin" element={<AdminPage />} />
-          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <DashboardPage />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/database"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <DatabasePage />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/business"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <BusinessPage />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/omnichannel"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <OmnichannelPage />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/intelligence"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <IntelligencePage />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
-      </main>
-    </div>
+      </Router>
+    </AuthProvider>
   )
 }
 
