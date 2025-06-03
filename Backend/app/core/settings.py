@@ -15,7 +15,8 @@ app = FastAPI()
 # Configuración de CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],  # Permite todos los orígenes (en producción, especifica los dominios correctos)
+    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000",
+                   "https://appbrain.rizosfelices.co"],
     allow_credentials=True,
     allow_methods=["*"],  # Permite todos los métodos
     allow_headers=["*"],  # Permite todos los headers
