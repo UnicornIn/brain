@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 from app.auth.routes import router as auth_router
 from app.manychat.routes import router as manychat_router
-from app.client.routes import router as subscribers_router
+from app.client.routes import router as client_router
 from app.agents.routes import router as agents_router
 
 
@@ -25,5 +25,5 @@ app.add_middleware(
 # Incluye todos los routers
 app.include_router(auth_router, prefix="/auth", tags=["Auth"])
 app.include_router(manychat_router, prefix="/manychat", tags=["Manychat"])
-app.include_router(subscribers_router, prefix="/subscribers", tags=["Subscribers"])
+app.include_router(client_router, prefix="/client", tags=["Client"])
 app.include_router(agents_router, prefix="/agents", tags=["Agents"])
