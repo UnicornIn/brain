@@ -18,7 +18,7 @@ KNOWLEDGE_AGENT_ID = os.getenv("OPENAI_KNOWLEDGE_AGENT_ID")
 async def manychat_agent(request: Request, background_tasks: BackgroundTasks):
     """Endpoint optimizado que conserva la estructura base pero añade las mejoras solicitadas"""
     try:
-        # 1. Procesamiento inicial (igual que tu versión)
+        # 1. Procesamiento inicial
         data = await request.json()
         print(f"Data recibida: {data}")
         question = data.get("user_input", "").strip()
@@ -27,7 +27,7 @@ async def manychat_agent(request: Request, background_tasks: BackgroundTasks):
         if not question:
             raise HTTPException(400, "No se recibió 'user_input' válido")
 
-        # 2. Creación de thread (igual que tu versión)
+        # 2. Creación de thread
         thread = client.beta.threads.create()
         thread_id = thread.id
         print(f"Thread creado con ID: {thread_id}")
@@ -40,7 +40,7 @@ async def manychat_agent(request: Request, background_tasks: BackgroundTasks):
             thread_id=thread_id
         )
 
-        # 4. Respuesta rápida al usuario (igual que tu versión)
+        # 4. Respuesta rápida al usuario
         client.beta.threads.messages.create(
             thread_id=thread_id,
             role="user",
@@ -106,11 +106,14 @@ async def process_and_store_conversation(data: dict, question: str, thread_id: s
         }
 
         # 4. Guardar en MongoDB
-        await messages_collection.insert_one(conversation_data)
+        result = await messages_collection.insert_one(conversation_data)
         print(f"Conversación guardada para subscriber {data.get('subscriber_id')}")
+        print(f"Guardado correctamente en la colección: {messages_collection.name}")
+        print(f"ID del documento insertado: {result.inserted_id}")
 
     except Exception as e:
         print(f"Error al guardar conversación: {str(e)}")
+
 
 def get_channel_and_identifiers(data: dict) -> tuple[str, dict]:
     """Determina el canal y devuelve solo los identificadores relevantes"""
