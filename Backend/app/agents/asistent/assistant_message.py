@@ -114,21 +114,36 @@ async def process_and_store_conversation(data: dict, question: str, thread_id: s
     except Exception as e:
         print(f"Error al guardar conversación: {str(e)}")
 
+def is_valid_field(value: str) -> bool:
+    """Valida que el campo no sea nulo, vacío ni una plantilla sin procesar."""
+    return bool(value) and not str(value).strip().startswith("{{")
 
 def get_channel_and_identifiers(data: dict) -> tuple[str, dict]:
-    """Determina el canal y devuelve solo los identificadores relevantes"""
-    whatsapp = data.get("whatsappphone")
-    tt = data.get("tt_username")
-    ig = data.get("ig_username")
-    gender = data.get("gender")
-    
-    if whatsapp:
-        return "whatsapp", {"whatsappphone": whatsapp}
-    if tt:
-        return "tiktok", {"tt_username": tt}
-    if ig:
-        return "instagram", {"ig_username": ig}
-    if gender:
-        return "facebook", {"gender": gender}
-    return "unknown", {}
+    """Determina el canal y devuelve solo los identificadores relevantes, con validación real."""
+    print("🔍 Buscando canal e identificadores en los datos recibidos...")
 
+    whatsapp = data.get("whatsapp_phone")
+    tt_username = data.get("tt_username")
+    ig_username = data.get("ig_username")
+    gender = data.get("gender")
+
+    print(f"📱 WhatsApp: {whatsapp}")
+    print(f"🎵 TikTok: {tt_username}")
+    print(f"📸 Instagram: {ig_username}")
+    print(f"👤 Género (Facebook): {gender}")
+
+    if is_valid_field(tt_username):
+        print("✅ Canal detectado: TikTok")
+        return "tiktok", {"tt_username": tt_username}
+    if is_valid_field(ig_username):
+        print("✅ Canal detectado: Instagram")
+        return "instagram", {"ig_username": ig_username}
+    if is_valid_field(whatsapp):
+        print("✅ Canal detectado: WhatsApp")
+        return "whatsapp", {"whatsapp_phone": whatsapp}
+    if is_valid_field(gender):
+        print("✅ Canal detectado: Facebook")
+        return "facebook", {"gender": gender}
+
+    print("⚠️ Canal desconocido")
+    return "unknown", {}

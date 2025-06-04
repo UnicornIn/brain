@@ -54,16 +54,26 @@ async def create_contact_from_message(message, subscriber_data):
         if v is not None and v != ""
     }
 
-    # Determinar canal y identificadores
+    # Determinar canal y otros identificadores
     identifiers = message.get("user_identifiers", {})
     canal_data = determine_channel(identifiers, subscriber_data, message)
-    
-    # Estructurar datos del contacto
+
+    # Generar unique_id
+    existing = await contacts_collection.find_one({"subscriber_id": subscriber_id})
+    if existing and "unique_id" in existing:
+        unique_id = existing["unique_id"]
+    else:
+        total_contacts = await contacts_collection.count_documents({})
+        unique_id = str(total_contacts + 1).zfill(2)  # genera IDs tipo "01", "02", ..., "100"
+        print(f"🆕 Generado unique_id automático: {unique_id}")
+
+    # Estructurar contacto
     contacto = {
         "subscriber_id": subscriber_id,
         "canal": canal_data["canal"],
         "created_at": datetime.utcnow(),
         "last_updated": datetime.utcnow(),
+        "unique_id": unique_id,
         **({"numero": canal_data["numero"]} if canal_data["numero"] else {}),
         **({"nombre_cuenta": canal_data["nombre_cuenta"]} if canal_data["nombre_cuenta"] else {}),
         "info": subscriber_data,
