@@ -10,8 +10,6 @@ from fastapi import status
 
 router = APIRouter()
 
-
-
 @router.post(
     "/generate-alerts",
     response_model=dict,
@@ -24,14 +22,20 @@ async def generate_alerts():
     try:
         # 1. Configuración básica
         time_threshold = datetime.now() - timedelta(hours=24)
-        target_response = "Un momento por favor."
 
         # 2. Buscar mensajes pendientes
         query = {
-            "assistant_response": target_response,
+            "assistant_response": {
+                "$regex": r"^un momento por favor\.?",
+                "$options": "i"
+            },
             "last_interaction": {"$gte": time_threshold},
-            "alert_created": {"$ne": True}
+            "$or": [
+                {"alert_created": {"$exists": False}},
+                {"alert_created": False}
+            ]
         }
+
         pending_messages = await messages_collection.find(query).to_list(length=None)
 
         # 3. Procesar mensajes
@@ -83,7 +87,7 @@ async def generate_alerts():
         raise HTTPException(
             status_code=500,
             detail=f"Error al generar alertas: {str(e)}"
-        )
+        ) 
 
 @router.get("/alerts", response_model=List[AlertResponse])
 async def list_alerts(
