@@ -3,6 +3,7 @@
 import { useState, useCallback } from "react"
 import { Link, useLocation } from "react-router-dom"
 import { useAuth } from "../contexts/AuthContext"
+import { BarChart3 } from "lucide-react"
 
 // Icons component
 const Icons = {
@@ -105,10 +106,11 @@ const Sidebar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   const modules = [
-    { name: "Dashboard", path: "/", icon: Icons.Dashboard },
+    { name: "Dashboard", path: "/dashboard", icon: Icons.Dashboard },
     { name: "Base de Datos", path: "/database", icon: Icons.Database },
     { name: "Datos de Negocio", path: "/business", icon: Icons.Business },
     { name: "Omnicanal", path: "/omnichannel", icon: Icons.Omnichannel },
+    { name: "Comunidades", path: "/communitiespage", icon: BarChart3 },
     { name: "Inteligencia de Negocios", path: "/intelligence", icon: Icons.Intelligence },
   ]
 

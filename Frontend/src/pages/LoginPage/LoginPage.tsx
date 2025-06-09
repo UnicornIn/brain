@@ -4,7 +4,7 @@ import type React from "react"
 
 import { useState } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
-import { useAuth } from "../contexts/AuthContext"
+import { useAuth } from "../../contexts/AuthContext"
 
 const LoginPage = () => {
   const [email, setEmail] = useState("")
@@ -17,7 +17,7 @@ const LoginPage = () => {
   const location = useLocation()
 
   // Get the page they were trying to access
-  const from = location.state?.from?.pathname || "/"
+  const from = location.state?.from?.pathname || "/dashboard"
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
