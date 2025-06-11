@@ -9,6 +9,7 @@ import OmnichannelPage from "./pages/OmnichannelPage/OmnichannelPage"
 import IntelligencePage from "./pages/IntelligencePage/IntelligencePage"
 import CreateCommunityPage from "./pages/ComunityPage/Communities/create"
 import CommunityDetailPage from "./pages/ComunityPage/Communities/[id]"
+import Manages from "./pages/ComunityPage/Communities/manages"
 import CommunitiesPage from "./pages/ComunityPage/CommunitiesPage"
 import Layout from "./components/Layout"
 import { TooltipProvider } from "./components/ui/tooltip"
@@ -87,6 +88,16 @@ function App() {
                 <ProtectedRoute>
                   <Layout>
                     <CommunityDetailPage />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/communities/manages"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <Manages />
                   </Layout>
                 </ProtectedRoute>
               }
