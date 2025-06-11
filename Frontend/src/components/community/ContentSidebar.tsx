@@ -6,8 +6,6 @@ import { useState, useCallback } from "react"
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
 import { Textarea } from "../ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
-import { Switch } from "../ui/switch"
 import { Separator } from "../ui/separator"
 import { Button } from "../ui/button"
 import { Upload, X } from "lucide-react"
@@ -160,7 +158,7 @@ export function ContentSidebar({ communityData, onInputChange, onClose }: Conten
           <h3 className="font-medium text-sm mb-3 text-gray-900">Sección Hero</h3>
           <div className="space-y-4">
             <div>
-              <Label className="text-xs text-gray-600 mb-2 block">Título principal *</Label>
+              <Label className="text-xs text-gray-600 mb-2 block">Título de la comunidad *</Label>
               <Input
                 value={communityData.title}
                 onChange={(e) => handleInputChange("title", e.target.value)}
@@ -265,89 +263,22 @@ export function ContentSidebar({ communityData, onInputChange, onClose }: Conten
 
         <Separator />
 
-        {/* Información de la Comunidad */}
+
         <div>
-          <h3 className="font-medium text-sm mb-3 text-gray-900">Información de la Comunidad</h3>
-          <div className="space-y-4">
-            <div>
-              <Label className="text-xs text-gray-600 mb-2 block">Nombre de la comunidad *</Label>
-              <Input
-                value={communityData.communityName}
-                onChange={(e) => handleInputChange("communityName", e.target.value)}
-                className={`rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 ${errors.communityName ? "border-red-500" : ""}`}
-                placeholder="Emprendedores Pro"
-              />
-              {errors.communityName && <p className="text-xs text-red-500 mt-1">{errors.communityName}</p>}
+          <Label className="text-xs text-gray-600 mb-2 block">URL personalizada *</Label>
+          <div className="flex">
+            <div className="flex items-center bg-gray-100 px-2 lg:px-3 rounded-l-xl border border-r-0 text-xs text-gray-500">
+              <span className="hidden sm:inline">/comunidades/</span>
+              <span className="sm:hidden">/c/</span>
             </div>
-
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <Label className="text-xs text-gray-600 mb-2 block">Miembros *</Label>
-                <Input
-                  type="number"
-                  value={communityData.members}
-                  onChange={(e) => handleInputChange("members", Number.parseInt(e.target.value) || 0)}
-                  className={`rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 ${errors.members ? "border-red-500" : ""}`}
-                />
-                {errors.members && <p className="text-xs text-red-500 mt-1">{errors.members}</p>}
-              </div>
-              <div>
-                <Label className="text-xs text-gray-600 mb-2 block">Rating *</Label>
-                <Input
-                  type="number"
-                  step="0.1"
-                  max="5"
-                  value={communityData.rating}
-                  onChange={(e) => handleInputChange("rating", Number.parseFloat(e.target.value) || 0)}
-                  className={`rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 ${errors.rating ? "border-red-500" : ""}`}
-                />
-                {errors.rating && <p className="text-xs text-red-500 mt-1">{errors.rating}</p>}
-              </div>
-            </div>
-
-            <div>
-              <Label className="text-xs text-gray-600 mb-2 block">Tipo *</Label>
-              <Select value={communityData.category} onValueChange={(value) => handleInputChange("category", value)}>
-                <SelectTrigger
-                  className={`rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 ${errors.category ? "border-red-500" : ""}`}
-                >
-                  <SelectValue placeholder="Selecciona un tipo" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Comunidad privada">Comunidad privada</SelectItem>
-                  <SelectItem value="Comunidad pública">Comunidad pública</SelectItem>
-                  <SelectItem value="Curso online">Curso online</SelectItem>
-                  <SelectItem value="Membresía">Membresía</SelectItem>
-                </SelectContent>
-              </Select>
-              {errors.category && <p className="text-xs text-red-500 mt-1">{errors.category}</p>}
-            </div>
-
-            <div className="flex items-center justify-between">
-              <Label className="text-xs text-gray-600">Comunidad Activa</Label>
-              <Switch
-                checked={communityData.isActive}
-                onCheckedChange={(checked) => onInputChange("isActive", checked)}
-              />
-            </div>
-
-            <div>
-              <Label className="text-xs text-gray-600 mb-2 block">URL personalizada *</Label>
-              <div className="flex">
-                <div className="flex items-center bg-gray-100 px-2 lg:px-3 rounded-l-xl border border-r-0 text-xs text-gray-500">
-                  <span className="hidden sm:inline">/comunidades/</span>
-                  <span className="sm:hidden">/c/</span>
-                </div>
-                <Input
-                  value={communityData.customUrl}
-                  onChange={(e) => handleInputChange("customUrl", e.target.value)}
-                  className={`rounded-l-none rounded-r-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 ${errors.customUrl ? "border-red-500" : ""}`}
-                  placeholder="mi-comunidad"
-                />
-              </div>
-              {errors.customUrl && <p className="text-xs text-red-500 mt-1">{errors.customUrl}</p>}
-            </div>
+            <Input
+              value={communityData.customUrl}
+              onChange={(e) => handleInputChange("customUrl", e.target.value)}
+              className={`rounded-l-none rounded-r-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 ${errors.customUrl ? "border-red-500" : ""}`}
+              placeholder="mi-comunidad"
+            />
           </div>
+          {errors.customUrl && <p className="text-xs text-red-500 mt-1">{errors.customUrl}</p>}
         </div>
       </div>
     </div>

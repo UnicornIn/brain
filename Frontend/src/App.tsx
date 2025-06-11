@@ -93,7 +93,7 @@ function App() {
               }
             />
             <Route
-              path="/communities/manages"
+              path="/communitiespage/manages"
               element={
                 <ProtectedRoute>
                   <Layout>
