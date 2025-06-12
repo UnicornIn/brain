@@ -1,9 +1,7 @@
 from fastapi import APIRouter
-from app.auth.controllers import login_user
-from app.auth.schemas import LoginRequest, TokenResponse
+from app.auth.createusers.createusers import router as create_user_router
+
 
 router = APIRouter()
 
-@router.post("/login", response_model=TokenResponse)
-async def login(data: LoginRequest):
-    return await login_user(data)
+router.include_router(create_user_router)
