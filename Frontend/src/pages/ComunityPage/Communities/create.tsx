@@ -3,13 +3,14 @@
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { Button } from "../../../components/ui/button"
-import { ArrowLeft } from "lucide-react"
+import { ArrowLeft, Save, Globe } from "lucide-react"
 import { CommunityBuilder } from "../../../components/community/CommunityBuilder"
 import type { CommunityData } from "../../../types/community"
 
 export default function CreateCommunityPage() {
   const navigate = useNavigate()
   const [isPublishing, setIsPublishing] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
 
   const [communityData, setCommunityData] = useState<CommunityData>({
     // Sección Hero
@@ -32,6 +33,13 @@ export default function CreateCommunityPage() {
     customUrl: "",
   })
 
+  const handleSave = async () => {
+    setIsSaving(true)
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+    setIsSaving(false)
+    // Here you would save as draft
+  }
+
   const handlePublish = async () => {
     setIsPublishing(true)
     await new Promise((resolve) => setTimeout(resolve, 2000))
@@ -51,18 +59,25 @@ export default function CreateCommunityPage() {
   return (
     <div className="h-screen flex flex-col bg-gray-50">
       {/* Header */}
-      <div className="bg-white border-b px-6 py-3 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <Button variant="ghost" size="icon" asChild>
+      <div className="bg-white border-b px-4 lg:px-6 py-3 flex items-center justify-between">
+        <div className="flex items-center gap-2 lg:gap-3 min-w-0">
+          <Button variant="ghost" size="icon" asChild className="flex-shrink-0">
             <Link to="/communities">
               <ArrowLeft className="h-4 w-4" />
             </Link>
           </Button>
-          <h1 className="text-lg font-semibold">Constructor de Landing - Comunidades</h1>
+          <h1 className="text-sm lg:text-lg font-semibold truncate">
+            <span className="hidden sm:inline">Constructor de Landing - Comunidades</span>
+            <span className="sm:hidden">Constructor Landing</span>
+          </h1>
         </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm">
-            Guardar
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <Button variant="outline" size="sm" onClick={handleSave} disabled={isSaving} className="hidden sm:flex">
+            <Save className="h-3 w-3 mr-1" />
+            {isSaving ? "Guardando..." : "Guardar"}
+          </Button>
+          <Button variant="outline" size="icon" onClick={handleSave} disabled={isSaving} className="sm:hidden">
+            <Save className="h-4 w-4" />
           </Button>
           <Button
             size="sm"
@@ -70,7 +85,15 @@ export default function CreateCommunityPage() {
             disabled={isPublishing}
             className="bg-black text-white hover:bg-gray-800"
           >
-            {isPublishing ? "Publicando..." : "Publicar"}
+            <Globe className="h-3 w-3 mr-1 sm:mr-2" />
+            {isPublishing ? (
+              <span className="hidden sm:inline">Publicando...</span>
+            ) : (
+              <>
+                <span className="hidden sm:inline">Publicar</span>
+                <span className="sm:hidden">Pub</span>
+              </>
+            )}
           </Button>
         </div>
       </div>
