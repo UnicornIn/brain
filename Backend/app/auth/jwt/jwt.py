@@ -6,8 +6,8 @@ from passlib.context import CryptContext
 from typing import Optional
 import os
 
-from app.database.mongo import user_collection  # OK aquí
-# ✅ Define esto directamente aquí, SIN importar desde .jwt
+from app.database.mongo import user_collection
+
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 # Configuraciones
