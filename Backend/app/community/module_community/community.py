@@ -4,15 +4,15 @@ from app.community.module_community.models import CommunityResponse
 from app.community.module_community.upload_file import upload_image_to_s3
 from app.community.module_community.upload_file import delete_image_from_s3
 from fastapi.security import OAuth2PasswordBearer
-from app.auth.jwt.jwt import get_current_user
-from fastapi import Depends
+# from app.auth.jwt.jwt import get_current_user # Uncomment if you need to use authentication
+# from fastapi import Depends
 from fastapi import Path
 from urllib.parse import urlparse
 from fastapi import Form
 from typing import Optional
 from fastapi import UploadFile, File
 from datetime import datetime
-from typing import List
+from typing import List 
 import uuid
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
@@ -23,13 +23,9 @@ async def create_community_with_image(
     title: str = Form(...),
     description: str = Form(...),
     url: str = Form(...),
-    image: Optional[UploadFile] = File(None),
-    current_user: dict = Depends(get_current_user)  # <-- sin lambda
+    image: Optional[UploadFile] = File(None)
 ):
     try:
-        # Usar el current_user solo para eliminar el warning (opcional: logging o auditoría)
-        print(f"Admin creating community: {current_user['id']}")
-
         existing = await community_collection.find_one({"url": url})
         if existing:
             raise HTTPException(status_code=400, detail="A community with this URL already exists")
@@ -63,7 +59,7 @@ async def create_community_with_image(
             url=url,
             members=0,
             created_at=created_at,
-            image_url=image_url
+            image=image_url
         )
 
     except HTTPException:
@@ -181,17 +177,15 @@ async def delete_community(community_id: str = Path(..., description="UUID de la
 
 @router.get("/communities/by-slug/{slug}", response_model=CommunityResponse)
 async def get_community_by_slug(slug: str):
-    """
-    Get a single community by its URL slug (stored in the 'url' field).
-    Example: 'rizosfelicesprofessional'
-    """
     try:
-        # Asegurarse de que el slug comience con /
-        if not slug.startswith("/"):
-            slug = f"/{slug}"
-
-        community = await community_collection.find_one({"url": slug})
-
+        # Try with slash first
+        formatted_slug = f"/{slug.lstrip('/')}"
+        community = await community_collection.find_one({"url": formatted_slug})
+        
+        # If not found, try without slash
+        if not community:
+            community = await community_collection.find_one({"url": slug.lstrip('/')})
+        
         if not community:
             raise HTTPException(status_code=404, detail="Community not found")
 
@@ -204,8 +198,6 @@ async def get_community_by_slug(slug: str):
             created_at=community["created_at"],
             image=community.get("image_url")
         )
-
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-    
 
