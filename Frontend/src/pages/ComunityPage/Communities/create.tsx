@@ -39,26 +39,15 @@ export default function CreateCommunityPage() {
     customUrl: "",
   })
 
-  const checkUrlAvailability = async (url: string) => {
-    try {
-      const response = await fetch(`https://apibrain.rizosfelices.co/community/communities/check-url?url=${url}`)
-      const data = await response.json()
-      return data.available
-    } catch (error) {
-      console.error('Error checking URL:', error)
-      return false
-    }
-  }
-
   const handlePublish = async () => {
     setIsPublishing(true)
     setError(null)
     setUrlError(null)
     
     try {
-      // Validación básica
+      // Basic validation
       if (!communityData.title || !communityData.description) {
-        throw new Error('El título y la descripción son requeridos')
+        throw new Error('El título y la descripción son obligatorios')
       }
 
       if (!communityData.mediaFile) {
@@ -66,14 +55,7 @@ export default function CreateCommunityPage() {
       }
 
       if (!communityData.customUrl) {
-        throw new Error('La URL personalizada es requerida')
-      }
-
-      // Verificar disponibilidad de URL
-      const isUrlAvailable = await checkUrlAvailability(communityData.customUrl)
-      if (!isUrlAvailable) {
-        setUrlError('Esta URL ya está en uso. Por favor elige otra.')
-        return
+        throw new Error('La URL personalizada es obligatoria')
       }
 
       const formData = new FormData()
@@ -99,19 +81,25 @@ export default function CreateCommunityPage() {
       const data = await response.json()
 
       if (!response.ok) {
-        const errorMessage = data.message || data.error || 'Error al publicar la comunidad'
+        // Check if error is due to duplicate URL
+        if (data.error?.includes('URL already exists') || data.message?.includes('URL already in use')) {
+          setUrlError('This URL is already in use. Please choose another one.')
+          return
+        }
+        
+        const errorMessage = data.message || data.error || 'Esa URL ya está en uso. Por favor, elige otra.'
         throw new Error(errorMessage)
       }
 
       setShowSuccessModal(true)
-      toast.success('Comunidad publicada con éxito', {
+      toast.success('Community published successfully', {
         position: 'top-center',
         duration: 3000
       })
       
     } catch (error) {
       console.error('Error:', error)
-      const errorMessage = error instanceof Error ? error.message : 'Error desconocido al publicar'
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error while publishing'
       setError(errorMessage)
       toast.error(errorMessage, {
         position: 'top-center',
@@ -123,11 +111,11 @@ export default function CreateCommunityPage() {
   }
 
   const copyToClipboard = () => {
-    const communityUrl = `${window.location.origin}/comunidades/${communityData.customUrl}`
+    const communityUrl = `${window.location.origin}/community/${communityData.customUrl}`
     navigator.clipboard.writeText(communityUrl)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
-    toast.success('Enlace copiado al portapapeles', {
+    toast.success('Link copied to clipboard', {
       position: 'top-center',
       duration: 2000
     })
@@ -149,7 +137,7 @@ export default function CreateCommunityPage() {
             </Link>
           </Button>
           <h1 className="text-sm lg:text-lg font-semibold truncate">
-            Constructor de Landing - Comunidades
+            Community Landing Builder
           </h1>
         </div>
         <div className="flex items-center gap-2 flex-shrink-0">
@@ -165,7 +153,7 @@ export default function CreateCommunityPage() {
         </div>
       </div>
 
-      {/* Mostrar error si existe */}
+      {/* Show error if exists */}
       {error && (
         <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mx-4 mt-4">
           <p className="font-bold">Error</p>
@@ -175,7 +163,7 @@ export default function CreateCommunityPage() {
 
       {urlError && (
         <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mx-4 mt-4">
-          <p className="font-bold">Advertencia</p>
+          <p className="font-bold">Warning</p>
           <p>{urlError}</p>
         </div>
       )}
@@ -190,7 +178,7 @@ export default function CreateCommunityPage() {
       <Dialog open={showSuccessModal} onOpenChange={closeModal}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle className="text-center">¡Comunidad publicada con éxito!</DialogTitle>
+            <DialogTitle className="text-center">Community published successfully!</DialogTitle>
           </DialogHeader>
           <div className="flex items-center space-x-2">
             <div className="grid flex-1 gap-2">
@@ -199,7 +187,7 @@ export default function CreateCommunityPage() {
               </Label>
               <Input
                 id="link"
-                defaultValue={`${window.location.origin}/comunidades/${communityData.customUrl}`}
+                defaultValue={`${window.location.origin}/community/${communityData.customUrl}`}
                 readOnly
               />
             </div>
@@ -213,7 +201,7 @@ export default function CreateCommunityPage() {
           </div>
           <div className="flex justify-end mt-4">
             <Button onClick={closeModal}>
-              Cerrar
+              Close
             </Button>
           </div>
         </DialogContent>
