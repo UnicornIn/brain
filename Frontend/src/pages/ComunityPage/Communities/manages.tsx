@@ -49,7 +49,7 @@ export default function Manages() {
         navigate("/communities")
     }
 
-    // Mock data for the community
+    // Mock data for the community  
     const community = {
         id: id,
         name: "Club de Fidelización",

@@ -13,64 +13,167 @@ import {
   ArrowLeft,
   Users,
   Link2,
-  BarChart3,
-  MessageSquare,
-  Settings,
-  Download,
-  Filter,
-  Copy,
   Edit,
   Send,
   Plus,
   Mail,
   Phone,
-  Facebook,
-  Instagram,
+  Check,
+  X,
 } from "lucide-react"
-import { Link } from "react-router-dom"
+import { Link, useParams } from "react-router-dom"
+import { useEffect, useState } from "react"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "../../../components/ui/dialog"
 
-type Member = {
-  name: string
-  email: string
-  phone: string
-  channels: string[]
-  registerDate: string
+interface Member {
+  community_id: string;
+  user_id: string;
+  full_name: string;
+  email: string;
+  phone: string;
+  join_reason: string;
+  has_completed_survey: boolean;
+  registration_date: string;
+  role: string;
+  status: string;
 }
 
-type Form = {
-  name: string
-  url: string
-  registrations: number
-  created: string
-  active: boolean
+interface Community {
+  id: string;
+  title: string;
+  description: string;
+  members: number;
+  image?: string;
 }
 
-type CommunityDetailPageProps = {
-  members: Member[]
-  forms: Form[]
-  totalMembers: number
-  completedForms: number
-  conversionRate: string
-}
+export default function CommunityDetailPage() {
+  const { id: communityId } = useParams<{ id: string }>();
+  const [community, setCommunity] = useState<Community | null>(null);
+  const [members, setMembers] = useState<Member[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterStatus, setFilterStatus] = useState('all');
+  const [selectedMember, setSelectedMember] = useState<Member | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-export default function CommunityDetailPage({
-  members,
-  forms,
-  totalMembers,
-  completedForms,
-  conversionRate,
-}: CommunityDetailPageProps) {
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        
+        setCommunity({
+          id: communityId || '',
+          title: "Comunidad",
+          description: "Descripción de la comunidad",
+          members: 0
+        });
+
+        const membersResponse = await fetch(`http://127.0.0.1:8000/community/members/${communityId}`);
+        if (!membersResponse.ok) {
+          throw new Error('Error al obtener los miembros de la comunidad');
+        }
+        const membersData = await membersResponse.json();
+        setMembers(membersData.members || []);
+        
+        setCommunity(prev => prev ? {
+          ...prev,
+          members: membersData.members?.length || 0,
+          title: `Comunidad (${membersData.members?.length || 0} miembros)`
+        } : null);
+
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Ocurrió un error desconocido');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [communityId]);
+
+  const getStatusBadge = (status: string) => {
+    const statusMap: Record<string, { className: string, label: string }> = {
+      active: { className: "bg-green-100 text-green-800", label: "Activo" },
+      inactive: { className: "bg-red-100 text-red-800", label: "Inactivo" },
+      pending: { className: "bg-yellow-100 text-yellow-800", label: "Pendiente" }
+    };
+    
+    return (
+      <Badge variant="outline" className={statusMap[status]?.className || "bg-gray-100 text-gray-800"}>
+        {statusMap[status]?.label || status}
+      </Badge>
+    );
+  };
+
+  const getSurveyBadge = (completed: boolean) => {
+    return completed ? (
+      <Badge variant="outline" className="bg-green-100 text-green-800">
+        <Check className="h-3 w-3 mr-1" /> Completo
+      </Badge>
+    ) : (
+      <Badge variant="outline" className="bg-red-100 text-red-800">
+        <X className="h-3 w-3 mr-1" /> Incompleto
+      </Badge>
+    );
+  };
+
+  const filteredMembers = members.filter(member => {
+    const matchesSearch = 
+      member.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      member.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      member.phone.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesStatus = filterStatus === 'all' || member.status === filterStatus;
+    
+    return matchesSearch && matchesStatus;
+  });
+
+  const openMemberDetails = (member: Member) => {
+    setSelectedMember(member);
+    setIsModalOpen(true);
+  };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div>Cargando datos de la comunidad...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="text-red-500">{error}</div>
+      </div>
+    );
+  }
+
+  if (!community) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div>No se encontró la comunidad</div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-2">
         <Button variant="ghost" size="icon" asChild>
-          <Link to="/communitiespage">
+          <Link to="/communities">
             <ArrowLeft className="h-4 w-4" />
           </Link>
         </Button>
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Clubb de Fidelización</h1>
-          <p className="text-muted-foreground">Gestión de comunidad y miembros</p>
+          <h1 className="text-2xl font-bold tracking-tight">{community.title}</h1>
+          <p className="text-muted-foreground">{community.description}</p>
         </div>
       </div>
 
@@ -81,7 +184,7 @@ export default function CommunityDetailPage({
             <CardDescription>Miembros registrados</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">{totalMembers}</div>
+            <div className="text-3xl font-bold">{community.members}</div>
           </CardContent>
         </Card>
         <Card className="flex-1">
@@ -90,7 +193,9 @@ export default function CommunityDetailPage({
             <CardDescription>Últimos 30 días</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">{completedForms}</div>
+            <div className="text-3xl font-bold">
+              {members.filter(m => m.has_completed_survey).length}
+            </div>
           </CardContent>
         </Card>
         <Card className="flex-1">
@@ -99,7 +204,7 @@ export default function CommunityDetailPage({
             <CardDescription>Visitas vs. Registros</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">{conversionRate}</div>
+            <div className="text-3xl font-bold">72%</div>
           </CardContent>
         </Card>
       </div>
@@ -114,18 +219,6 @@ export default function CommunityDetailPage({
             <Link2 className="h-4 w-4 mr-2" />
             Formularios
           </TabsTrigger>
-          <TabsTrigger value="communications">
-            <MessageSquare className="h-4 w-4 mr-2" />
-            Comunicaciones
-          </TabsTrigger>
-          <TabsTrigger value="analytics">
-            <BarChart3 className="h-4 w-4 mr-2" />
-            Analíticas
-          </TabsTrigger>
-          <TabsTrigger value="settings">
-            <Settings className="h-4 w-4 mr-2" />
-            Configuración
-          </TabsTrigger>
         </TabsList>
 
         {/* Tab: Members */}
@@ -133,21 +226,28 @@ export default function CommunityDetailPage({
           <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
             <div className="relative flex-1">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input type="search" placeholder="Buscar miembros..." className="pl-8" />
+              <Input 
+                type="search" 
+                placeholder="Buscar miembros..." 
+                className="pl-8" 
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
             </div>
             <div className="flex gap-2">
-              <Select>
+              <Select value={filterStatus} onValueChange={setFilterStatus}>
                 <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Filtrar por" />
+                  <SelectValue placeholder="Filtrar por estado" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">Todos</SelectItem>
                   <SelectItem value="active">Activos</SelectItem>
                   <SelectItem value="inactive">Inactivos</SelectItem>
-                  <SelectItem value="new">Nuevos</SelectItem>
+                  <SelectItem value="pending">Pendientes</SelectItem>
                 </SelectContent>
               </Select>
-              <Button variant="outline" size="icon">
+              {/* Botones ocultos */}
+              {/* <Button variant="outline" size="icon">
                 <Filter className="h-4 w-4" />
               </Button>
               <Button variant="outline">
@@ -157,7 +257,7 @@ export default function CommunityDetailPage({
               <Button>
                 <Plus className="mr-2 h-4 w-4" />
                 Añadir Miembro
-              </Button>
+              </Button> */}
             </div>
           </div>
 
@@ -168,22 +268,26 @@ export default function CommunityDetailPage({
                   <TableRow>
                     <TableHead>Miembro</TableHead>
                     <TableHead>Contacto</TableHead>
-                    <TableHead>Canales</TableHead>
+                    <TableHead>Encuesta</TableHead>
+                    <TableHead>Estado</TableHead>
                     <TableHead>Fecha Registro</TableHead>
+                    <TableHead>Razón de ingreso</TableHead>
                     <TableHead className="text-right">Acciones</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {members.map((member, i) => (
-                    <TableRow key={i}>
+                  {filteredMembers.map((member) => (
+                    <TableRow key={member.user_id} onClick={() => openMemberDetails(member)} className="cursor-pointer hover:bg-gray-50">
                       <TableCell>
                         <div className="flex items-center gap-3">
                           <Avatar>
-                            <AvatarFallback>{member.name.charAt(0)}</AvatarFallback>
+                            <AvatarFallback>
+                              {member.full_name.split(' ').map(n => n[0]).join('')}
+                            </AvatarFallback>
                           </Avatar>
                           <div>
-                            <div className="font-medium">{member.name}</div>
-                            <div className="text-sm text-muted-foreground">{member.email}</div>
+                            <div className="font-medium">{member.full_name}</div>
+                            <div className="text-sm text-muted-foreground">{member.role}</div>
                           </div>
                         </div>
                       </TableCell>
@@ -200,43 +304,15 @@ export default function CommunityDetailPage({
                         </div>
                       </TableCell>
                       <TableCell>
-                        <div className="flex flex-wrap gap-1">
-                          {member.channels.map((channel) => {
-                            const icons: Record<string, JSX.Element> = {
-                              facebook: <Facebook className="h-3 w-3 text-blue-600" />,
-                              instagram: <Instagram className="h-3 w-3 text-pink-600" />,
-                              whatsapp: (
-                                <svg
-                                  className="h-3 w-3 text-green-600"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="24"
-                                  height="24"
-                                  viewBox="0 0 24 24"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  strokeWidth="2"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                >
-                                  <path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21" />
-                                  <path d="M9 10a.5.5 0 0 0 1 0V9a.5.5 0 0 0-1 0v1Z" />
-                                  <path d="M14 10a.5.5 0 0 0 1 0V9a.5.5 0 0 0-1 0v1Z" />
-                                  <path d="M9.5 13.5c.5 1 1.5 1 2 1s1.5 0 2-1" />
-                                </svg>
-                              ),
-                              email: <Mail className="h-3 w-3 text-gray-600" />,
-                            }
-
-                            return (
-                              <Badge key={channel} variant="outline" className="flex items-center gap-1">
-                                {icons[channel]}
-                                <span className="hidden md:inline capitalize">{channel}</span>
-                              </Badge>
-                            )
-                          })}
-                        </div>
+                        {getSurveyBadge(member.has_completed_survey)}
                       </TableCell>
-                      <TableCell>{member.registerDate}</TableCell>
+                      <TableCell>
+                        {getStatusBadge(member.status)}
+                      </TableCell>
+                      <TableCell>{member.registration_date}</TableCell>
+                      <TableCell className="max-w-[200px] truncate">
+                        {member.join_reason}
+                      </TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-2">
                           <Button variant="ghost" size="icon">
@@ -274,45 +350,87 @@ export default function CommunityDetailPage({
                     <TableHead>URL</TableHead>
                     <TableHead>Registros</TableHead>
                     <TableHead>Creado</TableHead>
+                    <TableHead>Estado</TableHead>
                     <TableHead className="text-right">Acciones</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {forms.map((form, i) => (
-                    <TableRow key={i}>
-                      <TableCell>
-                        <div className="font-medium">{form.name}</div>
-                        <div className="text-sm text-muted-foreground">
-                          <Badge variant="outline" className={form.active ? "bg-green-100 text-green-800" : ""}>
-                            {form.active ? "Activo" : "Inactivo"}
-                          </Badge>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm truncate max-w-[200px]">{form.url}</span>
-                          <Button variant="ghost" size="icon" className="h-6 w-6">
-                            <Copy className="h-3.5 w-3.5" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                      <TableCell>{form.registrations}</TableCell>
-                      <TableCell>{form.created}</TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex justify-end gap-2">
-                          <Button variant="ghost" size="sm">Ver</Button>
-                          <Button variant="ghost" size="sm">Editar</Button>
-                          <Button variant="ghost" size="sm">Duplicar</Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                  <TableRow>
+                    <TableCell colSpan={6} className="text-center py-8">
+                      <div className="text-muted-foreground">
+                        No hay formularios activos para esta comunidad
+                      </div>
+                    </TableCell>
+                  </TableRow>
                 </TableBody>
               </Table>
             </CardContent>
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Modal de detalles del miembro */}
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="sm:max-w-[625px] max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-2xl">Detalles del Miembro</DialogTitle>
+          </DialogHeader>
+          
+          {selectedMember && (
+            <div className="space-y-6">
+              <div className="flex items-center gap-4">
+                <Avatar className="h-16 w-16">
+                  <AvatarFallback className="text-xl">
+                    {selectedMember.full_name.split(' ').map(n => n[0]).join('')}
+                  </AvatarFallback>
+                </Avatar>
+                <div>
+                  <h3 className="text-xl font-semibold">{selectedMember.full_name}</h3>
+                  <div className="flex gap-2 mt-1">
+                    {getStatusBadge(selectedMember.status)}
+                    {getSurveyBadge(selectedMember.has_completed_survey)}
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <h4 className="font-medium text-gray-500">Información Básica</h4>
+                  <div className="space-y-1">
+                    <div>
+                      <span className="text-sm text-gray-500">Rol:</span>
+                      <p>{selectedMember.role}</p>
+                    </div>
+                    <div>
+                      <span className="text-sm text-gray-500">Fecha de Registro:</span>
+                      <p>{selectedMember.registration_date}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <h4 className="font-medium text-gray-500">Contacto</h4>
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <Mail className="h-4 w-4 text-gray-500" />
+                      <span>{selectedMember.email}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Phone className="h-4 w-4 text-gray-500" />
+                      <span>{selectedMember.phone}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="md:col-span-2 space-y-2">
+                  <h4 className="font-medium text-gray-500">Razón de Ingreso</h4>
+                  <p className="whitespace-pre-line">{selectedMember.join_reason}</p>
+                </div>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
-  )
+  );
 }

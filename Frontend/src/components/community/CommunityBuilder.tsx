@@ -13,13 +13,16 @@ import type { CommunityData } from "../../types/community"
 interface CommunityBuilderProps {
   communityData: CommunityData
   setCommunityData: (data: CommunityData | ((prev: CommunityData) => CommunityData)) => void
+  fixedButtonText?: boolean
 }
 
-export function CommunityBuilder({ communityData, setCommunityData }: CommunityBuilderProps) {
+export function CommunityBuilder({ communityData, setCommunityData, fixedButtonText }: CommunityBuilderProps) {
   const [previewTab, setPreviewTab] = useState("vista-previa")
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   const handleInputChange = (field: keyof CommunityData, value: string | number | boolean) => {
+    if (fixedButtonText && field === 'buttonText') return
+    
     setCommunityData((prev) => ({
       ...prev,
       [field]: value,
@@ -58,6 +61,7 @@ export function CommunityBuilder({ communityData, setCommunityData }: CommunityB
           communityData={communityData}
           onInputChange={handleInputChange}
           onClose={() => setSidebarOpen(false)}
+          fixedButtonText={fixedButtonText}
         />
       </div>
 
