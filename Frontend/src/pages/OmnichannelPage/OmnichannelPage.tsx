@@ -116,7 +116,7 @@ export default function OmnichannelPage() {
   const generateAlerts = async () => {
     try {
       setIsGeneratingAlerts(true);
-      await axios.post('http://127.0.0.1:8000/agents/generate-alerts');
+      await axios.post('https://apibrain.rizosfelices.co/agents/generate-alerts');
       fetchAlerts();
     } catch (error) {
       console.error('Error generando alertas:', error);

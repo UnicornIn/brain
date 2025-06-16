@@ -159,21 +159,21 @@ export function ContentSidebar({ communityData, onInputChange, onClose, fixedBut
                 value={communityData.title}
                 onChange={(e) => handleInputChange("title", e.target.value)}
                 className={`rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 ${errors.title ? "border-red-500" : ""}`}
-                placeholder="Únete a Nuestra Comunidad Exclusiva"
+                placeholder=""
               />
               {errors.title && <p className="text-xs text-red-500 mt-1">{errors.title}</p>}
             </div>
 
-            <div>
+            {/* <div>
               <Label className="text-xs text-gray-600 mb-2 block">Subtítulo *</Label>
               <Input
                 value={communityData.subtitle}
                 onChange={(e) => handleInputChange("subtitle", e.target.value)}
                 className={`rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 ${errors.subtitle ? "border-red-500" : ""}`}
-                placeholder="Aprende, Conecta y Crece"
+                placeholder=""
               />
               {errors.subtitle && <p className="text-xs text-red-500 mt-1">{errors.subtitle}</p>}
-            </div>
+            </div> */}
 
             <div>
               <Label className="text-xs text-gray-600 mb-2 block">Descripción *</Label>
@@ -181,7 +181,7 @@ export function ContentSidebar({ communityData, onInputChange, onClose, fixedBut
                 value={communityData.description}
                 onChange={(e) => handleInputChange("description", e.target.value)}
                 className={`rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 min-h-[80px] resize-none ${errors.description ? "border-red-500" : ""}`}
-                placeholder="Una comunidad vibrante de emprendedores..."
+                placeholder=""
               />
               {errors.description && <p className="text-xs text-red-500 mt-1">{errors.description}</p>}
             </div>
@@ -264,14 +264,14 @@ export function ContentSidebar({ communityData, onInputChange, onClose, fixedBut
           <Label className="text-xs text-gray-600 mb-2 block">URL personalizada *</Label>
           <div className="flex">
             <div className="flex items-center bg-gray-100 px-2 lg:px-3 rounded-l-xl border border-r-0 text-xs text-gray-500">
-              <span className="hidden sm:inline">/comunidades/</span>
+              <span className="hidden sm:inline">/comunity/</span>
               <span className="sm:hidden">/c/</span>
             </div>
             <Input
               value={communityData.customUrl}
               onChange={(e) => handleInputChange("customUrl", e.target.value)}
               className={`rounded-l-none rounded-r-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 ${errors.customUrl ? "border-red-500" : ""}`}
-              placeholder="mi-comunidad"
+              placeholder=""
             />
           </div>
           {errors.customUrl && <p className="text-xs text-red-500 mt-1">{errors.customUrl}</p>}

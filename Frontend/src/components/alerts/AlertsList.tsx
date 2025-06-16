@@ -69,7 +69,7 @@ export default function AlertList({ status, children }: AlertListProps) {
       setIsLoading(true);
       setError(null);
 
-      const response = await fetch(`http://127.0.0.1:8000/agents/alerts?status=${status === 'pending' ? 'pending' : 'resolved'}&limit=50&skip=0`);
+      const response = await fetch(`https://apibrain.rizosfelices.co/agents/alerts?status=${status === 'pending' ? 'pending' : 'resolved'}&limit=50&skip=0`);
 
       if (!response.ok) {
         throw new Error(`Error HTTP! estado: ${response.status}`);
@@ -111,7 +111,7 @@ export default function AlertList({ status, children }: AlertListProps) {
   const updateAlertStatus = async (alertId: string, newStatus: 'pendiente' | 'resuelta') => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:8000/agents/alerts/${alertId}`,
+        `https://apibrain.rizosfelices.co/agents/alerts/${alertId}`,
         {
           method: 'PATCH',
           headers: {

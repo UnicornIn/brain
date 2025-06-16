@@ -105,7 +105,7 @@ export default function CommunitiesPage({ stats, counts }: CommunitiesPageProps)
         }
         
         // Luego hacer la petición a la API de todas formas
-        const response = await fetch('http://127.0.0.1:8000/community/get-communities/');
+        const response = await fetch('https://apibrain.rizosfelices.co/community/get-communities/');
         if (!response.ok) {
           throw new Error('Error al obtener las comunidades');
         }
@@ -164,7 +164,7 @@ export default function CommunitiesPage({ stats, counts }: CommunitiesPageProps)
   const refreshData = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://127.0.0.1:8000/community/get-communities/');
+      const response = await fetch('https://apibrain.rizosfelices.co/community/get-communities/');
       if (!response.ok) {
         throw new Error('Error al actualizar las comunidades');
       }

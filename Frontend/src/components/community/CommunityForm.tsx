@@ -114,7 +114,7 @@ export function CommunityForm({ communityData }: CommunityFormProps) {
               value={formData.fullName}
               onChange={(e) => handleInputChange("fullName", e.target.value)}
               onBlur={(e) => handleBlur("fullName", e.target.value)}
-              placeholder="Tu nombre completo"
+              placeholder=""
               className={`w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 h-11 lg:h-12 ${errors.fullName ? "border-red-500 focus:border-red-500 focus:ring-red-500" : ""
                 }`}
             />
@@ -135,7 +135,7 @@ export function CommunityForm({ communityData }: CommunityFormProps) {
               value={formData.email}
               onChange={(e) => handleInputChange("email", e.target.value)}
               onBlur={(e) => handleBlur("email", e.target.value)}
-              placeholder="tu@email.com"
+              placeholder=""
               className={`w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 h-11 lg:h-12 ${errors.email ? "border-red-500 focus:border-red-500 focus:ring-red-500" : ""
                 }`}
             />
@@ -144,18 +144,18 @@ export function CommunityForm({ communityData }: CommunityFormProps) {
                 <AlertCircle className="h-3 w-3" />
                 <span>{errors.email}</span>
               </div>
-            )}
+            )}  
           </div>
 
           <div>
             <Label className="text-sm font-medium text-gray-700 mb-2 block">
-              Teléfono <span className="text-red-500">*</span>
+              Whatsapp <span className="text-red-500">*</span>
             </Label>
             <Input
               value={formData.phone}
               onChange={(e) => handleInputChange("phone", e.target.value)}
               onBlur={(e) => handleBlur("phone", e.target.value)}
-              placeholder="+1 234 567 8900"
+              placeholder=""
               className={`w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 h-11 lg:h-12 ${errors.phone ? "border-red-500 focus:border-red-500 focus:ring-red-500" : ""
                 }`}
             />
