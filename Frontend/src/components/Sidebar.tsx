@@ -110,7 +110,7 @@ const Sidebar = () => {
     { name: "Base de Datos", path: "/database", icon: Icons.Database },
     { name: "Datos de Negocio", path: "/business", icon: Icons.Business },
     { name: "Omnicanal", path: "/omnichannel", icon: Icons.Omnichannel },
-    { name: "Comunidades", path: "/communitiespage", icon: BarChart3 },
+    { name: "Comunidades", path: "/communities", icon: BarChart3 },
     { name: "Inteligencia de Negocios", path: "/intelligence", icon: Icons.Intelligence },
   ]
 

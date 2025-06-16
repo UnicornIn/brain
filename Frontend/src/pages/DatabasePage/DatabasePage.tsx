@@ -6,11 +6,11 @@ interface Contact {
   canal: string;
   created_at: string;
   last_updated?: string;
-  numero?: string; // Añadido en nivel superior
+  numero?: string;
   info: {
     _id?: string;
-    first_name: string;
-    last_name: string;
+    first_name?: string;
+    last_name?: string;
     phone?: string;
     whatsapp_phone?: string;
     ig_username?: string;
@@ -76,7 +76,8 @@ const DatabasePage = () => {
     ? contacts 
     : contacts.filter(c => c.canal === filter);
 
-  const getInitials = (name: string, lastName: string) => {
+  const getInitials = (name?: string, lastName?: string) => {
+    if (!name || !lastName) return 'NN';
     return `${name.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
   };
 
@@ -94,7 +95,7 @@ const DatabasePage = () => {
             <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
               <path d="M22.675 0H1.325C.593 0 0 .593 0 1.325v21.351C0 23.407.593 24 1.325 24H12.82v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12V24h6.116c.73 0 1.323-.593 1.323-1.325V1.325C24 .593 23.407 0 22.675 0z"/>
             </svg>
-            <span>{contact.info.first_name} {contact.info.last_name}</span>
+            <span>{contact.info.first_name || ''} {contact.info.last_name || ''}</span>
           </div>
         );
       
@@ -246,15 +247,15 @@ const DatabasePage = () => {
                   <div className="flex items-center gap-3 min-w-[200px]">
                     <div className="flex-shrink-0 h-10 w-10 rounded-full bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center">
                       <span className="text-blue-600 font-medium">
-                        {getInitials(contact.info.first_name, contact.info.last_name)}
+                        {getInitials(contact.info?.first_name, contact.info?.last_name)}
                       </span>
                     </div>
                     <div>
                       <p className="font-medium">
-                        {contact.info.first_name} {contact.info.last_name}
+                        {contact.info?.first_name || 'Nombre no disponible'} {contact.info?.last_name || ''}
                       </p>
                       <p className="text-gray-500 text-sm">
-                        ID: {contact.info.unique_id ? `RF-${contact.info.unique_id.padStart(4, '0')}` : contact.subscriber_id || 'N/A'}
+                        ID: {contact.info?.unique_id ? `RF-${contact.info.unique_id.padStart(4, '0')}` : contact.subscriber_id || 'N/A'}
                       </p>
                     </div>
                   </div>
