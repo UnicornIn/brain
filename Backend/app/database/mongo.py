@@ -16,6 +16,9 @@ db = client[db_name]
 contacts_collection = db["contacts"]
 messages_collection = db["message"]
 alerts_collection = db["alerts"]
+community_collection = db["community"]
+user_collection = db["users"]
+member_collection = db["members"]
 
 # Esta función ya no es necesaria, pero la mantenemos por compatibilidad
 def connect_to_mongo():

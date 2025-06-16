@@ -11,6 +11,7 @@ import CreateCommunityPage from "./pages/ComunityPage/Communities/create"
 import CommunityDetailPage from "./pages/ComunityPage/Communities/[id]"
 import Manages from "./pages/ComunityPage/Communities/manages"
 import CommunitiesPage from "./pages/ComunityPage/CommunitiesPage"
+import PublicCommunityPage from "./pages/ComunityPage/Communities/PublicCommunityPage" // Nuevo componente
 import Layout from "./components/Layout"
 import { TooltipProvider } from "./components/ui/tooltip"
 import "./App.css"
@@ -21,7 +22,11 @@ function App() {
       <TooltipProvider>
         <Router>
           <Routes>
+            {/* Rutas públicas */}
             <Route path="/" element={<LoginPage />} />
+            <Route path="/comunidad/:slug" element={<PublicCommunityPage />} />
+            
+            {/* Rutas protegidas */}
             <Route
               path="/dashboard"
               element={
@@ -73,7 +78,7 @@ function App() {
               }
             />
             <Route
-              path="/communitiespage"
+              path="/communities"
               element={
                 <ProtectedRoute>
                   <Layout>
@@ -89,11 +94,11 @@ function App() {
                   <Layout>
                     <CommunityDetailPage />
                   </Layout>
-                </ProtectedRoute>
+                </ProtectedRoute>   
               }
             />
             <Route
-              path="/communitiespage/manages"
+              path="/communities/manages"
               element={
                 <ProtectedRoute>
                   <Layout>

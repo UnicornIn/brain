@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState, useCallback } from "react"
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
@@ -16,9 +15,10 @@ interface ContentSidebarProps {
   communityData: CommunityData
   onInputChange: (field: keyof CommunityData, value: string | number | boolean) => void
   onClose?: () => void
+  fixedButtonText?: boolean
 }
 
-export function ContentSidebar({ communityData, onInputChange, onClose }: ContentSidebarProps) {
+export function ContentSidebar({ communityData, onInputChange, onClose, fixedButtonText }: ContentSidebarProps) {
   const [isDragging, setIsDragging] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
 
@@ -41,12 +41,6 @@ export function ContentSidebar({ communityData, onInputChange, onClose }: Conten
       newErrors.description = "La descripción es obligatoria"
     } else if (field === "description") {
       delete newErrors.description
-    }
-
-    if (field === "buttonText" && (!value || String(value).trim() === "")) {
-      newErrors.buttonText = "El texto del botón es obligatorio"
-    } else if (field === "buttonText") {
-      delete newErrors.buttonText
     }
 
     if (field === "communityName" && (!value || String(value).trim() === "")) {
@@ -83,6 +77,8 @@ export function ContentSidebar({ communityData, onInputChange, onClose }: Conten
   }
 
   const handleInputChange = (field: keyof CommunityData, value: string | number | boolean) => {
+    if (fixedButtonText && field === 'buttonText') return
+    
     onInputChange(field, value)
 
     if (typeof value === "string" || typeof value === "number") {
@@ -191,14 +187,15 @@ export function ContentSidebar({ communityData, onInputChange, onClose }: Conten
             </div>
 
             <div>
-              <Label className="text-xs text-gray-600 mb-2 block">Texto del botón *</Label>
+              <Label className="text-xs text-gray-600 mb-2 block">Texto del botón</Label>
               <Input
                 value={communityData.buttonText}
                 onChange={(e) => handleInputChange("buttonText", e.target.value)}
-                className={`rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 ${errors.buttonText ? "border-red-500" : ""}`}
+                className="rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 bg-gray-100"
                 placeholder="Únete Ahora"
+                disabled
               />
-              {errors.buttonText && <p className="text-xs text-red-500 mt-1">{errors.buttonText}</p>}
+              <p className="text-xs text-gray-500 mt-1">Este texto está fijado como "Únete Ahora"</p>
             </div>
           </div>
         </div>
@@ -262,7 +259,6 @@ export function ContentSidebar({ communityData, onInputChange, onClose }: Conten
         </div>
 
         <Separator />
-
 
         <div>
           <Label className="text-xs text-gray-600 mb-2 block">URL personalizada *</Label>
