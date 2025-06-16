@@ -14,17 +14,20 @@ import {
 } from "../../../components/ui/dialog"
 import { Input } from "../../../components/ui/input"
 import { Label } from "../../../components/ui/label"
+import { toast } from "sonner"
 
 export default function CreateCommunityPage() {
   const navigate = useNavigate()
   const [isPublishing, setIsPublishing] = useState(false)
   const [showSuccessModal, setShowSuccessModal] = useState(false)
   const [copied, setCopied] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [urlError, setUrlError] = useState<string | null>(null)
 
   const [communityData, setCommunityData] = useState<CommunityData>({
-    title: "Únete a Nuestra Comunidad Exclusiva",
-    subtitle: "Aprende, Conecta y Crece",
-    description: "Una comunidad vibrante de emprendedores, creativos y profesionales que comparten conocimientos y se apoyan mutuamente para alcanzar el éxito.",
+    title: "",
+    subtitle: "",
+    description: "",
     buttonText: "Únete Ahora",
     mediaFile: null,
     mediaPreview: "",
@@ -36,33 +39,84 @@ export default function CreateCommunityPage() {
     customUrl: "",
   })
 
+  const checkUrlAvailability = async (url: string) => {
+    try {
+      const response = await fetch(`https://apibrain.rizosfelices.co/community/communities/check-url?url=${url}`)
+      const data = await response.json()
+      return data.available
+    } catch (error) {
+      console.error('Error checking URL:', error)
+      return false
+    }
+  }
+
   const handlePublish = async () => {
     setIsPublishing(true)
+    setError(null)
+    setUrlError(null)
     
     try {
+      // Validación básica
+      if (!communityData.title || !communityData.description) {
+        throw new Error('El título y la descripción son requeridos')
+      }
+
+      if (!communityData.mediaFile) {
+        throw new Error('Debes subir una imagen para la comunidad')
+      }
+
+      if (!communityData.customUrl) {
+        throw new Error('La URL personalizada es requerida')
+      }
+
+      // Verificar disponibilidad de URL
+      const isUrlAvailable = await checkUrlAvailability(communityData.customUrl)
+      if (!isUrlAvailable) {
+        setUrlError('Esta URL ya está en uso. Por favor elige otra.')
+        return
+      }
+
       const formData = new FormData()
       formData.append('title', communityData.title)
       formData.append('description', communityData.description)
+      formData.append('subtitle', communityData.subtitle)
+      formData.append('buttonText', communityData.buttonText)
+      formData.append('communityName', communityData.communityName)
       formData.append('url', communityData.customUrl)
+      
       if (communityData.mediaFile) {
         formData.append('image', communityData.mediaFile)
       }
 
-      const response = await fetch('http://127.0.0.1:8000/community/communities/', {
+      const response = await fetch('https://apibrain.rizosfelices.co/community/communities/', {
         method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
         body: formData
       })
 
+      const data = await response.json()
+
       if (!response.ok) {
-        throw new Error('Error al publicar la comunidad')
+        const errorMessage = data.message || data.error || 'Error al publicar la comunidad'
+        throw new Error(errorMessage)
       }
 
-      await response.json()
       setShowSuccessModal(true)
+      toast.success('Comunidad publicada con éxito', {
+        position: 'top-center',
+        duration: 3000
+      })
       
     } catch (error) {
       console.error('Error:', error)
-      // Aquí podrías mostrar un mensaje de error al usuario
+      const errorMessage = error instanceof Error ? error.message : 'Error desconocido al publicar'
+      setError(errorMessage)
+      toast.error(errorMessage, {
+        position: 'top-center',
+        duration: 4000
+      })
     } finally {
       setIsPublishing(false)
     }
@@ -73,11 +127,15 @@ export default function CreateCommunityPage() {
     navigator.clipboard.writeText(communityUrl)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
+    toast.success('Enlace copiado al portapapeles', {
+      position: 'top-center',
+      duration: 2000
+    })
   }
 
   const closeModal = () => {
     setShowSuccessModal(false)
-    navigate('/communitiespage')
+    navigate('/communities')
   }
 
   return (
@@ -91,8 +149,7 @@ export default function CreateCommunityPage() {
             </Link>
           </Button>
           <h1 className="text-sm lg:text-lg font-semibold truncate">
-            <span className="hidden sm:inline">Constructor de Landing - Comunidades</span>
-            <span className="sm:hidden">Constructor Landing</span>
+            Constructor de Landing - Comunidades
           </h1>
         </div>
         <div className="flex items-center gap-2 flex-shrink-0">
@@ -102,18 +159,26 @@ export default function CreateCommunityPage() {
             disabled={isPublishing}
             className="bg-black text-white hover:bg-gray-800"
           >
-            <Globe className="h-3 w-3 mr-1 sm:mr-2" />
-            {isPublishing ? (
-              <span className="hidden sm:inline">Publicando...</span>
-            ) : (
-              <>
-                <span className="hidden sm:inline">Publicar</span>
-                <span className="sm:hidden">Pub</span>
-              </>
-            )}
+            <Globe className="h-3 w-3 mr-2" />
+            {isPublishing ? "Publicando..." : "Publicar"}
           </Button>
         </div>
       </div>
+
+      {/* Mostrar error si existe */}
+      {error && (
+        <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mx-4 mt-4">
+          <p className="font-bold">Error</p>
+          <p>{error}</p>
+        </div>
+      )}
+
+      {urlError && (
+        <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mx-4 mt-4">
+          <p className="font-bold">Advertencia</p>
+          <p>{urlError}</p>
+        </div>
+      )}
 
       <CommunityBuilder 
         communityData={communityData} 

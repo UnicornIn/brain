@@ -24,7 +24,7 @@ function App() {
           <Routes>
             {/* Rutas públicas */}
             <Route path="/" element={<LoginPage />} />
-            <Route path="/comunidad/:slug" element={<PublicCommunityPage />} />
+            <Route path="/community/:slug" element={<PublicCommunityPage />} />
             
             {/* Rutas protegidas */}
             <Route

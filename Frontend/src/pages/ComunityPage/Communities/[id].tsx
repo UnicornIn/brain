@@ -74,7 +74,7 @@ export default function CommunityDetailPage() {
           members: 0
         });
 
-        const membersResponse = await fetch(`http://127.0.0.1:8000/community/members/${communityId}`);
+        const membersResponse = await fetch(`https://apibrain.rizosfelices.co/community/members/${communityId}`);
         if (!membersResponse.ok) {
           throw new Error('Error al obtener los miembros de la comunidad');
         }
