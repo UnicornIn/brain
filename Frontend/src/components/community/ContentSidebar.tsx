@@ -68,6 +68,12 @@ export function ContentSidebar({ communityData, onInputChange, onClose, fixedBut
     }
 
     if (field === "customUrl" && (!value || String(value).trim() === "")) {
+      newErrors.img = "La imagen o video es obligatorio"
+    } else if (field === "customUrl") {
+      delete newErrors.img
+    }
+
+    if (field === "customUrl" && (!value || String(value).trim() === "")) {
       newErrors.customUrl = "La URL personalizada es obligatoria"
     } else if (field === "customUrl") {
       delete newErrors.customUrl
@@ -78,7 +84,7 @@ export function ContentSidebar({ communityData, onInputChange, onClose, fixedBut
 
   const handleInputChange = (field: keyof CommunityData, value: string | number | boolean) => {
     if (fixedButtonText && field === 'buttonText') return
-    
+
     onInputChange(field, value)
 
     if (typeof value === "string" || typeof value === "number") {
@@ -229,9 +235,10 @@ export function ContentSidebar({ communityData, onInputChange, onClose, fixedBut
                     const file = e.target.files?.[0]
                     if (file) handleFileSelect(file)
                   }}
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  className={`absolute inset-0 w-full h-full opacity-0 cursor-pointer ${errors.img ? "border-red-500" : ""}`}
                 />
               </div>
+              {errors.img && <p className="text-xs text-red-500 mt-1">{errors.img}</p>}
             </div>
           ) : (
             <div className="relative">

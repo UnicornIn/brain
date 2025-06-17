@@ -59,16 +59,14 @@ interface CommunitiesPageProps {
   counts?: Counts;
 }
 
-// Clave para el LocalStorage
 const COMMUNITIES_STORAGE_KEY = 'communities_cache';
-const CACHE_EXPIRATION_TIME = 30 * 60 * 1000; // 30 minutos en milisegundos
+const CACHE_EXPIRATION_TIME = 30 * 60 * 1000;
 
 export default function CommunitiesPage({ stats, counts }: CommunitiesPageProps) {
   const [communities, setCommunities] = useState<Community[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Función para guardar en LocalStorage
   const saveToLocalStorage = (data: Community[]) => {
     const cacheData = {
       data,
@@ -77,14 +75,12 @@ export default function CommunitiesPage({ stats, counts }: CommunitiesPageProps)
     localStorage.setItem(COMMUNITIES_STORAGE_KEY, JSON.stringify(cacheData));
   };
 
-  // Función para cargar desde LocalStorage
   const loadFromLocalStorage = (): Community[] | null => {
     const cachedData = localStorage.getItem(COMMUNITIES_STORAGE_KEY);
     if (!cachedData) return null;
-    
+
     try {
       const parsedData = JSON.parse(cachedData);
-      // Verificar si la caché está expirada
       const isExpired = new Date().getTime() - parsedData.timestamp > CACHE_EXPIRATION_TIME;
       return isExpired ? null : parsedData.data;
     } catch (e) {
@@ -96,28 +92,24 @@ export default function CommunitiesPage({ stats, counts }: CommunitiesPageProps)
     const fetchCommunities = async () => {
       try {
         setLoading(true);
-        
-        // Primero intentar cargar desde caché
+
         const cachedCommunities = loadFromLocalStorage();
         if (cachedCommunities) {
           setCommunities(cachedCommunities);
           setLoading(false);
         }
-        
-        // Luego hacer la petición a la API de todas formas
+
         const response = await fetch('https://apibrain.rizosfelices.co/community/get-communities/');
         if (!response.ok) {
           throw new Error('Error al obtener las comunidades');
         }
         const data = await response.json();
-        
-        // Actualizar el estado y el LocalStorage
+
         setCommunities(data);
         saveToLocalStorage(data);
-        
-        // Actualizar estadísticas si no vienen por props
+
         if (!stats) {
-          // Aquí podrías actualizar otros stats según necesites
+          // Actualizar stats si es necesario
         }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Ocurrió un error desconocido');
@@ -129,7 +121,6 @@ export default function CommunitiesPage({ stats, counts }: CommunitiesPageProps)
     fetchCommunities();
   }, []);
 
-  // Función para obtener el color basado en el índice
   const getColorByIndex = (index: number) => {
     const colors = [
       'bg-blue-100 text-blue-800',
@@ -141,18 +132,16 @@ export default function CommunitiesPage({ stats, counts }: CommunitiesPageProps)
     return colors[index % colors.length];
   };
 
-  // Función para obtener el icono basado en el índice
   const getIconByIndex = (index: number) => {
     const icons = [Users, BarChart3, Calendar, Link2, Plus];
     return icons[index % icons.length];
   };
 
-  // Función para calcular "Última actividad"
   const getLastActivity = (dateString: string) => {
     const now = new Date();
     const created = new Date(dateString);
     const diffDays = Math.floor((now.getTime() - created.getTime()) / (1000 * 60 * 60 * 24));
-    
+
     if (diffDays === 0) return 'Hoy';
     if (diffDays === 1) return 'Ayer';
     if (diffDays < 7) return `${diffDays} días`;
@@ -160,7 +149,6 @@ export default function CommunitiesPage({ stats, counts }: CommunitiesPageProps)
     return `${Math.floor(diffDays / 30)} meses`;
   };
 
-  // Función para forzar la actualización de los datos
   const refreshData = async () => {
     try {
       setLoading(true);
@@ -278,7 +266,7 @@ export default function CommunitiesPage({ stats, counts }: CommunitiesPageProps)
               const IconComponent = getIconByIndex(i);
               const colorClass = getColorByIndex(i);
               const lastActivity = getLastActivity(community.created_at);
-              
+
               return (
                 <Card key={community.id} className="overflow-hidden">
                   <CardHeader className="pb-2">
@@ -299,7 +287,7 @@ export default function CommunitiesPage({ stats, counts }: CommunitiesPageProps)
                   </CardHeader>
                   <CardContent className="pb-2">
                     <div className="flex items-center justify-between text-sm">
-                      <div className="flex items-center gap-1">
+                      <div className="flex items-center gap-1 hover:text-blue-600 transition-colors">
                         <Link2 className="h-3.5 w-3.5 text-muted-foreground" />
                         <span>1 URL activa</span>
                       </div>

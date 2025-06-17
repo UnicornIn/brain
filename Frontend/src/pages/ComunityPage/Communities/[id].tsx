@@ -66,7 +66,7 @@ export default function CommunityDetailPage() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        
+
         setCommunity({
           id: communityId || '',
           title: "Comunidad",
@@ -80,7 +80,7 @@ export default function CommunityDetailPage() {
         }
         const membersData = await membersResponse.json();
         setMembers(membersData.members || []);
-        
+
         setCommunity(prev => prev ? {
           ...prev,
           members: membersData.members?.length || 0,
@@ -103,7 +103,7 @@ export default function CommunityDetailPage() {
       inactive: { className: "bg-red-100 text-red-800", label: "Inactivo" },
       pending: { className: "bg-yellow-100 text-yellow-800", label: "Pendiente" }
     };
-    
+
     return (
       <Badge variant="outline" className={statusMap[status]?.className || "bg-gray-100 text-gray-800"}>
         {statusMap[status]?.label || status}
@@ -124,13 +124,13 @@ export default function CommunityDetailPage() {
   };
 
   const filteredMembers = members.filter(member => {
-    const matchesSearch = 
+    const matchesSearch =
       member.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       member.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
       member.phone.toLowerCase().includes(searchTerm.toLowerCase());
-    
+
     const matchesStatus = filterStatus === 'all' || member.status === filterStatus;
-    
+
     return matchesSearch && matchesStatus;
   });
 
@@ -226,10 +226,10 @@ export default function CommunityDetailPage() {
           <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
             <div className="relative flex-1">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input 
-                type="search" 
-                placeholder="Buscar miembros..." 
-                className="pl-8" 
+              <Input
+                type="search"
+                placeholder="Buscar miembros..."
+                className="pl-8"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -371,60 +371,78 @@ export default function CommunityDetailPage() {
 
       {/* Modal de detalles del miembro */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="sm:max-w-[625px] max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle className="text-2xl">Detalles del Miembro</DialogTitle>
+        <DialogContent className="sm:max-w-[625px] max-h-[90vh] overflow-y-auto bg-white rounded-lg">
+          <DialogHeader className="border-b pb-4">
+            <DialogTitle className="text-xl font-semibold text-gray-800">Detalles del Miembro</DialogTitle>
           </DialogHeader>
-          
+
           {selectedMember && (
-            <div className="space-y-6">
-              <div className="flex items-center gap-4">
-                <Avatar className="h-16 w-16">
-                  <AvatarFallback className="text-xl">
+            <div className="space-y-6 py-4">
+              {/* Encabezado con avatar e información básica */}
+              <div className="flex items-start gap-4">
+                <Avatar className="h-14 w-14 bg-gray-100">
+                  <AvatarFallback className="text-lg bg-gray-200 text-gray-600">
                     {selectedMember.full_name.split(' ').map(n => n[0]).join('')}
                   </AvatarFallback>
                 </Avatar>
-                <div>
-                  <h3 className="text-xl font-semibold">{selectedMember.full_name}</h3>
-                  <div className="flex gap-2 mt-1">
-                    {getStatusBadge(selectedMember.status)}
-                    {getSurveyBadge(selectedMember.has_completed_survey)}
+                <div className="flex-1">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-800">{selectedMember.full_name}</h3>
+                      <p className="text-sm text-gray-500">{selectedMember.role}</p>
+                    </div>
+                    <div className="flex gap-2">
+                      {getStatusBadge(selectedMember.status)}
+                      {getSurveyBadge(selectedMember.has_completed_survey)}
+                    </div>
+                  </div>
+
+                  <div className="mt-4 grid grid-cols-2 gap-4">
+                    <div className="bg-gray-50 p-3 rounded-lg">
+                      <p className="text-sm text-gray-500">Fecha de Registro</p>
+                      <p className="font-medium">{selectedMember.registration_date}</p>
+                    </div>
+                    <div className="bg-gray-50 p-3 rounded-lg">
+                      <p className="text-sm text-gray-500">Formulario</p>
+                      <p className="font-medium">
+                        {selectedMember.has_completed_survey ? "Completado" : "Pendiente"}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <h4 className="font-medium text-gray-500">Información Básica</h4>
-                  <div className="space-y-1">
-                    <div>
-                      <span className="text-sm text-gray-500">Rol:</span>
-                      <p>{selectedMember.role}</p>
+              {/* Sección de información detallada */}
+              <div className="space-y-4">
+                <div className="border-t pt-4">
+                  <h4 className="font-medium text-gray-700 mb-3">Información de Contacto</h4>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-gray-100 rounded-full">
+                        <Mail className="h-4 w-4 text-gray-600" />
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">Email</p>
+                        <p className="font-medium">{selectedMember.email}</p>
+                      </div>
                     </div>
-                    <div>
-                      <span className="text-sm text-gray-500">Fecha de Registro:</span>
-                      <p>{selectedMember.registration_date}</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <h4 className="font-medium text-gray-500">Contacto</h4>
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <Mail className="h-4 w-4 text-gray-500" />
-                      <span>{selectedMember.email}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Phone className="h-4 w-4 text-gray-500" />
-                      <span>{selectedMember.phone}</span>
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-gray-100 rounded-full">
+                        <Phone className="h-4 w-4 text-gray-600" />
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">Teléfono</p>
+                        <p className="font-medium">{selectedMember.phone}</p>
+                      </div>
                     </div>
                   </div>
                 </div>
 
-                <div className="md:col-span-2 space-y-2">
-                  <h4 className="font-medium text-gray-500">Razón de Ingreso</h4>
-                  <p className="whitespace-pre-line">{selectedMember.join_reason}</p>
+                <div className="border-t pt-4">
+                  <h4 className="font-medium text-gray-700 mb-3">Razón de Ingreso</h4>
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <p className="whitespace-pre-line text-gray-700">{selectedMember.join_reason}</p>
+                  </div>
                 </div>
               </div>
             </div>

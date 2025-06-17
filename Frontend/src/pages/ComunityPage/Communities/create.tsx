@@ -43,7 +43,7 @@ export default function CreateCommunityPage() {
     setIsPublishing(true)
     setError(null)
     setUrlError(null)
-    
+
     try {
       // Basic validation
       if (!communityData.title || !communityData.description) {
@@ -65,7 +65,7 @@ export default function CreateCommunityPage() {
       formData.append('buttonText', communityData.buttonText)
       formData.append('communityName', communityData.communityName)
       formData.append('url', communityData.customUrl)
-      
+
       if (communityData.mediaFile) {
         formData.append('image', communityData.mediaFile)
       }
@@ -86,7 +86,7 @@ export default function CreateCommunityPage() {
           setUrlError('This URL is already in use. Please choose another one.')
           return
         }
-        
+
         const errorMessage = data.message || data.error || 'Esa URL ya está en uso. Por favor, elige otra.'
         throw new Error(errorMessage)
       }
@@ -96,7 +96,7 @@ export default function CreateCommunityPage() {
         position: 'top-center',
         duration: 3000
       })
-      
+
     } catch (error) {
       console.error('Error:', error)
       const errorMessage = error instanceof Error ? error.message : 'Unknown error while publishing'
@@ -168,17 +168,17 @@ export default function CreateCommunityPage() {
         </div>
       )}
 
-      <CommunityBuilder 
-        communityData={communityData} 
-        setCommunityData={setCommunityData} 
+      <CommunityBuilder
+        communityData={communityData}
+        setCommunityData={setCommunityData}
         fixedButtonText
       />
 
       {/* Success Modal */}
       <Dialog open={showSuccessModal} onOpenChange={closeModal}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md bg-white"> {/* Agregado bg-white aquí */}
           <DialogHeader>
-            <DialogTitle className="text-center">Community published successfully!</DialogTitle>
+            <DialogTitle className="text-center">Comunidad creada</DialogTitle>
           </DialogHeader>
           <div className="flex items-center space-x-2">
             <div className="grid flex-1 gap-2">
