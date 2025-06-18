@@ -201,8 +201,8 @@ async def get_community_by_slug(slug: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.get("/community/{community_url}",
-    response_model=CommunityResponse,  # Asegúrate de definir este modelo Pydantic
+@router.get("/communities/{community_url}",
+    response_model=CommunityResponse,
     description="Obtener los datos de una comunidad por su URL",
     responses={
         404: {"description": "Comunidad no encontrada"}
@@ -222,5 +222,15 @@ async def get_community_by_url(community_url: str):
         community["id"] = str(community["_id"])
         del community["_id"]
     
-    return community
-
+    # Mapear correctamente los campos de la base de datos al modelo de respuesta
+    community_data = {
+        "id": community.get("id"),
+        "title": community.get("title"),
+        "description": community.get("description"),
+        "url": community.get("url"),
+        "members": community.get("members", 0),  # Valor por defecto si no existe
+        "created_at": community.get("created_at"),
+        "image": community.get("image_url")  # Mapear image_url de MongoDB a image del modelo
+    }
+    
+    return CommunityResponse(**community_data)
