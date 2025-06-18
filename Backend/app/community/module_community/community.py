@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, status
 from app.database.mongo import community_collection
 from app.community.module_community.models import CommunityResponse
 from app.community.module_community.upload_file import upload_image_to_s3
@@ -200,4 +200,27 @@ async def get_community_by_slug(slug: str):
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/community/{community_url}",
+    response_model=CommunityResponse,  # Asegúrate de definir este modelo Pydantic
+    description="Obtener los datos de una comunidad por su URL",
+    responses={
+        404: {"description": "Comunidad no encontrada"}
+    }
+)
+async def get_community_by_url(community_url: str):
+    # Verificar si la comunidad existe por su URL
+    community = await community_collection.find_one({"url": community_url})
+    if not community:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Comunidad no encontrada"
+        )
+    
+    # Convertir ObjectId a string si es necesario
+    if "_id" in community:
+        community["id"] = str(community["_id"])
+        del community["_id"]
+    
+    return community
 
