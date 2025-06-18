@@ -144,7 +144,7 @@ export function CommunityForm({ communityData }: CommunityFormProps) {
                 <AlertCircle className="h-3 w-3" />
                 <span>{errors.email}</span>
               </div>
-            )}  
+            )}
           </div>
 
           <div>

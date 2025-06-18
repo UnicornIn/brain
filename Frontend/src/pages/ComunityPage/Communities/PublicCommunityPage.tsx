@@ -57,7 +57,7 @@ export default function CommunityPublicPage() {
       try {
         setLoading(true)
         setError(null)
-        
+
         const response = await fetch(
           `https://apibrain.rizosfelices.co/community/communities/by-slug/${slug}`,
           {
@@ -67,12 +67,12 @@ export default function CommunityPublicPage() {
             }
           }
         )
-        
+
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({}))
           throw new Error(
-            errorData.message || 
-            errorData.detail || 
+            errorData.message ||
+            errorData.detail ||
             `Error al cargar la comunidad (${response.status})`
           )
         }
@@ -102,33 +102,33 @@ export default function CommunityPublicPage() {
       setFormError('El nombre completo es requerido')
       return false
     }
-    
+
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       setFormError('Por favor ingresa un email válido')
       return false
     }
-    
+
     if (!formData.phone.trim()) {
       setFormError('El teléfono es requerido')
       return false
     }
-    
+
     if (!formData.join_reason.trim()) {
       setFormError('Por favor dinos por qué quieres unirte')
       return false
     }
-    
+
     return true
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (!validateForm()) return
-    
+
     setIsSubmitting(true)
     setFormError(null)
-    
+
     try {
       const response = await fetch('https://apibrain.rizosfelices.co/community/CreateMember', {
         method: 'POST',
@@ -137,7 +137,7 @@ export default function CommunityPublicPage() {
         },
         body: JSON.stringify(formData),
       })
-      
+
       if (!response.ok) {
         const errorData = await response.json()
         // Verificar si el error es porque el usuario ya está registrado
@@ -175,14 +175,14 @@ export default function CommunityPublicPage() {
           return
         }
         throw new Error(
-          errorData.detail || 
-          errorData.message || 
+          errorData.detail ||
+          errorData.message ||
           (errorData.errors ? Object.values(errorData.errors).join(', ') : 'Error al registrar')
         )
       }
 
       await response.json()
-      
+
       // Toast de éxito personalizado
       toast.custom((t) => (
         <div className="bg-green-50 border border-green-200 rounded-lg p-6 shadow-lg w-full max-w-md text-center">
@@ -210,7 +210,7 @@ export default function CommunityPublicPage() {
         duration: 8000,
         position: 'top-center'
       })
-      
+
       setShowForm(false)
       setFormData({
         full_name: '',
@@ -219,7 +219,7 @@ export default function CommunityPublicPage() {
         join_reason: '',
         community_id: community?.id || ''
       })
-      
+
       if (community) {
         setCommunity({
           ...community,
@@ -258,13 +258,13 @@ export default function CommunityPublicPage() {
           <AlertCircle className="mx-auto h-12 w-12 text-red-500 mb-4" />
           <h2 className="text-xl font-bold text-gray-800 mb-2">Error al cargar</h2>
           <p className="text-gray-600 mb-4">{error}</p>
-          <Button 
+          <Button
             onClick={() => window.location.reload()}
             className="w-full mb-2 bg-black text-white hover:bg-gray-800 border-2 border-gray-900"
           >
             Reintentar
           </Button>
-          <Button 
+          <Button
             onClick={() => window.location.href = '/'}
             variant="outline"
             className="w-full border-2 border-gray-300"
@@ -283,7 +283,7 @@ export default function CommunityPublicPage() {
           <AlertCircle className="mx-auto h-12 w-12 text-yellow-500 mb-4" />
           <h2 className="text-xl font-bold text-gray-800 mb-2">Comunidad no encontrada</h2>
           <p className="text-gray-600 mb-4">No existe una comunidad con esta URL</p>
-          <Button 
+          <Button
             onClick={() => window.location.href = '/'}
             className="w-full bg-black text-white hover:bg-gray-800 border-2 border-gray-900"
           >
@@ -378,14 +378,14 @@ export default function CommunityPublicPage() {
               Completa el formulario para unirte a nuestra comunidad
             </DialogDescription>
           </DialogHeader>
-          
+
           <form onSubmit={handleSubmit} className="space-y-4 mt-4">
             {formError && (
               <div className="p-3 bg-red-50 text-red-600 rounded-md text-sm border-2 border-red-200">
                 {formError}
               </div>
             )}
-            
+
             <div className="space-y-2">
               <Label htmlFor="full_name" className="text-gray-700 font-medium">
                 Nombre completo *
@@ -446,8 +446,8 @@ export default function CommunityPublicPage() {
             </p>
 
             <div className="pt-2">
-              <Button 
-                type="submit" 
+              <Button
+                type="submit"
                 className="w-full py-6 text-lg font-semibold bg-black text-white hover:bg-gray-800 rounded-lg border-2 border-gray-900 transition-all"
                 disabled={isSubmitting}
               >
