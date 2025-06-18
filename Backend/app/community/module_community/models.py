@@ -16,7 +16,7 @@ class CommunityResponse(BaseModel):
     description: str
     url: str
     members: int
-    created_at: str
+    created_at: datetime
     image: Optional[str]  # <- Este campo viene de "image_url" en Mongo
 
     
@@ -26,11 +26,3 @@ class CommunityUpdate(BaseModel):
     url: Optional[str] = None
     
 
-class CommunityResponse(BaseModel):
-    id: str
-    title: str
-    description: str
-    url: str
-    members: int
-    created_at: datetime
-    image_url: str
