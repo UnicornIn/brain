@@ -47,14 +47,24 @@ interface Community {
   id: string;
   title: string;
   description: string;
+  url: string;
   members: number;
-  image?: string;
+  created_at: string;
+  image_url?: string;
+}
+
+interface FormData {
+  title: string;
+  url: string;
+  created_at: string;
+  status: string;
 }
 
 export default function CommunityDetailPage() {
-  const { id: communityId } = useParams<{ id: string }>();
+  const { id: communityUrl } = useParams<{ id: string }>();
   const [community, setCommunity] = useState<Community | null>(null);
   const [members, setMembers] = useState<Member[]>([]);
+  const [forms, setForms] = useState<FormData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -67,25 +77,31 @@ export default function CommunityDetailPage() {
       try {
         setLoading(true);
 
-        setCommunity({
-          id: communityId || '',
-          title: "Comunidad",
-          description: "Descripción de la comunidad",
-          members: 0
-        });
+        // Fetch community data
+        const communityResponse = await fetch(`https://apibrain.rizosfelices.co/community/communities/${communityUrl}`);
+        if (!communityResponse.ok) {
+          throw new Error('Error al obtener los datos de la comunidad');
+        }
+        const communityData = await communityResponse.json();
+        setCommunity(communityData);
 
-        const membersResponse = await fetch(`https://apibrain.rizosfelices.co/community/members/${communityId}`);
+        // Fetch members data
+        const membersResponse = await fetch(`https://apibrain.rizosfelices.co/community/members/by-url/${communityUrl}`);
         if (!membersResponse.ok) {
           throw new Error('Error al obtener los miembros de la comunidad');
         }
         const membersData = await membersResponse.json();
         setMembers(membersData.members || []);
 
-        setCommunity(prev => prev ? {
-          ...prev,
-          members: membersData.members?.length || 0,
-          title: `Comunidad (${membersData.members?.length || 0} miembros)`
-        } : null);
+        // Prepare forms data from community data
+        if (communityData) {
+          setForms([{
+            title: communityData.title,
+            url: `https://appbrain.rizosfelices.co/community/${communityData.url}`,
+            created_at: formatDate(communityData.created_at),
+            status: 'active'
+          }]);
+        }
 
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Ocurrió un error desconocido');
@@ -95,7 +111,16 @@ export default function CommunityDetailPage() {
     };
 
     fetchData();
-  }, [communityId]);
+  }, [communityUrl]);
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('es-ES', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    });
+  };
 
   const getStatusBadge = (status: string) => {
     const statusMap: Record<string, { className: string, label: string }> = {
@@ -246,18 +271,6 @@ export default function CommunityDetailPage() {
                   <SelectItem value="pending">Pendientes</SelectItem>
                 </SelectContent>
               </Select>
-              {/* Botones ocultos */}
-              {/* <Button variant="outline" size="icon">
-                <Filter className="h-4 w-4" />
-              </Button>
-              <Button variant="outline">
-                <Download className="mr-2 h-4 w-4" />
-                Exportar
-              </Button>
-              <Button>
-                <Plus className="mr-2 h-4 w-4" />
-                Añadir Miembro
-              </Button> */}
             </div>
           </div>
 
@@ -335,12 +348,11 @@ export default function CommunityDetailPage() {
         <TabsContent value="forms" className="space-y-4">
           <div className="flex justify-between items-center">
             <h2 className="text-lg font-medium">Formularios Activos</h2>
-            <Button>
+            <Button className="hidden">
               <Plus className="mr-2 h-4 w-4" />
               Nuevo Formulario
             </Button>
           </div>
-
           <Card>
             <CardContent className="p-0">
               <Table>
@@ -351,17 +363,35 @@ export default function CommunityDetailPage() {
                     <TableHead>Registros</TableHead>
                     <TableHead>Creado</TableHead>
                     <TableHead>Estado</TableHead>
-                    <TableHead className="text-right">Acciones</TableHead>
+                    {/* Columna de Acciones oculta pero necesaria para el layout */}
+                    <TableHead className="hidden"></TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  <TableRow>
-                    <TableCell colSpan={6} className="text-center py-8">
-                      <div className="text-muted-foreground">
-                        No hay formularios activos para esta comunidad
-                      </div>
-                    </TableCell>
-                  </TableRow>
+                  {forms.map((form, index) => (
+                    <TableRow key={index}>
+                      <TableCell className="font-medium">{form.title}</TableCell>
+                      <TableCell>
+                        <a
+                          href={form.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:underline break-all"
+                        >
+                          {form.url}
+                        </a>
+                      </TableCell>
+                      <TableCell>{community.members}</TableCell>
+                      <TableCell>{form.created_at}</TableCell>
+                      <TableCell>
+                        <Badge variant="outline" className="bg-green-100 text-green-800">
+                          Activo
+                        </Badge>
+                      </TableCell>
+                      {/* Celda de acciones oculta pero necesaria para el layout */}
+                      <TableCell className="hidden"></TableCell>
+                    </TableRow>
+                  ))}
                 </TableBody>
               </Table>
             </CardContent>
