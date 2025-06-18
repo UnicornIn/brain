@@ -303,7 +303,7 @@ export default function CommunitiesPage({ stats, counts }: CommunitiesPageProps)
                   </CardContent>
                   <CardFooter className="pt-2">
                     <Button variant="outline" size="sm" className="w-full" asChild>
-                      <Link to={`/communities/${community.id}`}>
+                      <Link to={`/communities/${community.url}`}>
                         Gestionar
                         <ArrowUpRight className="ml-2 h-3.5 w-3.5" />
                       </Link>
