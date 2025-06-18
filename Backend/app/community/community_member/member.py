@@ -59,34 +59,33 @@ async def create_member(member_data: MemberCreate):
             detail=f"Error al crear miembro: {str(e)}"
         )
 
-@router.get("/members/{community_id}",
+@router.get("/members/by-url/{community_url}",
     response_model=MemberListResponse,
-    description="Obtener todos los miembros de una comunidad específica",
+    description="Obtener todos los miembros de una comunidad específica usando su URL",
     responses={
         404: {"description": "Comunidad no encontrada"}
     }
 )
-async def get_all_members_by_community(community_id: str):
-    # Verificar si la comunidad existe
-    community = await community_collection.find_one({"id": community_id})
+async def get_all_members_by_community_url(community_url: str):
+    # Verificar si la comunidad existe por su URL
+    community = await community_collection.find_one({"url": community_url})
     if not community:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Comunidad no encontrada"
         )
     
-    # Obtener todos los miembros de la comunidad
-    members_cursor = member_collection.find({"community_id": community_id})
+    # Obtener todos los miembros de la comunidad usando el community_id encontrado
+    members_cursor = member_collection.find({"community_id": str(community["id"])})
     members = await members_cursor.to_list(length=None)
     
     # Contar miembros
-    count = await member_collection.count_documents({"community_id": community_id})
+    count = await member_collection.count_documents({"community_id": str(community["id"])})
     
     return {
         "members": members,
         "count": count
     }
-
 
 @router.patch("/UpdateMember", response_model=dict)
 async def update_member(user_id: str, update_data: MemberUpdate):
