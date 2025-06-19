@@ -206,8 +206,7 @@ async def get_community_by_slug(slug: str):
     description="Obtener los datos de una comunidad por su URL",
     responses={
         404: {"description": "Comunidad no encontrada"}
-    }
-)
+    })
 async def get_community_by_url(community_url: str):
     # Verificar si la comunidad existe por su URL
     community = await community_collection.find_one({"url": community_url})

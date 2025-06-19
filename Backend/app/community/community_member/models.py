@@ -31,7 +31,7 @@ class MemberCreate(BaseModel):
     full_name: str = Field(..., description="Nombre completo")
     email: str = Field(..., description="Email")
     phone: str = Field(..., description="Teléfono")
-    join_reason: str = Field(..., description="Razón para unirse")
+    join_reason: Optional[str] = Field(None, description="Razón para unirse")
     
 class MemberResponse(Member):
     class Config:
