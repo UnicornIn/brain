@@ -1,7 +1,7 @@
 const IntelligencePage = () => {
   return (
     <div className="container mx-auto">
-      <div className="mb-8">
+      <div className="mb-8 text-center md:text-left">
         <h1 className="text-3xl font-bold text-gray-900">Inteligencia de Negocios</h1>
         <p className="text-gray-500">Análisis de datos y generación de insights estratégicos</p>
       </div>

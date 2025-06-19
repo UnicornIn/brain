@@ -3,7 +3,7 @@ import { AuthProvider } from "./contexts/AuthContext"
 import ProtectedRoute from "./components/ProtectedRoute"
 import LoginPage from "./pages/LoginPage/LoginPage"
 import DashboardPage from "./pages/DashboardPage/DashboardPage"
-import DatabasePage from "./pages/DatabasePage/DatabasePage"
+// import DatabasePage from "./pages/DatabasePage/DatabasePage"
 import BusinessPage from "./pages/BusinessPage/BusinessPage"
 import OmnichannelPage from "./pages/OmnichannelPage/OmnichannelPage"
 import IntelligencePage from "./pages/IntelligencePage/IntelligencePage"
@@ -25,7 +25,7 @@ function App() {
             {/* Rutas públicas */}
             <Route path="/" element={<LoginPage />} />
             <Route path="/community/:slug" element={<PublicCommunityPage />} />
-            
+
             {/* Rutas protegidas */}
             <Route
               path="/dashboard"
@@ -37,7 +37,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            <Route
+            {/* <Route
               path="/database"
               element={
                 <ProtectedRoute>
@@ -46,7 +46,7 @@ function App() {
                   </Layout>
                 </ProtectedRoute>
               }
-            />
+            /> */}
             <Route
               path="/business"
               element={
@@ -94,7 +94,7 @@ function App() {
                   <Layout>
                     <CommunityDetailPage />
                   </Layout>
-                </ProtectedRoute>   
+                </ProtectedRoute>
               }
             />
             <Route

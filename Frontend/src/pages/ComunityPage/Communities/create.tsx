@@ -136,9 +136,9 @@ export default function CreateCommunityPage() {
               <ArrowLeft className="h-4 w-4" />
             </Link>
           </Button>
-            <h1 className="text-sm lg:text-lg font-semibold truncate">
+          <h1 className="text-sm lg:text-lg font-semibold truncate">
             Creador de Comunidad
-            </h1>
+          </h1>
         </div>
         <div className="flex items-center gap-2 flex-shrink-0">
           <Button

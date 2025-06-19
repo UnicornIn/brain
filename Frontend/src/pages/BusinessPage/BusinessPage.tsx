@@ -1,11 +1,10 @@
 const BusinessPage = () => {
   return (
     <div className="container mx-auto">
-      <div className="mb-8">
+      <div className="mb-8 text-center md:text-left">
         <h1 className="text-3xl font-bold text-gray-900">Datos de Negocio</h1>
         <p className="text-gray-500">Gestión de información empresarial, precios, reglas y horarios</p>
       </div>
-
       <div className="bg-white shadow overflow-hidden sm:rounded-lg mb-6">
         <div className="px-4 py-5 sm:px-6">
           <h2 className="text-lg leading-6 font-medium text-gray-900">Reglas de Negocio</h2>

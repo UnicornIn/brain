@@ -6,7 +6,7 @@ import { useState } from "react"
 import { Card } from "../ui/card"
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
-import { Textarea } from "../ui/textarea"
+// import { Textarea } from "../ui/textarea"
 import { Button } from "../ui/button"
 import { AlertCircle } from "lucide-react"
 import type { CommunityData } from "../../types/community"
@@ -167,7 +167,7 @@ export function CommunityForm({ communityData }: CommunityFormProps) {
             )}
           </div>
 
-          <div>
+          {/* <div>
             <Label className="text-sm font-medium text-gray-700 mb-2 block">
               ¿Por qué quieres unirte? <span className="text-red-500">*</span>
             </Label>
@@ -185,7 +185,7 @@ export function CommunityForm({ communityData }: CommunityFormProps) {
                 <span>{errors.reason}</span>
               </div>
             )}
-          </div>
+          </div> */}
         </div>
 
         {/* CTA Section */}

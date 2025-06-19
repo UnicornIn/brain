@@ -17,16 +17,16 @@ const Icons = {
       />
     </svg>
   ),
-  Database: () => (
-    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"
-      />
-    </svg>
-  ),
+  // Database: () => (
+  //   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+  //     <path
+  //       strokeLinecap="round"
+  //       strokeLinejoin="round"
+  //       strokeWidth={2}
+  //       d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"
+  //     />
+  //   </svg>
+  // ),
   Business: () => (
     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
       <path
@@ -107,7 +107,7 @@ const Sidebar = () => {
 
   const modules = [
     { name: "Dashboard", path: "/dashboard", icon: Icons.Dashboard },
-    { name: "Base de Datos", path: "/database", icon: Icons.Database },
+    // { name: "Base de Datos", path: "/database", icon: Icons.Database },
     { name: "Datos de Negocio", path: "/business", icon: Icons.Business },
     { name: "Omnicanal", path: "/omnichannel", icon: Icons.Omnichannel },
     { name: "Comunidades", path: "/communities", icon: BarChart3 },
@@ -132,11 +132,10 @@ const Sidebar = () => {
     <Link
       to={module.path}
       onClick={closeMobileMenu}
-      className={`flex items-center px-4 py-2 text-sm font-medium rounded-md ${
-        location.pathname === module.path
-          ? "bg-blue-100 text-blue-700"
-          : "text-gray-700 hover:bg-gray-100"
-      }`}
+      className={`flex items-center px-4 py-2 text-sm font-medium rounded-md ${location.pathname === module.path
+        ? "bg-blue-100 text-blue-700"
+        : "text-gray-700 hover:bg-gray-100"
+        }`}
       aria-current={location.pathname === module.path ? "page" : undefined}
     >
       <module.icon />
@@ -187,15 +186,14 @@ const Sidebar = () => {
 
       {/* Mobile sidebar */}
       <div
-        className={`md:hidden fixed inset-0 z-10 bg-gray-800 bg-opacity-75 transition-opacity ${
-          isMobileMenuOpen ? "opacity-100" : "opacity-0 pointer-events-none"
-        }`}
+        className={`md:hidden fixed inset-0 z-10 bg-gray-800 bg-opacity-75 transition-opacity ${isMobileMenuOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+          }`}
         aria-hidden={!isMobileMenuOpen}
       >
         <div className="fixed inset-y-0 left-0 max-w-xs w-full bg-white shadow-xl transition transform ease-in-out duration-300">
           <div className="h-full flex flex-col">
-            <div className="flex items-center justify-between h-16 px-4 border-b">
-              <div className="flex items-center">
+            <div className="flex items-center justify-between h-16 px-4 border-b " >
+              <div className="flex items-center ml-[50px]">
                 <Icons.Dashboard />
                 <span className="ml-2 font-semibold text-lg">Brain CRM</span>
               </div>
@@ -218,10 +216,10 @@ const Sidebar = () => {
             <UserProfile />
           </div>
         </div>
-      </div>
+      </div >
 
       {/* Desktop sidebar */}
-      <div className="hidden md:flex md:flex-shrink-0">
+      < div className="hidden md:flex md:flex-shrink-0" >
         <div className="flex flex-col w-64">
           <div className="flex flex-col h-0 flex-1 border-r border-gray-200 bg-white">
             <div className="flex items-center h-16 flex-shrink-0 px-4 border-b">
@@ -238,7 +236,7 @@ const Sidebar = () => {
             <UserProfile />
           </div>
         </div>
-      </div>
+      </div >
     </>
   )
 }

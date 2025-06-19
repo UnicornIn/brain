@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { Badge } from "../../components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/tabs";
-import { AiAgentsPerformance } from "./AgentPerformancePage";
+// import { AiAgentsPerformance } from "./AgentPerformancePage";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -59,8 +59,8 @@ export default function OmnichannelPage() {
     try {
       setLoading(true);
       const response = await axios.get(`https://apibrain.rizosfelices.co/agents/alerts?status=${statusFilter}`);
-      
-      const alertsData = Array.isArray(response.data) ? response.data : [];``
+
+      const alertsData = Array.isArray(response.data) ? response.data : []; ``
       setAlerts(alertsData);
       setFilteredAlerts(alertsData);
     } catch (error) {
@@ -76,7 +76,7 @@ export default function OmnichannelPage() {
     let filtered = [...alerts];
 
     if (searchTerm) {
-      filtered = filtered.filter(alert => 
+      filtered = filtered.filter(alert =>
         alert.user_message.toLowerCase().includes(searchTerm.toLowerCase()) ||
         (alert.contact_info.name && alert.contact_info.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
         alert.conversation_id.toLowerCase().includes(searchTerm.toLowerCase())
@@ -103,7 +103,7 @@ export default function OmnichannelPage() {
     try {
       const unresolvedAlerts = alerts.filter(alert => alert.status !== "resolved");
       await Promise.all(
-        unresolvedAlerts.map(alert => 
+        unresolvedAlerts.map(alert =>
           axios.patch(`https://apibrain.rizosfelices.co/agents/alerts/${alert.id}`, { status: "resolved" })
         )
       );
@@ -126,8 +126,8 @@ export default function OmnichannelPage() {
   };
 
   const getPriority = (alert: Alert): "high" | "medium" | "low" => {
-    if (alert.user_message.toLowerCase().includes("urgente") || 
-        alert.user_message.toLowerCase().includes("incompleto")) {
+    if (alert.user_message.toLowerCase().includes("urgente") ||
+      alert.user_message.toLowerCase().includes("incompleto")) {
       return "high";
     }
     return "medium";
@@ -150,7 +150,7 @@ export default function OmnichannelPage() {
     const now = new Date();
     const alertTime = new Date(timestamp);
     const diffInMinutes = Math.floor((now.getTime() - alertTime.getTime()) / (1000 * 60));
-    
+
     if (diffInMinutes < 1) return "Hace unos segundos";
     if (diffInMinutes < 60) return `Hace ${diffInMinutes} min`;
     if (diffInMinutes < 1440) return `Hace ${Math.floor(diffInMinutes / 60)} horas`;
@@ -164,7 +164,7 @@ export default function OmnichannelPage() {
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
+        <div className="text-center md:text-left">
           <h1 className="text-2xl font-bold tracking-tight">Brain Omnicanal</h1>
           <p className="text-muted-foreground">Alertas de mensajes que requieren intervención humana</p>
         </div>
@@ -177,8 +177,8 @@ export default function OmnichannelPage() {
             <CheckCircle2 className="mr-2 h-4 w-4" />
             Marcar Todo Revisado
           </Button>
-          <Button 
-            onClick={generateAlerts} 
+          <Button
+            onClick={generateAlerts}
             variant="secondary"
             disabled={isGeneratingAlerts}
           >
@@ -208,16 +208,16 @@ export default function OmnichannelPage() {
         <CardContent>
           <Tabs defaultValue="pending" onValueChange={(value) => setStatusFilter(value as "pending" | "resolved")}>
             <TabsList className="mb-4">
-              <TabsTrigger value="pending">
-                Pendientes{" "}
-                <Badge variant="outline" className="ml-2 bg-red-100 text-red-800">
-                  {countAlertsByStatus("pending")}
-                </Badge>
-              </TabsTrigger>
               <TabsTrigger value="resolved">
                 Resueltos{" "}
                 <Badge variant="outline" className="ml-2 bg-green-100 text-green-800">
                   {countAlertsByStatus("resolved")}
+                </Badge>
+              </TabsTrigger>
+              <TabsTrigger value="pending">
+                Pendientes{" "}
+                <Badge variant="outline" className="ml-2 bg-red-100 text-red-800">
+                  {countAlertsByStatus("pending")}
                 </Badge>
               </TabsTrigger>
             </TabsList>
@@ -225,10 +225,10 @@ export default function OmnichannelPage() {
             <div className="flex flex-col md:flex-row gap-4 mb-4">
               <div className="relative flex-1">
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input 
-                  type="search" 
-                  placeholder="Buscar alertas..." 
-                  className="pl-8" 
+                <Input
+                  type="search"
+                  placeholder="Buscar alertas..."
+                  className="pl-8"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
@@ -365,7 +365,7 @@ export default function OmnichannelPage() {
                                   )}
                                   {alert.status === "pending" && (
                                     <div className="ml-auto">
-                                      <Button 
+                                      <Button
                                         size="sm"
                                         onClick={() => updateAlertStatus(alert.id, "resolved")}
                                       >
@@ -387,7 +387,7 @@ export default function OmnichannelPage() {
           </Tabs>
         </CardContent>
       </Card>
-      <AiAgentsPerformance />
+      {/* <AiAgentsPerformance /> */}
     </div>
   );
 }

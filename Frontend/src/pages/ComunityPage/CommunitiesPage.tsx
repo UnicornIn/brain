@@ -188,7 +188,7 @@ export default function CommunitiesPage({ stats, counts }: CommunitiesPageProps)
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
+        <div className="text-center md:text-left">
           <h1 className="text-2xl font-bold tracking-tight">Brain de Comunidades</h1>
           <p className="text-muted-foreground">Crea y gestiona comunidades segmentadas para tu negocio</p>
         </div>
