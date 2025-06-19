@@ -2,8 +2,9 @@
 
 import { useState } from "react"
 import { Tabs, TabsList, TabsTrigger } from "../ui/tabs"
-import { Eye, FileText, Menu } from "lucide-react"
+import { Eye, FileText } from "lucide-react"
 import { Button } from "../ui/button"
+import { Pencil } from "lucide-react"
 import { ContentSidebar } from "./ContentSidebar"
 import { CommunityPreview } from "./CommunityPreview"
 import { CommunityForm } from "./CommunityForm"
@@ -22,7 +23,7 @@ export function CommunityBuilder({ communityData, setCommunityData, fixedButtonT
 
   const handleInputChange = (field: keyof CommunityData, value: string | number | boolean) => {
     if (fixedButtonText && field === 'buttonText') return
-    
+
     setCommunityData((prev) => ({
       ...prev,
       [field]: value,
@@ -71,7 +72,7 @@ export function CommunityBuilder({ communityData, setCommunityData, fixedButtonT
         <div className="bg-white border-b px-4 lg:px-6 py-2 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setSidebarOpen(true)}>
-              <Menu className="h-4 w-4" />
+              <Pencil className="h-4 w-4" />
             </Button>
 
             {/* Preview Tabs */}
