@@ -1,26 +1,144 @@
 from fastapi import APIRouter
-from fastapi import HTTPException, status
-from app.community.community_member.models import Member, MemberCreate, MemberListResponse, MemberUpdate
+from app.community.community_member.models import Member, MemberCreate, MemberListResponse, MemberUpdate, MemberResponse
 from app.database.mongo import community_collection, member_collection
+from fastapi import HTTPException, status, BackgroundTasks
+from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
+from bson import ObjectId
+from datetime import datetime
+import os
+from dotenv import load_dotenv
 
 router = APIRouter()
 
-@router.post("/CreateMember",
-    response_model=Member,
-    status_code=status.HTTP_201_CREATED,
-    description="Crear un nuevo miembro en una comunidad"
+load_dotenv()
+
+conf = ConnectionConfig(
+    MAIL_USERNAME=os.getenv("CORREO_REMITENTE"),
+    MAIL_PASSWORD=os.getenv("CONTRASENA_APLICACION"),
+    MAIL_FROM=os.getenv("CORREO_REMITENTE"),
+    MAIL_PORT=587,
+    MAIL_SERVER="smtp.gmail.com",
+    MAIL_STARTTLS=True,
+    MAIL_SSL_TLS=False,
+    USE_CREDENTIALS=True,
+    VALIDATE_CERTS=True
 )
-async def create_member(member_data: MemberCreate):
-    # Buscar comunidad por UUID (id) no por _id
-    community = await community_collection.find_one({"id": member_data.community_id})
+
+async def send_welcome_email(email: str, full_name: str):
+    # URL de la imagen de encabezado
+    header_image_url = "https://imgbrain.s3.us-east-1.amazonaws.com/communities/39afabdc-dcc9-40d9-9898-3a5b71f6a0fc.jpg"
     
-    if not community:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Comunidad no encontrada"
-        )
-    
-    # Verificar si el email ya está registrado
+    # Cuerpo del mensaje en HTML con estilo profesional
+    email_body = f"""
+    <html>
+    <head>
+        <style>
+            body {{ 
+                font-family: 'Arial', sans-serif; 
+                line-height: 1.6; 
+                color: #000000; 
+                max-width: 600px; 
+                margin: 0 auto; 
+                padding: 20px;
+            }}
+            .header-image {{
+                width: 100%;
+                max-height: 200px;
+                object-fit: cover;
+                margin-bottom: 20px;
+            }}
+            .greeting {{
+                font-size: 24px;
+                font-weight: bold;
+                margin-bottom: 20px;
+                color: #000000;
+            }}
+            .content {{
+                margin-bottom: 30px;
+            }}
+            .signature {{
+                margin-top: 30px;
+                border-top: 1px solid #eaeaea;
+                padding-top: 20px;
+            }}
+            .signature-name {{
+                font-weight: bold;
+                color: #000000;
+            }}
+            .footer {{
+                margin-top: 40px;
+                font-size: 12px;
+                color: #777777;
+                text-align: center;
+            }}
+        </style>
+    </head>
+    <body>
+        <!-- Encabezado con imagen -->
+        <img src="{header_image_url}" alt="Rizos Professional" class="header-image">
+        
+        <div class="greeting"><strong>Bienvenida al programa Rizos Professional</strong></div>
+        
+        <div class="content">
+            <p>Estimado/a <strong>{full_name}</strong>,</p>
+            
+            <p><strong>Te damos la bienvenida al programa Rizos Professional.</strong></p>
+            
+            <p>A partir de hoy haces parte de una red de profesionales que comparten el compromiso con la excelencia técnica 
+            y el respeto profundo por el cabello rizado, ondulado y afro. Este programa ha sido diseñado para fortalecer 
+            tus capacidades, actualizar tus conocimientos y brindarte herramientas concretas para el desarrollo de tu 
+            práctica profesional.</p>
+            
+            <p><strong>Desde Rizos Felices</strong>, creemos que formar especialistas en rizos no solo eleva el estándar de la industria, 
+            sino que transforma la manera en que las personas viven su identidad.</p>
+            
+            <p>Mi nombre es <strong>Delcy Giraldo</strong>, directora creativa de la marca, y junto con <strong>Natalia Arredondo</strong>, directora general, 
+            te agradecemos por confiar en este proceso. Estás en el <strong>lugar indicado</strong> para crecer profesionalmente y proyectarte 
+            con respaldo, metodología y visión de futuro.</p>
+            
+            <p>En breve recibirás la información logística de inicio, acceso a los contenidos, y las instrucciones para el 
+            desarrollo del programa.</p>
+            
+            <p><strong>Bienvenido/a.</strong></p>
+        </div>
+        
+        <div class="signature">
+            <p>Atentamente,</p>
+            <p class="signature-name">Delcy Giraldo</p>
+            <p>Directora Creativa<br>Rizos Felices</p>
+            
+            <p class="signature-name">Natalia Arredondo</p>
+            <p>Directora General<br>Rizos Felices</p>
+        </div>
+        
+        <div class="footer">
+            <p>© {datetime.now().year} Rizos Felices. Todos los derechos reservados.</p>
+        </div>
+    </body>
+    </html>
+    """
+
+    message = MessageSchema(
+        subject="Bienvenida al programa Rizos Professional",
+        recipients=[email],
+        body=email_body,
+        subtype="html"
+    )
+
+    fm = FastMail(conf)
+    await fm.send_message(message)
+
+
+@router.post("/CreateMember",
+    response_model=MemberResponse,
+    status_code=status.HTTP_201_CREATED,
+    description="Crea un nuevo miembro en una comunidad y envía correo de bienvenida"
+)
+async def create_member(
+    member_data: MemberCreate,
+    background_tasks: BackgroundTasks
+):
+    # Verificar si el email ya existe en la comunidad
     existing_member = await member_collection.find_one({
         "community_id": member_data.community_id,
         "email": member_data.email
@@ -31,28 +149,28 @@ async def create_member(member_data: MemberCreate):
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="El email ya está registrado en esta comunidad"
         )
-    
-    # Crear el nuevo miembro
+
+    # Crear el objeto Member con valores por defecto
     new_member = Member(
-        community_id=member_data.community_id,
-        full_name=member_data.full_name,
-        email=member_data.email,
-        phone=member_data.phone,
-        join_reason=member_data.join_reason
+        **member_data.dict(),
+        user_id=str(ObjectId()),
+        registration_date=datetime.now().strftime("%d/%m/%Y")
     )
-    
-    # Insertar en la base de datos
+
     try:
+        # Insertar en la base de datos
         result = await member_collection.insert_one(new_member.dict())
         created_member = await member_collection.find_one({"_id": result.inserted_id})
         
-        # Actualizar contador de miembros en la comunidad
-        await community_collection.update_one(
-            {"id": member_data.community_id},
-            {"$inc": {"members": 1}}
+        # Enviar correo en segundo plano
+        background_tasks.add_task(
+            send_welcome_email,
+            email=member_data.email,
+            full_name=member_data.full_name
         )
         
-        return created_member
+        return MemberResponse(**created_member)
+        
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
