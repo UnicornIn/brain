@@ -166,7 +166,9 @@ async def create_member(
         background_tasks.add_task(
             send_welcome_email,
             email=member_data.email,
-            full_name=member_data.full_name
+            full_name=member_data.full_name,
+            city=member_data.city,
+            country=member_data.country
         )
         
         return MemberResponse(**created_member)

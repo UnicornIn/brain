@@ -14,6 +14,8 @@ class Member(BaseModel):
     email: str = Field(..., description="Email")
     phone: str = Field(..., description="Teléfono")
     join_reason: str = Field(..., description="Razón para unirse")
+    city: str = Field(..., description="Ciudad del miembro")
+    country: str = Field(..., description="País del miembro")
     has_completed_survey: bool = Field(default=True)
     registration_date: str = Field(default_factory=lambda: datetime.now().strftime("%d/%m/%Y"))
     role: MemberRole = Field(default=MemberRole.MEMBER)
@@ -32,6 +34,8 @@ class MemberCreate(BaseModel):
     email: str = Field(..., description="Email")
     phone: str = Field(..., description="Teléfono")
     join_reason: Optional[str] = Field(None, description="Razón para unirse")
+    city: str = Field(..., description="Ciudad del miembro")
+    country: str = Field(..., description="País del miembro")
     
 class MemberResponse(Member):
     class Config:
@@ -43,7 +47,7 @@ class MemberResponse(Member):
 class MemberListResponse(BaseModel):
     members: List[MemberResponse]
     count: int
-    
+
 class MemberUpdate(BaseModel):
     full_name: Optional[str] = Field(None, description="Nombre completo")
     email: Optional[str] = Field(None, description="Email")
