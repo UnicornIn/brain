@@ -4,8 +4,8 @@ from app.community.module_community.models import CommunityResponse
 from app.community.module_community.upload_file import upload_image_to_s3
 from app.community.module_community.upload_file import delete_image_from_s3
 from fastapi.security import OAuth2PasswordBearer
-# from app.auth.jwt.jwt import get_current_user # Uncomment if you need to use authentication
-# from fastapi import Depends
+from app.auth.jwt.jwt import get_current_user
+from fastapi import Depends
 from fastapi import Path
 from urllib.parse import urlparse
 from fastapi import Form
@@ -23,7 +23,8 @@ async def create_community_with_image(
     title: str = Form(...),
     description: str = Form(...),
     url: str = Form(...),
-    image: Optional[UploadFile] = File(None)
+    image: Optional[UploadFile] = File(None),
+    current_user: dict = Depends(get_current_user)  # Requiere autenticación
 ):
     try:
         existing = await community_collection.find_one({"url": url})
@@ -44,7 +45,8 @@ async def create_community_with_image(
             "url": url,
             "members": 0,
             "created_at": created_at,
-            "image_url": image_url
+            "image_url": image_url,
+            "created_by": current_user["id"]  # Guardamos quién creó la comunidad
         }
 
         result = await community_collection.insert_one(community_doc)
@@ -97,9 +99,18 @@ async def update_community(
     title: Optional[str] = Form(None),
     description: Optional[str] = Form(None),
     url: Optional[str] = Form(None),
-    image: Optional[UploadFile] = File(None)
+    image: Optional[UploadFile] = File(None),
+    current_user: dict = Depends(get_current_user)  # Requiere autenticación
 ):
     try:
+        # Verificar si la comunidad existe y si el usuario es el creador
+        existing = await community_collection.find_one({"id": community_id})
+        if not existing:
+            raise HTTPException(status_code=404, detail="Community not found")
+        
+        if existing.get("created_by") != current_user["id"]:
+            raise HTTPException(status_code=403, detail="You don't have permission to update this community")
+
         update_data = {}
 
         if title and title.strip() and title != "string":
@@ -111,9 +122,7 @@ async def update_community(
 
         if image:
             # Buscar imagen anterior y eliminarla
-            existing = await community_collection.find_one({"id": community_id})
             if existing and "image_url" in existing and existing["image_url"]:
-                from urllib.parse import urlparse
                 path = urlparse(existing["image_url"]).path.lstrip("/")
                 await delete_image_from_s3(path)
 
@@ -144,19 +153,26 @@ async def update_community(
             url=updated["url"],
             members=updated["members"],
             created_at=updated["created_at"],
-            image=updated.get("image_url")  # Aquí usamos el campo `image` del response model
+            image=updated.get("image_url")
         )
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.delete("/communities/{community_id}", status_code=204)
-async def delete_community(community_id: str = Path(..., description="UUID de la comunidad")):
+async def delete_community(
+    community_id: str = Path(..., description="UUID de la comunidad"),
+    current_user: dict = Depends(get_current_user)  # Requiere autenticación
+):
     try:
         # Buscar comunidad por ID
         community = await community_collection.find_one({"id": community_id})
         if not community:
             raise HTTPException(status_code=404, detail="Community not found")
+        
+        # Verificar si el usuario es el creador
+        if community.get("created_by") != current_user["id"]:
+            raise HTTPException(status_code=403, detail="You don't have permission to delete this community")
 
         # Si tiene imagen, eliminarla del bucket
         image_url = community.get("image_url")
@@ -203,33 +219,39 @@ async def get_community_by_slug(slug: str):
 
 @router.get("/communities/{community_url}",
     response_model=CommunityResponse,
-    description="Obtener los datos de una comunidad por su URL",
+    summary="Obtener comunidad por URL",
     responses={
+        200: {"description": "Comunidad encontrada"},
         404: {"description": "Comunidad no encontrada"}
-    })
+    }
+)
 async def get_community_by_url(community_url: str):
-    # Verificar si la comunidad existe por su URL
+    """
+    Obtiene una comunidad completa usando su URL única
+    
+    Parámetros:
+    - community_url: La URL única de la comunidad (ej: 'mi-comunidad-tech')
+    
+    Returns:
+    - Todos los datos públicos de la comunidad
+    """
     community = await community_collection.find_one({"url": community_url})
+    
     if not community:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Comunidad no encontrada"
+            detail=f"No se encontró la comunidad con URL: {community_url}"
         )
     
-    # Convertir ObjectId a string si es necesario
-    if "_id" in community:
-        community["id"] = str(community["_id"])
-        del community["_id"]
-    
-    # Mapear correctamente los campos de la base de datos al modelo de respuesta
-    community_data = {
-        "id": community.get("id"),
-        "title": community.get("title"),
-        "description": community.get("description"),
-        "url": community.get("url"),
-        "members": community.get("members", 0),  # Valor por defecto si no existe
-        "created_at": community.get("created_at"),
-        "image": community.get("image_url")  # Mapear image_url de MongoDB a image del modelo
-    }
-    
-    return CommunityResponse(**community_data)
+    return {
+        "id": str(community["_id"]),
+        "title": community["title"],
+        "description": community["description"],
+        "url": community["url"],
+        "members": community.get("members", 0),
+        "created_at": community["created_at"],
+        "image": community.get("image_url")
+    }    
+
+
+
