@@ -187,29 +187,51 @@ async def create_member(
     response_model=MemberListResponse,
     description="Obtener todos los miembros de una comunidad específica usando su URL",
     responses={
-        404: {"description": "Comunidad no encontrada"}
+        404: {"description": "Comunidad no encontrada"},
+        500: {"description": "Error interno del servidor"}
     }
 )
 async def get_all_members_by_community_url(community_url: str):
-    # Verificar si la comunidad existe por su URL
-    community = await community_collection.find_one({"url": community_url})
-    if not community:
+    try:
+        # Verificar si la comunidad existe por su URL
+        community = await community_collection.find_one({"url": community_url})
+        if not community:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Comunidad no encontrada"
+            )
+        
+        # Get the community ID (from either 'id' or '_id' field)
+        community_id = community.get("id")
+        if not community_id:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="El documento de la comunidad no contiene un ID válido"
+            )
+        
+        # Obtener todos los miembros de la comunidad
+        members_cursor = member_collection.find({"community_id": community_id})
+        members = await members_cursor.to_list(length=None)
+        
+        # Convert ObjectId to string for each member
+        processed_members = []
+        for member in members:
+            member["_id"] = str(member["_id"])
+            processed_members.append(member)
+        
+        # Contar miembros
+        count = len(processed_members)
+        
+        return {
+            "members": processed_members,
+            "count": count
+        }
+        
+    except Exception as e:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Comunidad no encontrada"
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error interno del servidor: {str(e)}"
         )
-    
-    # Obtener todos los miembros de la comunidad usando el community_id encontrado
-    members_cursor = member_collection.find({"community_id": str(community["id"])})
-    members = await members_cursor.to_list(length=None)
-    
-    # Contar miembros
-    count = await member_collection.count_documents({"community_id": str(community["id"])})
-    
-    return {
-        "members": members,
-        "count": count
-    }
 
 @router.patch("/UpdateMember", response_model=dict)
 async def update_member(user_id: str, update_data: MemberUpdate):
