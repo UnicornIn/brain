@@ -21,6 +21,8 @@ export function CommunityForm({ communityData }: CommunityFormProps) {
     email: "",
     phone: "",
     reason: "",
+    city: "",
+    country: "",
   })
 
   const [errors, setErrors] = useState({
@@ -28,6 +30,8 @@ export function CommunityForm({ communityData }: CommunityFormProps) {
     email: "",
     phone: "",
     reason: "",
+    city: "",
+    country: "",
   })
 
   const validateField = (name: string, value: string) => {
@@ -49,6 +53,12 @@ export function CommunityForm({ communityData }: CommunityFormProps) {
         break
       case "reason":
         if (!value.trim()) error = "Este campo es obligatorio"
+        break
+      case "city":
+        if (!value.trim()) error = "La ciudad es obligatoria"
+        break
+      case "country":
+        if (!value.trim()) error = "El país es obligatorio"
         break
     }
 
@@ -84,6 +94,8 @@ export function CommunityForm({ communityData }: CommunityFormProps) {
       email: validateField("email", formData.email),
       phone: validateField("phone", formData.phone),
       reason: validateField("reason", formData.reason),
+      city: validateField("city", formData.city),
+      country: validateField("country", formData.country),
     }
 
     setErrors(newErrors)
@@ -163,6 +175,46 @@ export function CommunityForm({ communityData }: CommunityFormProps) {
               <div className="flex items-center gap-1 mt-1 text-red-500 text-xs">
                 <AlertCircle className="h-3 w-3" />
                 <span>{errors.phone}</span>
+              </div>
+            )}
+          </div>
+
+          <div>
+            <Label className="text-sm font-medium text-gray-700 mb-2 block">
+              Ciudad <span className="text-red-500">*</span>
+            </Label>
+            <Input
+              value={formData.city}
+              onChange={(e) => handleInputChange("city", e.target.value)}
+              onBlur={(e) => handleBlur("city", e.target.value)}
+              placeholder=""
+              className={`w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 h-11 lg:h-12 ${errors.city ? "border-red-500 focus:border-red-500 focus:ring-red-500" : ""
+                }`}
+            />
+            {errors.city && (
+              <div className="flex items-center gap-1 mt-1 text-red-500 text-xs">
+                <AlertCircle className="h-3 w-3" />
+                <span>{errors.city}</span>
+              </div>
+            )}
+          </div>
+
+          <div>
+            <Label className="text-sm font-medium text-gray-700 mb-2 block">
+              País <span className="text-red-500">*</span>
+            </Label>
+            <Input
+              value={formData.country}
+              onChange={(e) => handleInputChange("country", e.target.value)}
+              onBlur={(e) => handleBlur("country", e.target.value)}
+              placeholder=""
+              className={`w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 h-11 lg:h-12 ${errors.country ? "border-red-500 focus:border-red-500 focus:ring-red-500" : ""
+                }`}
+            />
+            {errors.country && (
+              <div className="flex items-center gap-1 mt-1 text-red-500 text-xs">
+                <AlertCircle className="h-3 w-3" />
+                <span>{errors.country}</span>
               </div>
             )}
           </div>

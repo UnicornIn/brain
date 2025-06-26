@@ -14,7 +14,7 @@ import {
   DialogDescription,
 } from "../../../components/ui/dialog"
 import { Input } from "../../../components/ui/input"
-import { Textarea } from "../../../components/ui/textarea"
+// import { Textarea } from "../../../components/ui/textarea"
 import { Label } from "../../../components/ui/label"
 import { toast } from 'sonner'
 
@@ -34,6 +34,8 @@ interface FormData {
   phone: string
   join_reason: string
   community_id: string
+  city: string
+  country: string
 }
 
 export default function CommunityPublicPage() {
@@ -47,7 +49,9 @@ export default function CommunityPublicPage() {
     email: '',
     phone: '',
     join_reason: '',
-    community_id: ''
+    community_id: '',
+    city: '',
+    country: ''
   })
   const [formError, setFormError] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -113,10 +117,10 @@ export default function CommunityPublicPage() {
       return false
     }
 
-    if (!formData.join_reason.trim()) {
-      setFormError('Por favor dinos por qué quieres unirte')
-      return false
-    }
+    // if (!formData.join_reason.trim()) {
+    //   setFormError('Por favor dinos por qué quieres unirte')
+    //   return false
+    // }
 
     return true
   }
@@ -130,7 +134,7 @@ export default function CommunityPublicPage() {
     setFormError(null)
 
     try {
-      const response = await fetch('https://apibrain.rizosfelices.co/community/CreateMember', {
+      const response = await fetch('http://127.0.0.1:8000/community/CreateMember', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -217,7 +221,9 @@ export default function CommunityPublicPage() {
         email: '',
         phone: '',
         join_reason: '',
-        community_id: community?.id || ''
+        community_id: community?.id || '',
+        city: '',
+        country: ''
       })
 
       if (community) {
@@ -394,7 +400,7 @@ export default function CommunityPublicPage() {
                 name="full_name"
                 value={formData.full_name}
                 onChange={handleInputChange}
-                placeholder="Ej: María González"
+                // placeholder="Ej: María González"
                 className="border-2 border-gray-300 focus:border-gray-500 focus:ring-gray-500 rounded-lg"
               />
             </div>
@@ -408,26 +414,49 @@ export default function CommunityPublicPage() {
                 name="email"
                 value={formData.email}
                 onChange={handleInputChange}
-                placeholder="Ej: ejemplo@email.com"
+                // placeholder="Ej: ejemplo@email.com"
                 className="border-2 border-gray-300 focus:border-gray-500 focus:ring-gray-500 rounded-lg"
               />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="phone" className="text-gray-700 font-medium">
-                Teléfono *
+                Whatsapp *
               </Label>
               <Input
                 type="tel"
                 name="phone"
                 value={formData.phone}
                 onChange={handleInputChange}
-                placeholder="Ej: +57 300 1234567"
+                // placeholder="Ej: +57 300 1234567"
                 className="border-2 border-gray-300 focus:border-gray-500 focus:ring-gray-500 rounded-lg"
               />
             </div>
 
             <div className="space-y-2">
+              <Label htmlFor="city" className="text-gray-700 font-medium">
+                Ciudad *
+              </Label>
+              <Input
+                name="city"
+                value={formData.city}
+                onChange={handleInputChange}
+                className="border-2 border-gray-300 focus:border-gray-500 focus:ring-gray-500 rounded-lg"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="country" className="text-gray-700 font-medium">
+                País *
+              </Label>
+              <Input
+                name="country"
+                value={formData.country}
+                onChange={handleInputChange}
+                className="border-2 border-gray-300 focus:border-gray-500 focus:ring-gray-500 rounded-lg"
+              />
+            </div>
+            {/* <div className="space-y-2">
               <Label htmlFor="join_reason" className="text-gray-700 font-medium">
                 ¿Por qué quieres unirte? *
               </Label>
@@ -439,7 +468,7 @@ export default function CommunityPublicPage() {
                 rows={4}
                 className="border-2 border-gray-300 focus:border-gray-500 focus:ring-gray-500 rounded-lg"
               />
-            </div>
+            </div> */}
 
             <p className="text-xs text-gray-500">
               * Campos requeridos. Al enviar aceptas nuestros términos y condiciones.
