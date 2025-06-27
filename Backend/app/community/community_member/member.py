@@ -142,7 +142,7 @@ async def create_member(
     member_data: MemberCreate,
     background_tasks: BackgroundTasks
 ):
-    # Verificar si el email ya existe en la comunidad   
+    # Verificar si el email ya existe en la comunidad
     existing_member = await member_collection.find_one({
         "community_id": member_data.community_id,
         "email": member_data.email
@@ -182,7 +182,7 @@ async def create_member(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error al crear miembro: {str(e)}"
         )
-
+        
 @router.get("/members/by-url/{community_url}",
     response_model=MemberListResponse,
     description="Obtener todos los miembros de una comunidad específica usando su URL",
@@ -192,10 +192,13 @@ async def create_member(
     }
 )
 async def get_all_members_by_community_url(community_url: str):
+    print("🔍 Buscando comunidad por URL:", community_url)
     try:
         # Verificar si la comunidad existe por su URL
         community = await community_collection.find_one({"url": community_url})
+        print("📦 Resultado de búsqueda de comunidad:", community)
         if not community:
+            print("❌ Comunidad no encontrada para URL:", community_url)
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Comunidad no encontrada"
@@ -203,24 +206,30 @@ async def get_all_members_by_community_url(community_url: str):
         
         # Get the community ID (from either 'id' or '_id' field)
         community_id = community.get("id")
+        print("🆔 ID de la comunidad encontrada:", community_id)
         if not community_id:
+            print("⚠️ El documento de la comunidad no contiene un ID válido")
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail="El documento de la comunidad no contiene un ID válido"
             )
         
         # Obtener todos los miembros de la comunidad
+        print("🔄 Buscando miembros con community_id:", community_id)
         members_cursor = member_collection.find({"community_id": community_id})
         members = await members_cursor.to_list(length=None)
+        print(f"👥 Miembros encontrados: {len(members)}")
         
         # Convert ObjectId to string for each member
         processed_members = []
         for member in members:
             member["_id"] = str(member["_id"])
             processed_members.append(member)
+        print("✅ Procesamiento de miembros completado")
         
         # Contar miembros
         count = len(processed_members)
+        print(f"📊 Total de miembros: {count}")
         
         return {
             "members": processed_members,
@@ -228,6 +237,7 @@ async def get_all_members_by_community_url(community_url: str):
         }
         
     except Exception as e:
+        print("💥 Error interno del servidor:", str(e))
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error interno del servidor: {str(e)}"

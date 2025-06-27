@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, validator
 from datetime import datetime
 from bson import ObjectId
 from enum import Enum
@@ -8,9 +8,8 @@ class MemberRole(str, Enum):
     MEMBER = "member"
 
 class Member(BaseModel):
-    id: str = Field(..., alias="_id", description="ID del documento en MongoDB")
     community_id: str = Field(..., description="ID UUID de la comunidad")
-    user_id: str = Field(..., description="ID único generado automáticamente")
+    user_id: str = Field(default_factory=lambda: str(ObjectId()))
     full_name: str = Field(..., description="Nombre completo")
     email: str = Field(..., description="Email")
     phone: str = Field(..., description="Teléfono")
@@ -18,14 +17,16 @@ class Member(BaseModel):
     city: Optional[str] = Field(None, description="Ciudad del miembro")
     country: Optional[str] = Field(None, description="País del miembro")
     has_completed_survey: bool = Field(default=True)
-    registration_date: str = Field(..., description="Fecha de registro")
-    role: str = Field(..., description="Rol del miembro")
-    status: str = Field(..., description="Estado del miembro")
+    registration_date: str = Field(default_factory=lambda: datetime.now().strftime("%d/%m/%Y"))
+    role: str = Field(default="member", description="Rol del miembro")
+    status: str = Field(default="active", description="Estado del miembro")
 
     class Config:
+        arbitrary_types_allowed = True
         allow_population_by_field_name = True
         json_encoders = {
-            ObjectId: str
+            ObjectId: str,
+            datetime: lambda dt: dt.isoformat()
         }
 
 class MemberCreate(BaseModel):
@@ -34,15 +35,17 @@ class MemberCreate(BaseModel):
     email: str = Field(..., description="Email")
     phone: str = Field(..., description="Teléfono")
     join_reason: Optional[str] = Field(None, description="Razón para unirse")
-    city: str = Field(..., description="Ciudad del miembro")
-    country: str = Field(..., description="País del miembro")
-    
+    city: Optional[str] = Field(None, description="Ciudad del miembro")
+    country: Optional[str] = Field(None, description="País del miembro")
+
 class MemberResponse(Member):
-    class Config:
-        json_encoders = {
-            ObjectId: str,
-            datetime: lambda dt: dt.isoformat()
-        }
+    id: str = Field(..., alias="_id")  # Requerido en respuesta
+
+    @validator('id', pre=True)
+    def validate_id(cls, v):
+        if v is None:
+            raise ValueError("_id no puede ser None")
+        return str(v)
 
 class MemberListResponse(BaseModel):
     members: List[MemberResponse]
@@ -63,4 +66,3 @@ class MemberUpdate(BaseModel):
                 "status": "inactive"
             }
         }
-        
