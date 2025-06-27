@@ -3,8 +3,8 @@ import { AuthProvider } from "./contexts/AuthContext"
 import ProtectedRoute from "./components/ProtectedRoute"
 import LoginPage from "./pages/LoginPage/LoginPage"
 import DashboardPage from "./pages/DashboardPage/DashboardPage"
-// import DatabasePage from "./pages/DatabasePage/DatabasePage"
-import BusinessPage from "./pages/BusinessPage/BusinessPage"
+import DatabasePage from "./pages/DatabasePage/DatabasePage"
+// import BusinessPage from "./pages/BusinessPage/BusinessPage"
 import OmnichannelPage from "./pages/OmnichannelPage/OmnichannelPage"
 import IntelligencePage from "./pages/IntelligencePage/IntelligencePage"
 import CreateCommunityPage from "./pages/ComunityPage/Communities/create"
@@ -37,7 +37,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            {/* <Route
+            <Route
               path="/database"
               element={
                 <ProtectedRoute>
@@ -46,8 +46,8 @@ function App() {
                   </Layout>
                 </ProtectedRoute>
               }
-            /> */}
-            <Route
+            />
+            {/* <Route
               path="/business"
               element={
                 <ProtectedRoute>
@@ -56,7 +56,7 @@ function App() {
                   </Layout>
                 </ProtectedRoute>
               }
-            />
+            /> */}
             <Route
               path="/omnichannel"
               element={

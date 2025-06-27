@@ -17,16 +17,16 @@ const Icons = {
       />
     </svg>
   ),
-  // Database: () => (
-  //   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-  //     <path
-  //       strokeLinecap="round"
-  //       strokeLinejoin="round"
-  //       strokeWidth={2}
-  //       d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"
-  //     />
-  //   </svg>
-  // ),
+  Database: () => (
+    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"
+      />
+    </svg>
+  ),
   Business: () => (
     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
       <path
@@ -107,8 +107,8 @@ const Sidebar = () => {
 
   const modules = [
     { name: "Dashboard", path: "/dashboard", icon: Icons.Dashboard },
-    // { name: "Base de Datos", path: "/database", icon: Icons.Database },
-    { name: "Datos de Negocio", path: "/business", icon: Icons.Business },
+    { name: "Base de Datos", path: "/database", icon: Icons.Database },
+    // { name: "Datos de Negocio", path: "/business", icon: Icons.Business },
     { name: "Omnicanal", path: "/omnichannel", icon: Icons.Omnichannel },
     { name: "Comunidades", path: "/communities", icon: BarChart3 },
     { name: "Inteligencia de Negocios", path: "/intelligence", icon: Icons.Intelligence },

@@ -24,11 +24,11 @@ conf = ConnectionConfig(
     VALIDATE_CERTS=True
 )
 
-async def send_welcome_email(email: str, full_name: str):
+async def send_welcome_email(email: str, full_name: str, city: str, country: str):
     # URL de la imagen de encabezado
     header_image_url = "https://imgbrain.s3.us-east-1.amazonaws.com/communities/39afabdc-dcc9-40d9-9898-3a5b71f6a0fc.jpg"
     
-    # Cuerpo del mensaje en HTML con estilo profesional
+    # Cuerpo del mensaje en HTML con todos los textos en color negro
     email_body = f"""
     <html>
     <head>
@@ -55,11 +55,13 @@ async def send_welcome_email(email: str, full_name: str):
             }}
             .content {{
                 margin-bottom: 30px;
+                color: #000000;
             }}
             .signature {{
                 margin-top: 30px;
                 border-top: 1px solid #eaeaea;
                 padding-top: 20px;
+                color: #000000;
             }}
             .signature-name {{
                 font-weight: bold;
@@ -68,8 +70,11 @@ async def send_welcome_email(email: str, full_name: str):
             .footer {{
                 margin-top: 40px;
                 font-size: 12px;
-                color: #777777;
+                color: #000000;
                 text-align: center;
+            }}
+            strong {{
+                color: #000000;
             }}
         </style>
     </head>
@@ -77,29 +82,29 @@ async def send_welcome_email(email: str, full_name: str):
         <!-- Encabezado con imagen -->
         <img src="{header_image_url}" alt="Rizos Professional" class="header-image">
         
-        <div class="greeting"><strong>Bienvenida al programa Rizos Professional</strong></div>
+        <div class="greeting">Bienvenida al programa Rizos Professional</div>
         
         <div class="content">
             <p>Estimado/a <strong>{full_name}</strong>,</p>
             
-            <p><strong>Te damos la bienvenida al programa Rizos Professional.</strong></p>
+            <p>Te damos la bienvenida al programa Rizos Professional.</p>
             
             <p>A partir de hoy haces parte de una red de profesionales que comparten el compromiso con la excelencia técnica 
             y el respeto profundo por el cabello rizado, ondulado y afro. Este programa ha sido diseñado para fortalecer 
             tus capacidades, actualizar tus conocimientos y brindarte herramientas concretas para el desarrollo de tu 
             práctica profesional.</p>
             
-            <p><strong>Desde Rizos Felices</strong>, creemos que formar especialistas en rizos no solo eleva el estándar de la industria, 
+            <p>Desde Rizos Felices, creemos que formar especialistas en rizos no solo eleva el estándar de la industria, 
             sino que transforma la manera en que las personas viven su identidad.</p>
             
             <p>Mi nombre es <strong>Delcy Giraldo</strong>, directora creativa de la marca, y junto con <strong>Natalia Arredondo</strong>, directora general, 
-            te agradecemos por confiar en este proceso. Estás en el <strong>lugar indicado</strong> para crecer profesionalmente y proyectarte 
+            te agradecemos por confiar en este proceso. Estás en el lugar indicado para crecer profesionalmente y proyectarte 
             con respaldo, metodología y visión de futuro.</p>
             
             <p>En breve recibirás la información logística de inicio, acceso a los contenidos, y las instrucciones para el 
             desarrollo del programa.</p>
             
-            <p><strong>Bienvenido/a.</strong></p>
+            <p>Bienvenido/a.</p>
         </div>
         
         <div class="signature">
@@ -127,8 +132,7 @@ async def send_welcome_email(email: str, full_name: str):
 
     fm = FastMail(conf)
     await fm.send_message(message)
-
-
+    
 @router.post("/CreateMember",
     response_model=MemberResponse,
     status_code=status.HTTP_201_CREATED,
@@ -166,7 +170,9 @@ async def create_member(
         background_tasks.add_task(
             send_welcome_email,
             email=member_data.email,
-            full_name=member_data.full_name
+            full_name=member_data.full_name,
+            city=member_data.city,
+            country=member_data.country
         )
         
         return MemberResponse(**created_member)
@@ -176,34 +182,66 @@ async def create_member(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error al crear miembro: {str(e)}"
         )
-
+        
 @router.get("/members/by-url/{community_url}",
     response_model=MemberListResponse,
     description="Obtener todos los miembros de una comunidad específica usando su URL",
     responses={
-        404: {"description": "Comunidad no encontrada"}
+        404: {"description": "Comunidad no encontrada"},
+        500: {"description": "Error interno del servidor"}
     }
 )
 async def get_all_members_by_community_url(community_url: str):
-    # Verificar si la comunidad existe por su URL
-    community = await community_collection.find_one({"url": community_url})
-    if not community:
+    print("🔍 Buscando comunidad por URL:", community_url)
+    try:
+        # Verificar si la comunidad existe por su URL
+        community = await community_collection.find_one({"url": community_url})
+        print("📦 Resultado de búsqueda de comunidad:", community)
+        if not community:
+            print("❌ Comunidad no encontrada para URL:", community_url)
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Comunidad no encontrada"
+            )
+        
+        # Get the community ID (from either 'id' or '_id' field)
+        community_id = community.get("id")
+        print("🆔 ID de la comunidad encontrada:", community_id)
+        if not community_id:
+            print("⚠️ El documento de la comunidad no contiene un ID válido")
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="El documento de la comunidad no contiene un ID válido"
+            )
+        
+        # Obtener todos los miembros de la comunidad
+        print("🔄 Buscando miembros con community_id:", community_id)
+        members_cursor = member_collection.find({"community_id": community_id})
+        members = await members_cursor.to_list(length=None)
+        print(f"👥 Miembros encontrados: {len(members)}")
+        
+        # Convert ObjectId to string for each member
+        processed_members = []
+        for member in members:
+            member["_id"] = str(member["_id"])
+            processed_members.append(member)
+        print("✅ Procesamiento de miembros completado")
+        
+        # Contar miembros
+        count = len(processed_members)
+        print(f"📊 Total de miembros: {count}")
+        
+        return {
+            "members": processed_members,
+            "count": count
+        }
+        
+    except Exception as e:
+        print("💥 Error interno del servidor:", str(e))
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Comunidad no encontrada"
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error interno del servidor: {str(e)}"
         )
-    
-    # Obtener todos los miembros de la comunidad usando el community_id encontrado
-    members_cursor = member_collection.find({"community_id": str(community["id"])})
-    members = await members_cursor.to_list(length=None)
-    
-    # Contar miembros
-    count = await member_collection.count_documents({"community_id": str(community["id"])})
-    
-    return {
-        "members": members,
-        "count": count
-    }
 
 @router.patch("/UpdateMember", response_model=dict)
 async def update_member(user_id: str, update_data: MemberUpdate):

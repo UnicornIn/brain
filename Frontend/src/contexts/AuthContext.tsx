@@ -1,5 +1,4 @@
 "use client"
-
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from "react"
 
 type User = {
@@ -7,6 +6,7 @@ type User = {
   name: string
   email: string
   role: string
+  token: string
 }
 
 type AuthContextType = {
@@ -30,71 +30,97 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
-  // Check for stored auth on mount
+  // Limpiar storage
+  const clearAuthStorage = useCallback(() => {
+    localStorage.removeItem("crm-user")
+    localStorage.removeItem("crm-token")
+    sessionStorage.removeItem("crm-user")
+    sessionStorage.removeItem("crm-token")
+  }, [])
+
+  // Inicializar autenticación
   useEffect(() => {
     const initializeAuth = async () => {
       try {
-        const storedUser = localStorage.getItem("crm-user")
-        if (storedUser) {
-          const parsedUser = JSON.parse(storedUser) as User
-          // Add basic validation for stored user
-          if (parsedUser?.id && parsedUser?.email) {
+        const storedUser = localStorage.getItem("crm-user") || sessionStorage.getItem("crm-user")
+        const storedToken = localStorage.getItem("crm-token") || sessionStorage.getItem("crm-token")
+        
+        if (storedUser && storedToken) {
+          const parsedUser = JSON.parse(storedUser)
+          // Validación básica de datos
+          if (parsedUser?.id && parsedUser?.email && parsedUser?.token) {
             setUser(parsedUser)
           } else {
-            localStorage.removeItem("crm-user")
+            clearAuthStorage()
           }
         }
       } catch (error) {
-        console.error("Failed to initialize auth", error)
-        localStorage.removeItem("crm-user")
+        console.error("Error inicializando auth:", error)
+        clearAuthStorage()
       } finally {
         setIsLoading(false)
       }
     }
 
     initializeAuth()
-  }, [])
+  }, [clearAuthStorage])
 
+  // Función de login
   const login = useCallback(async (email: string, password: string, remember: boolean): Promise<boolean> => {
     setIsLoading(true)
-
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      const response = await fetch("http://127.0.0.1:8000/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams({
+          username: email,
+          password: password
+        })
+      })
 
-      // Mock authentication - in a real app, this would be an API call
-      if (email === "admin@example.com" && password === "password") {
-        const userData: User = {
-          id: "1",
-          name: "Administrador",
-          email: "admin@example.com",
-          role: "admin",
-        }
-
-        setUser(userData)
-
-        if (remember) {
-          localStorage.setItem("crm-user", JSON.stringify(userData))
-        }
-
-        return true
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.detail || "Error en la autenticación")
       }
 
-      return false
+      const data = await response.json()
+      
+      // Estructura de datos consistente con el backend
+      const userData = {
+        id: data.user.id,
+        name: data.user.name || "",
+        email: data.user.email,
+        role: data.user.role,
+        token: data.access_token
+      }
+
+      setUser(userData)
+      clearAuthStorage() // Limpiar antes de guardar nuevos datos
+
+      if (remember) {
+        localStorage.setItem("crm-user", JSON.stringify(userData))
+        localStorage.setItem("crm-token", data.access_token)
+      } else {
+        sessionStorage.setItem("crm-user", JSON.stringify(userData))
+        sessionStorage.setItem("crm-token", data.access_token)
+      }
+
+      return true
     } catch (error) {
-      console.error("Login failed", error)
+      console.error("Error en login:", error)
       return false
     } finally {
       setIsLoading(false)
     }
-  }, [])
+  }, [clearAuthStorage])
 
+  // Función de logout
   const logout = useCallback(() => {
     setUser(null)
-    localStorage.removeItem("crm-user")
-    // In a real app, you might want to redirect here
-    // or add additional cleanup logic
-  }, [])
+    clearAuthStorage()
+  }, [clearAuthStorage])
 
   return (
     <AuthContext.Provider value={{ user, isLoading, login, logout }}>

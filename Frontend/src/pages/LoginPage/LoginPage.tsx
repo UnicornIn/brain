@@ -149,10 +149,10 @@ const LoginPage = () => {
             </button>
           </div>
         </form>
-        <div className="text-center text-sm text-gray-500">
+        {/* <div className="text-center text-sm text-gray-500">
           <p>Credenciales de prueba:</p>
           <code className="bg-gray-100 px-2 py-1 rounded">admin@example.com / password</code>
-        </div>
+        </div> */}
       </div>
     </div>
   )
