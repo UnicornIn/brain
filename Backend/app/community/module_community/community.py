@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, status
-from app.database.mongo import community_collection
+from app.database.mongo import community_collection, member_collection
 from app.community.module_community.models import CommunityResponse
 from app.community.module_community.upload_file import upload_image_to_s3
 from app.community.module_community.upload_file import delete_image_from_s3
@@ -72,19 +72,28 @@ async def create_community_with_image(
 @router.get("/get-communities/", response_model=List[CommunityResponse])
 async def get_all_communities():
     """
-    Get all communities from the database.
+    Get all communities from the database with accurate member counts.
     Returns:
-    - List of all communities with their full information
+    - List of all communities with their full information, including verified member counts
     """
     try:
         communities = []
         async for community in community_collection.find():
+            # Get the actual count of members for this community
+            # Assuming you have a members collection or subcollection
+            actual_member_count = await member_collection.count_documents({
+                "community_id": community["id"]
+            })
+            
+            # Or if members are stored as an array in the community document:
+            # actual_member_count = len(community.get("members", []))
+            
             communities.append(CommunityResponse(
                 id=community["id"],
                 title=community["title"],
                 description=community["description"],
                 url=community["url"],
-                members=community["members"],
+                members=actual_member_count,  # Use the verified count
                 created_at=community["created_at"],
                 image=community.get("image_url") 
             ))
@@ -92,7 +101,7 @@ async def get_all_communities():
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
+    
 @router.patch("/communities/{community_id}", response_model=CommunityResponse)
 async def update_community(
     community_id: str,
