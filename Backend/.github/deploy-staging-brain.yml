@@ -1,0 +1,81 @@
+name: Deploy to Staging
+
+on:
+  push:
+    branches:
+      - staging
+
+jobs:
+  deploy:
+    name: Deploy to AWS EC2
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.AWS_SSH_KEY }}" > ~/.ssh/aws_key.pem
+          chmod 600 ~/.ssh/aws_key.pem
+
+      - name: Deploy App to EC2
+        shell: bash
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/aws_key.pem ${{ secrets.AWS_USER }}@${{ secrets.AWS_HOST }} 'bash -s' <<'ENDSSH'
+            set -e
+            PROJECT_PATH="/home/ubuntu/brain/Backend"
+            APP_DOMAIN="https://staging-brain.rizosfelices.co"
+
+            # Si el proyecto no existe, clónalo
+            if [ ! -d "$PROJECT_PATH" ]; then
+              mkdir -p /home/ubuntu
+              cd /home/ubuntu
+              git clone git@github.com-staging:JUANESTEBAM/brain.git
+            fi
+
+            cd $PROJECT_PATH
+            git reset --hard
+            git pull origin staging
+
+            # Crear archivo .env con variables de entorno
+            echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" > .env
+            echo "MANYCHAT_API_KEY=${{ secrets.MANYCHAT_API_KEY }}" >> .env
+            echo "ACCESS_TOKEN_EXPIRE_MINUTES=${{ secrets.ACCESS_TOKEN_EXPIRE_MINUTES }}" >> .env
+            echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
+            echo "OPENAI_KNOWLEDGE_AGENT_ID=${{ secrets.OPENAI_KNOWLEDGE_AGENT_ID }}" >> .env
+            echo "OPENAI_CUSTOMER_AGENT_ID=${{ secrets.OPENAI_CUSTOMER_AGENT_ID }}" >> .env
+            echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> .env
+            echo "OPENAI_VECTOR_STORE_ID=${{ secrets.OPENAI_VECTOR_STORE_ID }}" >> .env
+            echo "CORREO_REMITENTE=${{ secrets.CORREO_REMITENTE }}" >> .env
+            echo "CONTRASENA_APLICACION=${{ secrets.CONTRASENA_APLICACION }}" >> .env
+
+            # Crear entorno virtual si no existe
+            if [ ! -d "venv" ]; then
+              python3 -m venv venv
+            fi
+
+            source venv/bin/activate
+            pip install --upgrade pip
+            pip install -r requirements.txt
+
+            # Detener cualquier proceso anterior de run.py
+            pkill -f "python run.py" || true
+
+            # Levantar la app en background
+            nohup python run.py > log.txt 2>&1 &
+
+            # Esperar 5 segundos para dar tiempo a que arranque
+            sleep 5
+
+            # Verificar si la app está corriendo desde el dominio
+            if curl -sk --max-time 10 "$APP_DOMAIN" > /dev/null; then
+              echo "✅ La app está corriendo correctamente en $APP_DOMAIN"
+            else
+              echo "❌ Error: la app no respondió en $APP_DOMAIN"
+              echo "🔍 Mostrando las últimas 20 líneas de log.txt:"
+              tail -n 20 log.txt || echo "No hay log disponible"
+              exit 1
+            fi
+          ENDSSH
