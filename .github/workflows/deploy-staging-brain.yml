@@ -32,12 +32,13 @@ jobs:
             if [ ! -d "$PROJECT_PATH" ]; then
               mkdir -p /home/ubuntu
               cd /home/ubuntu
-              git clone git@github.com-staging:JUANESTEBAM/brain.git
+              git clone https://github.com/UnicornIn/brain.git brain
             fi
 
             cd $PROJECT_PATH
-            git reset --hard
-            git pull origin staging
+            git fetch --all
+            git checkout -B staging origin/staging
+            git reset --hard origin/staging
 
             # Crear archivo .env con variables de entorno
             echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" > .env
@@ -79,4 +80,3 @@ jobs:
               exit 1
             fi
           ENDSSH
-          # Test trigger
