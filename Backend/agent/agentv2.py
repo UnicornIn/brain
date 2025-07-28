@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-
 🧠 ULTRA-GENERATIVE DATABASE AGENT v3.0
-
 """
 
 import os
