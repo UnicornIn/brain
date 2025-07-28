@@ -1,0 +1,7 @@
+Staging Deploy Test
+===================
+Date: July 25, 2025
+Triggered by: [tu nombre]
+Purpose: Testing GitHub Actions workflow
+
+This file triggers the automatic deployment to staging server.
