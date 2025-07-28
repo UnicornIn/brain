@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 """
 🧠 ULTRA-GENERATIVE DATABASE AGENT v3.0
-Sistema que RAZONA como Claude con mínimas líneas de código
 """
 
 import os
