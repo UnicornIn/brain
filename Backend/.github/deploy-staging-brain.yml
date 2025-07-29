@@ -27,28 +27,28 @@ jobs:
             set -e
             PROJECT_PATH="/home/ubuntu/brain/Backend"
             APP_DOMAIN="https://staging-brain.rizosfelices.co"
+            PM2_PROCESS_NAME="brain-backend"
 
-            # Si el proyecto no existe, clona la rama staging
+            # Si el proyecto no existe, clona el repo
             if [ ! -d "$PROJECT_PATH" ]; then
               mkdir -p /home/ubuntu
               cd /home/ubuntu
-              git clone --branch staging https://github.com/UnicornIn/brain.git brain || git clone https://github.com/UnicornIn/brain.git brain
+              git clone https://github.com/UnicornIn/brain.git brain
             fi
 
             cd $PROJECT_PATH
 
-            # Asegurar que staging existe
+            # Asegurar que la rama staging existe
             git fetch origin
             if git show-ref --verify --quiet refs/remotes/origin/staging; then
               git checkout staging
               git reset --hard origin/staging
             else
-              echo "⚠ La rama 'staging' no existe en remoto. Usando 'main'."
-              git checkout main
-              git reset --hard origin/main
+              echo "❌ La rama 'staging' no existe en remoto. Abortando."
+              exit 1
             fi
 
-            # Crear archivo .env con variables de entorno
+            # Crear archivo .env
             echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" > .env
             echo "MANYCHAT_API_KEY=${{ secrets.MANYCHAT_API_KEY }}" >> .env
             echo "ACCESS_TOKEN_EXPIRE_MINUTES=${{ secrets.ACCESS_TOKEN_EXPIRE_MINUTES }}" >> .env
@@ -69,29 +69,29 @@ jobs:
             pip install --upgrade pip
             pip install -r requirements.txt
 
-            # Instalar PM2 si no está instalado
+            # Instalar PM2 si no está
             if ! command -v pm2 &> /dev/null; then
               echo "Instalando PM2 globalmente..."
-              sudo npm install -g pm2
+              npm install -g pm2
             fi
 
-            # Detener la app si está corriendo
-            pm2 delete brain-backend || true
+            # Detener proceso anterior si existe
+            pm2 stop "$PM2_PROCESS_NAME" || true
 
-            # Ejecutar la app con PM2
-            pm2 start "python run.py" --name "brain-backend"
+            # Iniciar el backend con PM2
+            pm2 start run.py --name "$PM2_PROCESS_NAME" --interpreter python3
+
+            # Guardar configuración de PM2 para reinicios automáticos
             pm2 save
 
-            # Esperar 5 segundos para dar tiempo a que arranque
+            # Verificar si la app responde
             sleep 5
-
-            # Verificar si la app está corriendo desde el dominio
             if curl -sk --max-time 10 "$APP_DOMAIN" > /dev/null; then
               echo "✅ La app está corriendo correctamente en $APP_DOMAIN"
             else
               echo "❌ Error: la app no respondió en $APP_DOMAIN"
-              echo "🔍 Mostrando logs de PM2:"
-              pm2 logs brain-backend --lines 20
+              pm2 logs "$PM2_PROCESS_NAME" --lines 20
               exit 1
             fi
           ENDSSH
+      
