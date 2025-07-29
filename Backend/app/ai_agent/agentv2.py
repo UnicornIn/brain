@@ -20,7 +20,7 @@ import pymongo
 from pymongo import MongoClient
 from motor.motor_asyncio import AsyncIOMotorClient
 
-from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.prompts import ChatPromptTemplate   
 from langchain_core.output_parsers import JsonOutputParser, StrOutputParser
 from langchain_huggingface import HuggingFaceEndpoint
 
