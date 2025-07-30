@@ -23,7 +23,7 @@ app.include_router(ws_router)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000", "http://127.0.0.1:3000",
-                   "https://appbrain.rizosfelices.co"],
+                   "https://appbrain.rizosfelices.co","https://staging-app.rizosfelices.co"],
     allow_credentials=True,
     allow_methods=["*"],  # Permite todos los métodos
     allow_headers=["*"],  # Permite todos los headers

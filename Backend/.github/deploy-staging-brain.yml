@@ -29,7 +29,8 @@ jobs:
             APP_DOMAIN="https://staging-brain.rizosfelices.co"
             PM2_PROCESS_NAME="brain-backend"
 
-            # Si el proyecto no existe, clona el repo
+            echo "==== DEPLOY INICIADO ===="
+
             if [ ! -d "$PROJECT_PATH" ]; then
               mkdir -p /home/ubuntu
               cd /home/ubuntu
@@ -38,7 +39,6 @@ jobs:
 
             cd $PROJECT_PATH
 
-            # Asegurar que la rama staging existe
             git fetch origin
             if git show-ref --verify --quiet refs/remotes/origin/staging; then
               git checkout staging
@@ -48,7 +48,6 @@ jobs:
               exit 1
             fi
 
-            # Crear archivo .env
             echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" > .env
             echo "MANYCHAT_API_KEY=${{ secrets.MANYCHAT_API_KEY }}" >> .env
             echo "ACCESS_TOKEN_EXPIRE_MINUTES=${{ secrets.ACCESS_TOKEN_EXPIRE_MINUTES }}" >> .env
@@ -60,31 +59,28 @@ jobs:
             echo "CORREO_REMITENTE=${{ secrets.CORREO_REMITENTE }}" >> .env
             echo "CONTRASENA_APLICACION=${{ secrets.CONTRASENA_APLICACION }}" >> .env
 
-            # Crear entorno virtual si no existe
             if [ ! -d "venv" ]; then
               python3 -m venv venv
             fi
 
             source venv/bin/activate
-            pip install --upgrade pip
-            pip install -r requirements.txt
 
-            # Instalar PM2 si no está
+            pip cache purge || true
+            pip install --upgrade pip
+            pip install -r requirements.txt --no-cache-dir
+
             if ! command -v pm2 &> /dev/null; then
-              echo "Instalando PM2 globalmente..."
-              npm install -g pm2
+              echo "Instalando Node y PM2..."
+              curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+              sudo apt-get install -y nodejs
+              sudo npm install -g pm2
             fi
 
-            # Detener proceso anterior si existe
             pm2 stop "$PM2_PROCESS_NAME" || true
-
-            # Iniciar el backend con PM2
             pm2 start run.py --name "$PM2_PROCESS_NAME" --interpreter python3
-
-            # Guardar configuración de PM2 para reinicios automáticos
             pm2 save
+            
 
-            # Verificar si la app responde
             sleep 5
             if curl -sk --max-time 10 "$APP_DOMAIN" > /dev/null; then
               echo "✅ La app está corriendo correctamente en $APP_DOMAIN"
@@ -93,6 +89,6 @@ jobs:
               pm2 logs "$PM2_PROCESS_NAME" --lines 20
               exit 1
             fi
+
+            echo "==== DEPLOY COMPLETADO ===="
           ENDSSH
-      
-# test
