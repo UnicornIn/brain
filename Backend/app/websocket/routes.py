@@ -14,7 +14,11 @@ async def websocket_endpoint(websocket: WebSocket):
     except WebSocketDisconnect:
         active_connections.remove(websocket)
 
-async def notify_all(message: str):
-    for connection in active_connections:
-        await connection.send_text(message)
+async def notify_all(message: dict):
+    for connection in active_connections[:]:
+        try:
+            await connection.send_json(message)
+        except:
+            active_connections.remove(connection)
+
 
