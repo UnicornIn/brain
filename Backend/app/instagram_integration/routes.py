@@ -9,7 +9,7 @@ router = APIRouter()
 
 
 
-@router.post("/send/instagram")
+@router.post("/send")
 async def send_message_instagram(data: InstagramSendMessage, user: str = Depends(get_current_user)):
     """
     Sends a message to an Instagram user using the Messenger API.
