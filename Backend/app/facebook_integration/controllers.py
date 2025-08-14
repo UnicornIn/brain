@@ -34,3 +34,28 @@ async def send_messenger_message(user_id: str, message: str):
 
     print("📤 Enviado a Messenger:", response.status_code, response.text)
     return response.json()
+
+
+async def get_messenger_user_name(psid: str) -> dict:
+    url = f"https://graph.facebook.com/v19.0/{psid}"
+    params = {
+        "fields": "first_name,last_name,profile_pic",
+        "access_token": PAGE_ACCESS_TOKEN
+    }
+
+    async with httpx.AsyncClient() as client:
+        response = await client.get(url, params=params)
+        if response.status_code == 200:
+            data = response.json()
+            return {
+                "name": f"{data.get('first_name', '')} {data.get('last_name', '')}".strip(),
+                "profile_pic": data.get("profile_pic")
+            }
+        else:
+            print("Error:", response.status_code, response.text)
+            return {
+                "name": "Desconocido",
+                "profile_pic": None
+            }
+
+

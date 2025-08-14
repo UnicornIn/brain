@@ -49,8 +49,7 @@ async def meta_webhook(request: Request):
     except Exception:
         pass
 
-    # 🔄 Notifica por WebSocket a todos los conectados
-    await notify_all(json.dumps(body))
+    await notify_all(json.dumps(body))  # WebSocket debug
 
     object_type = body.get("object", "")
     if "entry" not in body:
@@ -62,20 +61,18 @@ async def meta_webhook(request: Request):
         if "changes" in entry:
             for change in entry.get("changes", []):
                 value = change.get("value", {})
-                metadata = value.get("metadata", {})
                 for msg in value.get("messages", []):
                     wa_id = msg.get("from")
                     text = msg.get("text", {}).get("body", "")
                     profile_name = value.get("contacts", [{}])[0].get("profile", {}).get("name", "")
                     timestamp = datetime.now(pytz.timezone('America/Bogota'))
 
-                    # Mantengo tu código intacto
                     new_message = {
                         "sender": "user",
-                        "content": text,    
+                        "content": text,
                         "timestamp": timestamp
                     }
-                    # Creo un objeto extendido para enviar por WebSocket
+
                     ws_message = {
                         "user_id": wa_id,
                         "conversation_id": wa_id,
@@ -85,22 +82,26 @@ async def meta_webhook(request: Request):
                         "direction": "inbound",
                         "remitente": profile_name or wa_id
                     }
-                    # Guardo en la base de datos
+
+                    existing = messages_collection.find_one({"user_id": wa_id, "platform": "whatsapp"})
+                    update_data = {
+                        "$set": {
+                            "last_message": text,
+                            "timestamp": timestamp
+                        },
+                        "$inc": {"unread": 1},
+                        "$push": {"messages": new_message}
+                    }
+                    if not existing:
+                        update_data["$set"]["name"] = profile_name
+
                     messages_collection.update_one(
                         {"user_id": wa_id, "platform": "whatsapp"},
-                        {
-                            "$set": {
-                                "name": profile_name,
-                                "last_message": text,
-                                "timestamp": timestamp
-                            },
-                            "$inc": {"unread": 1},
-                            "$push": {"messages": new_message}
-                        },
+                        update_data,
                         upsert=True
                     )
+
                     print(f"[WhatsApp] {profile_name or wa_id}: {text}")
-                    # Enviar por WebSocket el mensaje extendido
                     await notify_all(ws_message)
 
         # 💬 FACEBOOK MESSENGER
@@ -117,19 +118,24 @@ async def meta_webhook(request: Request):
                         "timestamp": timestamp
                     }
 
+                    existing = messages_collection.find_one({"user_id": sender_id, "platform": "messenger"})
+                    update_data = {
+                        "$set": {
+                            "last_message": message_text,
+                            "timestamp": timestamp
+                        },
+                        "$inc": {"unread": 1},
+                        "$push": {"messages": new_message}
+                    }
+                    if not existing:
+                        update_data["$set"]["name"] = None
+
                     messages_collection.update_one(
                         {"user_id": sender_id, "platform": "messenger"},
-                        {
-                            "$set": {
-                                "name": None,
-                                "last_message": message_text,
-                                "timestamp": timestamp
-                            },
-                            "$inc": {"unread": 1},
-                            "$push": {"messages": new_message}
-                        },
+                        update_data,
                         upsert=True
                     )
+                    await notify_all()
                     print(f"[Messenger] {sender_id}: {message_text}")
 
         # 📷 INSTAGRAM
@@ -147,21 +153,36 @@ async def meta_webhook(request: Request):
                         "timestamp": timestamp
                     }
 
+                    ws_message = {
+                        "user_id": sender_id,
+                        "conversation_id": sender_id,
+                        "platform": "instagram",
+                        "text": message_text,
+                        "timestamp": timestamp.isoformat(),
+                        "direction": "inbound",
+                        "remitente": sender_id
+                    }
+
+                    existing = messages_collection.find_one({"user_id": sender_id, "platform": "instagram"})
+                    update_data = {
+                        "$set": {
+                            "last_message": message_text,
+                            "timestamp": timestamp
+                        },
+                        "$inc": {"unread": 1},
+                        "$push": {"messages": new_message}
+                    }
+                    if not existing:
+                        update_data["$set"]["name"] = "Desconocido"
+
                     messages_collection.update_one(
                         {"user_id": sender_id, "platform": "instagram"},
-                        {
-                            "$set": {
-                                "name": None,
-                                "last_message": message_text,
-                                "timestamp": timestamp
-                            },
-                            "$inc": {"unread": 1},
-                            "$push": {"messages": new_message}
-                        },
+                        update_data,
                         upsert=True
                     )
 
                     print(f"[Instagram] {sender_id}: {message_text}")
+                    await notify_all(ws_message)
 
     return {"status": "received"}
 

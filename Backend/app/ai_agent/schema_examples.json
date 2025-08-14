@@ -1,0 +1,3645 @@
+{
+  "DataUser": {
+    "alerts": {
+      "fields": [
+        "metadata",
+        "conversation_id",
+        "user_message",
+        "_id",
+        "contact_info",
+        "created_at",
+        "assistant_response",
+        "status",
+        "updated_at",
+        "channel",
+        "timestamp",
+        "subscriber_id"
+      ],
+      "samples": [
+        {
+          "_id": "683f2ddf6573eb9cc6514c5c",
+          "conversation_id": "conv_1748970637.619672_657259092",
+          "subscriber_id": "657259092",
+          "channel": "whatsapp",
+          "user_message": "Hacen permanentes.",
+          "assistant_response": "Un momento por favor.",
+          "contact_info": {
+            "whatsappphone": "573023751183"
+          },
+          "timestamp": "2025-06-03T17:10:37.619000",
+          "status": "resolved",
+          "created_at": "2025-06-03T12:16:15.184000",
+          "metadata": {
+            "thread_id": "thread_US1oroaIkthkxQEN1mDZwahI",
+            "source": "manychat"
+          },
+          "updated_at": "2025-06-03T17:52:46.400000"
+        },
+        {
+          "_id": "683f6badebd487cf935048bf",
+          "conversation_id": "conv_1748974549.592083_393689180",
+          "subscriber_id": "393689180",
+          "channel": "whatsapp",
+          "user_message": "Tienes sede en china ?.",
+          "assistant_response": "Un momento por favor.",
+          "contact_info": {
+            "whatsappphone": "573175938249"
+          },
+          "timestamp": "2025-06-03T22:15:49.592000",
+          "status": "resolved",
+          "created_at": "2025-06-03T21:39:57.092000",
+          "metadata": {
+            "thread_id": "thread_3xrB849GEsVr5UvvyBFCxynd",
+            "source": "manychat",
+            "alert_created": true
+          },
+          "updated_at": "2025-06-03T21:40:23.978000"
+        },
+        {
+          "_id": "683f6badebd487cf935048c0",
+          "conversation_id": "conv_1748985460.225309_725555952",
+          "subscriber_id": "725555952",
+          "channel": "whatsapp",
+          "user_message": "Y tienen productos para el cabello.",
+          "assistant_response": "Un momento por favor.",
+          "contact_info": {
+            "whatsappphone": "573225909265"
+          },
+          "timestamp": "2025-06-03T21:17:40.225000",
+          "status": "resolved",
+          "created_at": "2025-06-03T21:39:57.115000",
+          "metadata": {
+            "thread_id": "thread_LSIkHykmVMgc5xmksfsQZcHr",
+            "source": "manychat"
+          },
+          "updated_at": "2025-06-04T13:01:49.105000"
+        },
+        {
+          "_id": "683f6bbbef19630be655257f",
+          "conversation_id": "conv_1748974152.817973_393689180",
+          "subscriber_id": "393689180",
+          "channel": "whatsapp",
+          "user_message": "Hola tienes sede en china ?.",
+          "assistant_response": "Un momento por favor. ",
+          "contact_info": {
+            "whatsappphone": "573175938249"
+          },
+          "timestamp": "2025-06-03T18:09:12.817000",
+          "status": "resolved",
+          "created_at": "2025-06-03T16:40:11.298000",
+          "metadata": {
+            "thread_id": "thread_7KqSNp8Edb03HsDvG6YDF0kn",
+            "source": "manychat"
+          },
+          "updated_at": "2025-06-04T13:01:49.094000"
+        },
+        {
+          "_id": "683f6bbbef19630be6552580",
+          "conversation_id": "conv_1748974295.636298_393689180",
+          "subscriber_id": "393689180",
+          "channel": "whatsapp",
+          "user_message": "Tienes sede en Japón?.",
+          "assistant_response": "Un momento por favor. ",
+          "contact_info": {
+            "whatsappphone": "573175938249"
+          },
+          "timestamp": "2025-06-03T22:11:35.636000",
+          "status": "resolved",
+          "created_at": "2025-06-03T16:40:11.469000",
+          "metadata": {
+            "thread_id": "thread_LwHZe8GUB5TVrn7zLyvySOfZ",
+            "source": "manychat"
+          },
+          "updated_at": "2025-06-03T21:40:25.174000"
+        },
+        {
+          "_id": "683f6bbbef19630be6552581",
+          "conversation_id": "conv_1748985603.596018_725555952",
+          "subscriber_id": "725555952",
+          "channel": "whatsapp",
+          "user_message": "Muchas gracias y tienes sede en china.",
+          "assistant_response": "Un momento por favor. No se encontró información sobre una sede en China en los documentos disponibles. Si deseas más información específica sobre sedes en otro país o algún otro tema, por favor házmelo saber. ¿En qué más puedo ayudarte hoy?",
+          "contact_info": {
+            "whatsappphone": "573225909265"
+          },
+          "timestamp": "2025-06-03T21:20:03.596000",
+          "status": "resolved",
+          "created_at": "2025-06-03T16:40:11.639000",
+          "metadata": {
+            "thread_id": "thread_B2xOELXEwzstIvtXEcySEkI0",
+            "source": "manychat"
+          },
+          "updated_at": "2025-06-04T13:01:48.894000"
+        },
+        {
+          "_id": "683f6f83ef19630be6552582",
+          "conversation_id": "conv_1748987363.774052_393689180",
+          "subscriber_id": "393689180",
+          "channel": "whatsapp",
+          "user_message": "tienen sede en china?.",
+          "assistant_response": "Un momento por favor. No se encontró información sobre sedes de Rizos Felices en China en los documentos proporcionados. Para obtener información más detallada sobre la presencia de Rizos Felices en China, te recomendaría contactar directamente a través del canal principal de atención por WhatsApp o redes sociales. ¿Hay algo más en lo que pueda ayudarte?",
+          "contact_info": {
+            "whatsappphone": "573175938249"
+          },
+          "timestamp": "2025-06-03T21:49:23.774000",
+          "status": "resolved",
+          "created_at": "2025-06-03T16:56:18.938000",
+          "metadata": {
+            "thread_id": "thread_3cPdZAGM1DREHubKAsfxX8BS",
+            "source": "manychat"
+          },
+          "updated_at": "2025-06-04T13:01:45.085000"
+        },
+        {
+          "_id": "6849d0b5d134afcf8f493b7a",
+          "conversation_id": "conv_1749656978.161563_9981083708670930",
+          "subscriber_id": "9981083708670930",
+          "channel": "facebook",
+          "user_message": "Buenos días, ¿los niños deben ser crespos?",
+          "assistant_response": "Un momento por favor.",
+          "contact_info": {
+            "gender": "female"
+          },
+          "timestamp": "2025-06-11T15:49:38.161000",
+          "status": "resolved",
+          "created_at": "2025-06-11T13:53:40.865000",
+          "metadata": {
+            "thread_id": "thread_OLTJJWERO9hahESrJBOjQOMS",
+            "source": "manychat"
+          },
+          "updated_at": "2025-06-16T16:45:50.085000"
+        },
+        {
+          "_id": "6849d0b5d134afcf8f493b7b",
+          "conversation_id": "conv_1749657231.454772_9981083708670930",
+          "subscriber_id": "9981083708670930",
+          "channel": "facebook",
+          "user_message": "Tengo una niña que es ondulada",
+          "assistant_response": "Un momento por favor",
+          "contact_info": {
+            "gender": "female"
+          },
+          "timestamp": "2025-06-11T15:53:51.454000",
+          "status": "resolved",
+          "created_at": "2025-06-11T13:53:41.022000",
+          "metadata": {
+            "thread_id": "thread_d6Z53DBEVTsLZvAM1gismUIj",
+            "source": "manychat"
+          },
+          "updated_at": "2025-06-16T16:45:49.375000"
+        },
+        {
+          "_id": "684fa96596aedcbae526feb3",
+          "conversation_id": "conv_1750017057.497939_9965513826889036",
+          "subscriber_id": "9965513826889036",
+          "channel": "facebook",
+          "user_message": "Hola me gustaría un curso on line",
+          "assistant_response": "Un momento por favor.",
+          "contact_info": {
+            "gender": "female"
+          },
+          "timestamp": "2025-06-15T19:50:57.497000",
+          "status": "resolved",
+          "created_at": "2025-06-16T00:19:32.835000",
+          "metadata": {
+            "thread_id": "thread_T8C8a4mAQxL1uFuQdQEs4GBp",
+            "source": "manychat"
+          },
+          "updated_at": "2025-06-16T16:45:48.736000"
+        }
+      ]
+    },
+    "message": {
+      "fields": [
+        "last_interaction",
+        "user_identifiers",
+        "conversation_id",
+        "_id",
+        "assistant_response",
+        "metadata",
+        "user_input",
+        "channel",
+        "subscriber_id",
+        "alert_created"
+      ],
+      "samples": [
+        {
+          "_id": "683f8fb07bcdc4285ab24998",
+          "conversation_id": "conv_1748996016.411849_1142809890",
+          "subscriber_id": "1142809890",
+          "channel": "facebook",
+          "user_input": "Hola tienes sede en Vietnam ?",
+          "assistant_response": "¡Hola! En Vietnam actualmente no contamos con una sede de Rizos Felices. Sin embargo, si estás interesado en nuestros productos o servicios, te invito a contactarnos a través de nuestro canal principal de atención por WhatsApp para preguntar por distribuidores en tu país. ¿Te puedo ayudar con algo más? 😊",
+          "last_interaction": "2025-06-03T19:13:36.411000",
+          "user_identifiers": {
+            "gender": "female"
+          },
+          "metadata": {
+            "thread_id": "thread_U2ibpe0Na3NvIbhvxpdOp92M",
+            "source": "manychat"
+          }
+        },
+        {
+          "_id": "683f8fe97bcdc4285ab2499b",
+          "conversation_id": "conv_1748996073.139863_247058493",
+          "subscriber_id": "247058493",
+          "channel": "instagram",
+          "user_input": "{{cuf_12930019}}",
+          "assistant_response": "Un momento por favor.",
+          "last_interaction": "2025-06-03T19:14:33.139000",
+          "user_identifiers": {
+            "ig_username": "luiisafbs"
+          },
+          "metadata": {
+            "thread_id": "thread_RbEmx1IkhtXo7239aVkjHDYX",
+            "source": "manychat"
+          }
+        },
+        {
+          "_id": "684044427c149aacc9a63618",
+          "conversation_id": "conv_1749042242.220348_1142809890",
+          "subscriber_id": "1142809890",
+          "channel": "facebook",
+          "user_input": "Para corte",
+          "assistant_response": "¿En qué ciudad te gustaría agendar tu corte? ¡Por favor, indícame la ciudad para poder brindarte la información de la sede más cercana, horarios y contacto por WhatsApp! 😊",
+          "last_interaction": "2025-06-04T13:04:02.220000",
+          "user_identifiers": {
+            "gender": "female"
+          },
+          "metadata": {
+            "thread_id": "thread_oNwNpx4TD4jX9xxV2LvvbMIt",
+            "source": "manychat"
+          }
+        },
+        {
+          "_id": "684044917c149aacc9a63619",
+          "conversation_id": "conv_1749042321.506491_1142809890",
+          "subscriber_id": "1142809890",
+          "channel": "facebook",
+          "user_input": "En medellín",
+          "assistant_response": "¡Hola! En Medellín contamos con varias sedes de Rizos Felices. ¿En qué puedo ayudarte específicamente en esta ciudad? 😊",
+          "last_interaction": "2025-06-04T13:05:21.506000",
+          "user_identifiers": {
+            "gender": "female"
+          },
+          "metadata": {
+            "thread_id": "thread_XPsQn5DGAH1ceA0D7T2o8w8t",
+            "source": "manychat"
+          }
+        },
+        {
+          "_id": "68404e5f7c149aacc9a6361c",
+          "conversation_id": "conv_1749044831.442304_1075368113",
+          "subscriber_id": "1075368113",
+          "channel": "unknown",
+          "user_input": "Hola tienes cita en medellín?.",
+          "assistant_response": "Estoy aquí para ayudarte a:\n- 📍 Encontrar la sede más cercana\n- 📅 Agendar una cita\n- 🕐 Conocer horarios de atención\n- 📲 Acceder a los números de WhatsApp para atención en tu ciudad\n\nPuedes preguntarme cosas como:\n- ¿Cómo agendar una cita en Medellín?\n- ¿Cuál es el horario de atención en la sede de Medellín?\n- ¿Tienen disponibilidad para cita en Medellín?\n\nCuéntame, ¿en qué te puedo ayudar hoy? 😊",
+          "last_interaction": "2025-06-04T13:47:11.442000",
+          "user_identifiers": {},
+          "metadata": {
+            "thread_id": "thread_R6H9GhTlCDGJBds49qMWJMCC",
+            "source": "manychat"
+          }
+        },
+        {
+          "_id": "68404fa17c149aacc9a63620",
+          "conversation_id": "conv_1749045153.820778_1075368113",
+          "subscriber_id": "1075368113",
+          "channel": "unknown",
+          "user_input": "Que sedes hay disponibles en medellín?Tienen disponibilidad para cita en medellín?Hola tienes cita en medellín?.",
+          "assistant_response": "¡Hola! En Medellín contamos con las siguientes sedes disponibles:\n1. Poblado: Carrera 43A # 6 SUR - 26, Local 320-321, C.C. Río Sur (frente al C.C. Oviedo). Horario de 8:00 am a 6:00 pm. Teléfono: 321 618 7656.\n2. Suramericana: Calle 49 B # 65-36 Local 105 B, C.C. Los Sauces. Horario de 8:00 am a 6:00 pm. Teléfono: 314 719 3009.\n3. Av. Oriental: Carrera 47 # 52-122, C.C. El Paso, Local 206. Horario de 9:00 am a 6:00 pm. Teléfono: 324 534 5757.\n\nSi deseas agendar una cita en Medellín, puedes contactar directamente a la sede de tu preferencia a través de WhatsApp. ¿En qué sede te gustaría agendar tu cita? ¡Déjame saber si necesitas más detalles! 😊",
+          "last_interaction": "2025-06-04T13:52:33.820000",
+          "user_identifiers": {},
+          "metadata": {
+            "thread_id": "thread_d401kCAJmWckkIEZ8F4OgKky",
+            "source": "manychat"
+          }
+        },
+        {
+          "_id": "6840559e7c149aacc9a63621",
+          "conversation_id": "conv_1749046686.502347_393689180",
+          "subscriber_id": "393689180",
+          "channel": "unknown",
+          "user_input": "Como defino mi cabello onduladoY tienes sede México ?Y si puedo agendar citaque costo tienen los productos?Que precio tiene el despunte en cabello rizado?Es en Bogotá NizaSi quiero agendar cita en Nizay cuanto cuestan los productos?Cita en Bogotá.",
+          "assistant_response": "¡Hola! \nEstoy aquí para ayudarte a:\n- 📍 Encontrar la sede más cercana\n- 📅 Agendar una cita\n- 💸 Conocer los precios de los productos\n\nPuedes preguntarme cosas como:\n- ¿Cuál es la sede de Rizos Felices en México?\n- ¿Cómo agendo una cita en Bogotá?\n- ¿Cuál es el precio del despunte en cabello rizado?\n\nPara definir tu cabello ondulado, puedes aplicar crema o gel sobre el cabello húmedo y hacer scrunch para formar las ondas. Si estás en Ciudad de México, puedes contactarnos por WhatsApp al +52 8184701191. ¿En qué ciudad te gustaría agendar la cita? ¡Escríbeme tus dudas! 😉",
+          "last_interaction": "2025-06-04T14:18:06.502000",
+          "user_identifiers": {},
+          "metadata": {
+            "thread_id": "thread_XCoXJv5tn2J4Vm6D8f9CbGdQ",
+            "source": "manychat"
+          }
+        },
+        {
+          "_id": "6841e8e67c149aacc9a63622",
+          "conversation_id": "conv_1749149926.615555_1942709477",
+          "subscriber_id": "1942709477",
+          "channel": "unknown",
+          "user_input": "Muchas gracias.",
+          "assistant_response": "¡Hola! En Rizos Felices podemos ayudarte con:\n- Ubicar la sede más cercana a ti.\n- Agendar una cita en nuestro centro.\n- Conocer los horarios de atención.\n- Contactarnos a través de WhatsApp.\n\n¿En qué puedo asistirte hoy? 😊 ¡Escríbeme tu consulta!",
+          "last_interaction": "2025-06-05T18:58:46.615000",
+          "user_identifiers": {},
+          "metadata": {
+            "thread_id": "thread_ksjYJg7tESWaPSrXziugOSLH",
+            "source": "manychat"
+          }
+        },
+        {
+          "_id": "68430e307c149aacc9a63623",
+          "conversation_id": "conv_1749225008.643888_24233452916239081",
+          "subscriber_id": "24233452916239081",
+          "channel": "facebook",
+          "user_input": "Hola! En donde se ubican",
+          "assistant_response": "¡Hola! En Rizos Felices contamos con sedes en varias ciudades. ¿En qué ciudad te gustaría saber la ubicación exacta de nuestras sedes? Puedo ayudarte con información sobre direcciones, horarios y contactos por WhatsApp. ¡Escríbeme tu consulta! 😊",
+          "last_interaction": "2025-06-06T15:50:08.643000",
+          "user_identifiers": {
+            "gender": "female"
+          },
+          "metadata": {
+            "thread_id": "thread_1uXmnl710MI24WuewQ9CGwCH",
+            "source": "manychat"
+          }
+        },
+        {
+          "_id": "684325357c149aacc9a63624",
+          "conversation_id": "conv_1749230901.717255_9736511983142269",
+          "subscriber_id": "9736511983142269",
+          "channel": "facebook",
+          "user_input": "Hola buena tarde, como puedo adquirir sus productos",
+          "assistant_response": "¡Hola! En Rizos Felices puedes adquirir nuestros productos de diferentes maneras:\n\n1. Visita alguna de nuestras sedes en Colombia, Ecuador o México para adquirirlos directamente.\n2. Contáctanos por WhatsApp en el número correspondiente a la sede más cercana para conocer nuestros productos y realizar una compra.\n3. Si te encuentras en otro país, podemos informarte sobre distribuidores o puntos de venta cercanos.\n\n¿En qué ciudad te encuentras actualmente o cómo quieres proceder para adquirir nuestros productos? ¡Estoy aquí para ayudarte! 😊",
+          "last_interaction": "2025-06-06T17:28:21.717000",
+          "user_identifiers": {
+            "gender": "female"
+          },
+          "metadata": {
+            "thread_id": "thread_hii2iWGlufj0JdxcL6Xh29fd",
+            "source": "manychat"
+          }
+        }
+      ]
+    },
+    "community": {
+      "fields": [
+        "description",
+        "members",
+        "image_url",
+        "id",
+        "_id",
+        "url",
+        "created_at",
+        "title"
+      ],
+      "samples": [
+        {
+          "_id": "68531ce6dfeeadb9ff4735b4",
+          "id": "2a7517d0-9a72-4d37-89c6-18efee81ac6b",
+          "title": "RIZOS FELICES PROFESSIONAL",
+          "description": "Una comunidad diseñada para estilistas de alto nivel, comprometidos con la excelencia en el cuidado del cabello rizado.",
+          "url": "rizosfelicesprofessional",
+          "members": 6,
+          "created_at": "2025-06-18T20:09:10.162455",
+          "image_url": "https://imgbrain.s3.us-east-1.amazonaws.com/communities/39afabdc-dcc9-40d9-9898-3a5b71f6a0fc.jpg"
+        }
+      ]
+    },
+    "appointment": {
+      "fields": [
+        "Apellido",
+        "Teléfono",
+        "Prestador",
+        "N° de Cliente",
+        "Servicio",
+        "Comentario interno",
+        "Estado",
+        "Precio lista",
+        "E-mail",
+        "ID pago",
+        "Fecha de realización",
+        "Sesiones Totales",
+        "Local",
+        "_id",
+        "Fecha de creación",
+        "Origen",
+        "Responsable creación",
+        "Preferencia Cliente",
+        "Responsable última modificación",
+        "Fecha pago",
+        "Precio real",
+        "Nombre",
+        "Fecha última modificación",
+        "Estado de pago",
+        "N",
+        "Notas compartidas con cliente",
+        "Nº de sesión"
+      ],
+      "samples": [
+        {
+          "_id": "688a92196ffb94f9f7a2c826",
+          "Fecha de realización": "01/04/2025 16:30",
+          "Fecha de creación": "31/03/2025 15:57",
+          "Responsable creación": "rizosfelicesbarranquilla@gmail.com",
+          "Fecha última modificación": "01/04/2025 17:30",
+          "Responsable última modificación": "rizosfelicesbarranquilla@gmail.com",
+          "Local": "BARRANQUILLA RIZOS FELICES SALON",
+          "N° de Cliente": 131370287945682,
+          "Nombre": "Karol",
+          "Apellido": "Pelaez",
+          "E-mail": "karollpelaez05@gmail.com",
+          "Teléfono": "+573012560586",
+          "N": {
+            "º de identificación ": "104.572.1403"
+          },
+          "Servicio": "- CORTE FORMA: sin lavado, con refrescado ",
+          "Precio lista": 71500,
+          "Precio real": 70000,
+          "Nº de sesión": "NA",
+          "Sesiones Totales": "NA",
+          "Prestador": "KARINA",
+          "Estado": "Reservado",
+          "Estado de pago": "Pago asociado",
+          "Fecha pago": "01/04/2025 17:30",
+          "ID pago": 40119475,
+          "Notas compartidas con cliente": "¡Hola! Gracias por reservar tu cita con nosotros, será un enorme placer atenderte. \nPor favor lee con atención las indicaciones de cómo llevar tu cabello el día de la cita, las cuales le daremos via Whatsapp.\nRecuerda que en caso de cancelación o reagendamiento, este debe hacerse con mínimo 4 horas de anticipación, con el objetivo de poder darle este cupo a otro cliente en espera.\nAgradecemos tu atención.\n",
+          "Preferencia Cliente": "Sin Preferencia",
+          "Origen": "Manual"
+        },
+        {
+          "_id": "688a92196ffb94f9f7a2c827",
+          "Fecha de realización": "01/04/2025 16:00",
+          "Fecha de creación": "31/03/2025 18:19",
+          "Responsable creación": "rizosfelices.sura@gmail.com",
+          "Fecha última modificación": "01/04/2025 10:40",
+          "Responsable última modificación": "rizosfelices.sura@gmail.com",
+          "Local": "RIZOS FELICES SURAMERICANA SALÓN ",
+          "N° de Cliente": 2313702879461428,
+          "Nombre": "Jaider ",
+          "Apellido": "Zuluaga Lagos",
+          "E-mail": "correo@correo.com",
+          "Teléfono": "+573107462456",
+          "N": {
+            "º de identificación ": "x confirmar"
+          },
+          "Servicio": "- BARBERÍA",
+          "Precio lista": 35000,
+          "Precio real": 35000,
+          "Nº de sesión": "NA",
+          "Sesiones Totales": "NA",
+          "Prestador": "SERGIO HEREDIA",
+          "Estado": "En Espera",
+          "Estado de pago": "No pagada",
+          "Notas compartidas con cliente": "¡Hola! Gracias por reservar tu cita con nosotros, será un enorme placer atenderte. \nPor favor lee con atención las indicaciones de cómo llevar tu cabello el día de la cita, las cuales le daremos via Whatsapp.\nRecuerda que en caso de cancelación o reagendamiento, este debe hacerse con mínimo 4 horas de anticipación, con el objetivo de poder darle este cupo a otro cliente en espera.\nAgradecemos tu atención.\n",
+          "Comentario interno": "Amigo de Junior no realiza abono  ",
+          "Preferencia Cliente": "Sin Preferencia",
+          "Origen": "Manual"
+        },
+        {
+          "_id": "688a92196ffb94f9f7a2c828",
+          "Fecha de realización": "01/04/2025 16:00",
+          "Fecha de creación": "30/03/2025 15:15",
+          "Responsable creación": "lis94.fer@gmail.com",
+          "Fecha última modificación": "03/04/2025 11:35",
+          "Responsable última modificación": "rizosfelicespoblado@gmail.com",
+          "Local": "POBLADO RIZOS FELICES SALON",
+          "N° de Cliente": 13137024230,
+          "Nombre": "Elisa ",
+          "Apellido": "Rojas",
+          "E-mail": "elisarojas0795@gmail.com",
+          "Teléfono": "+573147370491",
+          "N": {
+            "º de identificación ": 1020470589
+          },
+          "Servicio": "- CORTE FORMA - lavado, def express, secado 70%",
+          "Precio lista": 88000,
+          "Precio real": 88000,
+          "Nº de sesión": "NA",
+          "Sesiones Totales": "NA",
+          "Prestador": "JAYLI ROMAÑA",
+          "Estado": "Asiste",
+          "Estado de pago": "Pago asociado",
+          "Fecha pago": "01/04/2025 11:28",
+          "ID pago": 40180875,
+          "Notas compartidas con cliente": "¡Hola! Gracias por reservar tu cita con nosotros, será un enorme placer atenderte. \nPor favor lee con atención las indicaciones de cómo llevar tu cabello el día de la cita, las cuales le daremos via Whatsapp.\nRecuerda que en caso de cancelación o reagendamiento, este debe hacerse con mínimo 4 horas de anticipación, con el objetivo de poder darle este cupo a otro cliente en espera.\nAgradecemos tu atención.\n",
+          "Comentario interno": "Pide. Ser atendida por Jayli \nPide la cita el 30 de marzo \nRealiza abono por 50.000",
+          "Preferencia Cliente": "Sin Preferencia",
+          "Origen": "Manual"
+        },
+        {
+          "_id": "688a92196ffb94f9f7a2c829",
+          "Fecha de realización": "01/04/2025 16:00",
+          "Fecha de creación": "29/03/2025 12:24",
+          "Responsable creación": "rizosfelices@gmail.com",
+          "Fecha última modificación": "07/04/2025 14:50",
+          "Responsable última modificación": "rizosfelices.sura@gmail.com",
+          "Local": "RIZOS FELICES SURAMERICANA SALÓN ",
+          "N° de Cliente": 13137022909,
+          "Nombre": "Matheo Hincapie",
+          "Apellido": "Perez",
+          "E-mail": "estucheshincapiel@gmail.com",
+          "Teléfono": "+573217351859",
+          "N": {
+            "º de identificación ": "T,I 102.589.6388"
+          },
+          "Servicio": "- CORTE FORMA - lavado, def express, secado 70%",
+          "Precio lista": 88000,
+          "Precio real": 88000,
+          "Nº de sesión": "NA",
+          "Sesiones Totales": "NA",
+          "Prestador": "LAURA FLOREZ",
+          "Estado": "Asiste",
+          "Estado de pago": "Pago asociado",
+          "Fecha pago": "01/04/2025 17:53",
+          "ID pago": 40121074,
+          "Notas compartidas con cliente": "¡Hola! Gracias por reservar tu cita con nosotros, será un enorme placer atenderte. \nPor favor lee con atención las indicaciones de cómo llevar tu cabello el día de la cita, las cuales le daremos via Whatsapp.\nRecuerda que en caso de cancelación o reagendamiento, este debe hacerse con mínimo 4 horas de anticipación, con el objetivo de poder darle este cupo a otro cliente en espera.\nAgradecemos tu atención.\n",
+          "Comentario interno": "OJOO SOLO ABONO 40,000 EL 29 MARZO TRANSF.\npide ser atendido única y excusivamente por laura ",
+          "Preferencia Cliente": "Prestador Seleccionado",
+          "Origen": "Manual"
+        },
+        {
+          "_id": "688a92196ffb94f9f7a2c82a",
+          "Fecha de realización": "01/04/2025 16:00",
+          "Fecha de creación": "01/04/2025 15:58",
+          "Responsable creación": "rizosfelices.sura@gmail.com",
+          "Fecha última modificación": "07/04/2025 14:50",
+          "Responsable última modificación": "rizosfelices.sura@gmail.com",
+          "Local": "RIZOS FELICES SURAMERICANA SALÓN ",
+          "N° de Cliente": 2313702879461457,
+          "Nombre": "Marta ",
+          "Apellido": "Hidalgo",
+          "E-mail": "camila.palacioh@gmail.com",
+          "Teléfono": "+573168334046",
+          "N": {
+            "º de identificación ": "4.309.5269"
+          },
+          "Servicio": "PRUEBA DE COLOR",
+          "Precio lista": 30000,
+          "Precio real": 90000,
+          "Nº de sesión": "NA",
+          "Sesiones Totales": "NA",
+          "Prestador": "LINA GUTIERREZ",
+          "Estado": "Asiste",
+          "Estado de pago": "Pago asociado",
+          "Fecha pago": "01/04/2025 17:54",
+          "ID pago": 40121119,
+          "Notas compartidas con cliente": "¡Hola! Gracias por reservar tu cita con nosotros, será un enorme placer atenderte. \nPor favor lee con atención las indicaciones de cómo llevar tu cabello el día de la cita, las cuales le daremos via Whatsapp.\nRecuerda que en caso de cancelación o reagendamiento, este debe hacerse con mínimo 4 horas de anticipación, con el objetivo de poder darle este cupo a otro cliente en espera.\nAgradecemos tu atención.\n",
+          "Comentario interno": "llega directamente al salón ",
+          "Preferencia Cliente": "Sin Preferencia",
+          "Origen": "Manual"
+        },
+        {
+          "_id": "688a92196ffb94f9f7a2c82b",
+          "Fecha de realización": "01/04/2025 15:30",
+          "Fecha de creación": "29/03/2025 12:08",
+          "Responsable creación": "rfbcedritos@gmail.com",
+          "Fecha última modificación": "01/04/2025 16:32",
+          "Responsable última modificación": "rfbcedritos@gmail.com",
+          "Local": "SUR OUTLET FACTORY",
+          "N° de Cliente": 2313702879461364,
+          "Nombre": "maria jose ",
+          "Apellido": "aguilar",
+          "E-mail": "angelapatriciabastidasrico@gmail.com",
+          "Teléfono": "+573115674734",
+          "N": {
+            "º de identificación ": "11.144.6999"
+          },
+          "Servicio": "- COMPLETO EXTRA ALTA",
+          "Precio lista": 165000,
+          "Precio real": 165000,
+          "Nº de sesión": "NA",
+          "Sesiones Totales": "NA",
+          "Prestador": "wendy salazar",
+          "Estado": "Asiste",
+          "Estado de pago": "Pago asociado",
+          "Fecha pago": "01/04/2025 16:32",
+          "ID pago": 40115082,
+          "Notas compartidas con cliente": "¡Hola! Gracias por reservar tu cita con nosotros, será un enorme placer atenderte. \nPor favor lee con atención las indicaciones de cómo llevar tu cabello el día de la cita, las cuales le daremos via Whatsapp.\nRecuerda que en caso de cancelación o reagendamiento, este debe hacerse con mínimo 4 horas de anticipación, con el objetivo de poder darle este cupo a otro cliente en espera.\nAgradecemos tu atención.\n",
+          "Comentario interno": "precio nuevo",
+          "Preferencia Cliente": "Sin Preferencia",
+          "Origen": "Manual"
+        },
+        {
+          "_id": "688a92196ffb94f9f7a2c82c",
+          "Fecha de realización": "01/04/2025 15:00",
+          "Fecha de creación": "31/03/2025 16:06",
+          "Responsable creación": "rizosfelicesbarranquilla@gmail.com",
+          "Fecha última modificación": "01/04/2025 16:10",
+          "Responsable última modificación": "rizosfelicesbarranquilla@gmail.com",
+          "Local": "BARRANQUILLA RIZOS FELICES SALON",
+          "N° de Cliente": 131370284330,
+          "Nombre": "Adriana ",
+          "Apellido": "Leon",
+          "E-mail": "tecrodante2023@gmail.com",
+          "Teléfono": "+573188277899",
+          "N": {
+            "º de identificación ": 60368299
+          },
+          "Servicio": "- CORTE FORMA - lavado, def express, secado 70%",
+          "Precio lista": 88000,
+          "Precio real": 88000,
+          "Nº de sesión": "NA",
+          "Sesiones Totales": "NA",
+          "Prestador": "KARINA",
+          "Estado": "Reservado",
+          "Estado de pago": "Pago asociado",
+          "Fecha pago": "01/04/2025 17:29",
+          "ID pago": 40119418,
+          "Notas compartidas con cliente": "¡Hola! Gracias por reservar tu cita con nosotros, será un enorme placer atenderte. \nPor favor lee con atención las indicaciones de cómo llevar tu cabello el día de la cita, las cuales le daremos via Whatsapp.\nRecuerda que en caso de cancelación o reagendamiento, este debe hacerse con mínimo 4 horas de anticipación, con el objetivo de poder darle este cupo a otro cliente en espera.\nAgradecemos tu atención.\n",
+          "Preferencia Cliente": "Sin Preferencia",
+          "Origen": "Manual"
+        },
+        {
+          "_id": "688a92196ffb94f9f7a2c82d",
+          "Fecha de realización": "01/04/2025 14:40",
+          "Fecha de creación": "27/03/2025 14:28",
+          "Responsable creación": "rizosfelicesbarranquilla@gmail.com",
+          "Fecha última modificación": "01/04/2025 16:10",
+          "Responsable última modificación": "rizosfelicesbarranquilla@gmail.com",
+          "Local": "BARRANQUILLA RIZOS FELICES SALON",
+          "N° de Cliente": 13137013883,
+          "Nombre": "María Jose",
+          "Apellido": "Teherán",
+          "E-mail": "Majovaneteran@outlook.com",
+          "Teléfono": "+573046442022",
+          "N": {
+            "º de identificación ": 1140880555
+          },
+          "Servicio": "- SERVICIO COMPLETO NIÑO  ALTA",
+          "Precio lista": 110000,
+          "Precio real": 110000,
+          "Nº de sesión": "NA",
+          "Sesiones Totales": "NA",
+          "Prestador": "KATHERINE CARRILLO",
+          "Estado": "Reservado",
+          "Estado de pago": "Pago asociado",
+          "Fecha pago": "01/04/2025 17:28",
+          "ID pago": 40119392,
+          "Notas compartidas con cliente": "¡Hola! Gracias por reservar tu cita con nosotros, será un enorme placer atenderte. \nPor favor lee con atención las indicaciones de cómo llevar tu cabello el día de la cita, las cuales le daremos via Whatsapp.\nRecuerda que en caso de cancelación o reagendamiento, este debe hacerse con mínimo 4 horas de anticipación, con el objetivo de poder darle este cupo a otro cliente en espera.\nAgradecemos tu atención.\n",
+          "Preferencia Cliente": "Sin Preferencia",
+          "Origen": "Manual"
+        },
+        {
+          "_id": "688a92196ffb94f9f7a2c82e",
+          "Fecha de realización": "01/04/2025 14:20",
+          "Fecha de creación": "31/03/2025 18:30",
+          "Responsable creación": "rfbcedritos@gmail.com",
+          "Fecha última modificación": "02/04/2025 10:09",
+          "Responsable última modificación": "rfbcedritos@gmail.com",
+          "Local": "RIZOS FELICES NORTE BULEVAR NIZA",
+          "N° de Cliente": 2313702879461429,
+          "Nombre": "Laura cristina ",
+          "Apellido": " González ",
+          "E-mail": "Cristinagonzalezlcg@gmail.com",
+          "Teléfono": "+573008896003",
+          "N": {
+            "º de identificación ": 1020793439
+          },
+          "Servicio": "- CORTE FORMA - lavado, def express, secado 70%",
+          "Precio lista": 88000,
+          "Precio real": 88000,
+          "Nº de sesión": "NA",
+          "Sesiones Totales": "NA",
+          "Prestador": "jonathan  gonzalez",
+          "Estado": "Asiste",
+          "Estado de pago": "Pago asociado",
+          "Fecha pago": "01/04/2025 14:59",
+          "ID pago": 40108470,
+          "Notas compartidas con cliente": "¡Hola! Gracias por reservar tu cita con nosotros, será un enorme placer atenderte. \nPor favor lee con atención las indicaciones de cómo llevar tu cabello el día de la cita, las cuales le daremos via Whatsapp.\nRecuerda que en caso de cancelación o reagendamiento, este debe hacerse con mínimo 4 horas de anticipación, con el objetivo de poder darle este cupo a otro cliente en espera.\nAgradecemos tu atención.\n",
+          "Comentario interno": "Abono 30 ",
+          "Preferencia Cliente": "Sin Preferencia",
+          "Origen": "Manual"
+        },
+        {
+          "_id": "688a92196ffb94f9f7a2c82f",
+          "Fecha de realización": "01/04/2025 14:00",
+          "Fecha de creación": "01/04/2025 09:08",
+          "Responsable creación": "lis94.fer@gmail.com",
+          "Fecha última modificación": "03/04/2025 11:45",
+          "Responsable última modificación": "rizosfelicespoblado@gmail.com",
+          "Local": "POBLADO RIZOS FELICES SALON",
+          "N° de Cliente": 2313702879461438,
+          "Nombre": "Erika Dayana ",
+          "Apellido": "León Quiroga",
+          "E-mail": "erikaleonq@gmail.com",
+          "Teléfono": "+573227101465",
+          "N": {
+            "º de identificación ": 1007848726
+          },
+          "Servicio": "- COMPLETO ALTA",
+          "Precio lista": 155000,
+          "Precio real": 155000,
+          "Nº de sesión": "NA",
+          "Sesiones Totales": "NA",
+          "Prestador": "Camila Cortez",
+          "Estado": "Asiste",
+          "Estado de pago": "Pago asociado",
+          "Fecha pago": "01/04/2025 11:35",
+          "ID pago": 40181253,
+          "Notas compartidas con cliente": "¡Hola! Gracias por reservar tu cita con nosotros, será un enorme placer atenderte. \nPor favor lee con atención las indicaciones de cómo llevar tu cabello el día de la cita, las cuales le daremos via Whatsapp.\nRecuerda que en caso de cancelación o reagendamiento, este debe hacerse con mínimo 4 horas de anticipación, con el objetivo de poder darle este cupo a otro cliente en espera.\nAgradecemos tu atención.\n",
+          "Comentario interno": "pide la cita el mismo dia \nrealiza abono por 50.000",
+          "Preferencia Cliente": "Sin Preferencia",
+          "Origen": "Manual"
+        }
+      ]
+    },
+    "members": {
+      "fields": [
+        "user_id",
+        "registration_date",
+        "city",
+        "community_id",
+        "full_name",
+        "role",
+        "country",
+        "_id",
+        "phone",
+        "email",
+        "has_completed_survey",
+        "status",
+        "join_reason"
+      ],
+      "samples": [
+        {
+          "_id": "6858995b8dd74c14788e7cd6",
+          "community_id": "2a7517d0-9a72-4d37-89c6-18efee81ac6b",
+          "user_id": "6858995b8dd74c14788e7cd5",
+          "full_name": "Pamela Arroyo",
+          "email": "interiorespamela@gmail.com",
+          "phone": "4435292888",
+          "join_reason": "",
+          "has_completed_survey": true,
+          "registration_date": "23/06/2025",
+          "role": "member",
+          "status": "active",
+          "country":"chile"
+        },
+        {
+          "_id": "68589a3d8dd74c14788e7cd8",
+          "community_id": "2a7517d0-9a72-4d37-89c6-18efee81ac6b",
+          "user_id": "68589a3d8dd74c14788e7cd7",
+          "full_name": "Erika Ivonne Silveira Acosta ",
+          "email": "silveiraerika1594@gmail.com",
+          "phone": "(+52)9991202792",
+          "join_reason": "",
+          "has_completed_survey": true,
+          "registration_date": "23/06/2025",
+          "role": "member",
+          "status": "active"
+        },
+        {
+          "_id": "68589c048dd74c14788e7cda",
+          "community_id": "2a7517d0-9a72-4d37-89c6-18efee81ac6b",
+          "user_id": "68589c048dd74c14788e7cd9",
+          "full_name": "Montserrat Perpuli Hallal",
+          "email": "montse.perpuli@gmail.com",
+          "phone": "6121568382",
+          "join_reason": "",
+          "has_completed_survey": true,
+          "registration_date": "23/06/2025",
+          "role": "member",
+          "status": "active"
+        },
+        {
+          "_id": "6858a8788dd74c14788e7cdc",
+          "community_id": "2a7517d0-9a72-4d37-89c6-18efee81ac6b",
+          "user_id": "6858a8788dd74c14788e7cdb",
+          "full_name": "Brenda Morales",
+          "email": "bmz.123@outlook.com",
+          "phone": "5543423552",
+          "join_reason": "",
+          "has_completed_survey": true,
+          "registration_date": "23/06/2025",
+          "role": "member",
+          "status": "active"
+        },
+        {
+          "_id": "6858a8e68dd74c14788e7cde",
+          "community_id": "2a7517d0-9a72-4d37-89c6-18efee81ac6b",
+          "user_id": "6858a8e68dd74c14788e7cdd",
+          "full_name": "Hector Cruz ",
+          "email": "hectorinmex@live.com.mx",
+          "phone": "5535751503",
+          "join_reason": "",
+          "has_completed_survey": true,
+          "registration_date": "23/06/2025",
+          "role": "member",
+          "status": "active"
+        },
+        {
+          "_id": "68598f428dd74c14788e7ce3",
+          "community_id": "2a7517d0-9a72-4d37-89c6-18efee81ac6b",
+          "user_id": "68598f428dd74c14788e7ce2",
+          "full_name": "Yazmin Dominguez",
+          "email": "yamin201511@gmail.com",
+          "phone": "7821084304",
+          "join_reason": "",
+          "has_completed_survey": true,
+          "registration_date": "23/06/2025",
+          "role": "member",
+          "status": "active"
+        },
+        {
+          "_id": "6859a8838dd74c14788e7ce5",
+          "community_id": "2a7517d0-9a72-4d37-89c6-18efee81ac6b",
+          "user_id": "6859a8838dd74c14788e7ce4",
+          "full_name": "Kathlen Viridiana García Laura ",
+          "email": "kathgarciahair@gmail.com",
+          "phone": "6651192010",
+          "join_reason": "",
+          "has_completed_survey": true,
+          "registration_date": "23/06/2025",
+          "role": "member",
+          "status": "active"
+        },
+        {
+          "_id": "685dd9bc8dd74c14788e7cf8",
+          "community_id": "2a7517d0-9a72-4d37-89c6-18efee81ac6b",
+          "user_id": "685dd9bc8dd74c14788e7cf7",
+          "full_name": "Ana Rosa Herrera Leon",
+          "email": "roxherrera1036@icloud.com",
+          "phone": "5652294921",
+          "join_reason": "",
+          "has_completed_survey": true,
+          "registration_date": "26/06/2025",
+          "role": "member",
+          "status": "active"
+        },
+        {
+          "_id": "685dd9dc8dd74c14788e7cfa",
+          "community_id": "2a7517d0-9a72-4d37-89c6-18efee81ac6b",
+          "user_id": "685dd9dc8dd74c14788e7cf9",
+          "full_name": "Daysi Cedillo Inclan",
+          "email": "day4diaz19@gmail.com",
+          "phone": "5536760223",
+          "join_reason": "",
+          "has_completed_survey": true,
+          "registration_date": "26/06/2025",
+          "role": "member",
+          "status": "active"
+        },
+        {
+          "_id": "6877c3923a3cfb62a7bc1fd6",
+          "community_id": "2a7517d0-9a72-4d37-89c6-18efee81ac6b",
+          "user_id": "6877c3923a3cfb62a7bc1fd5",
+          "full_name": "Junior Heredia",
+          "email": "srjuniorhg2@gmail.com",
+          "phone": "3006506416",
+          "join_reason": "",
+          "city": "Bello",
+          "country": "Colombia",
+          "has_completed_survey": true,
+          "registration_date": "16/07/2025",
+          "role": "member",
+          "status": "active"
+        }
+      ]
+    },
+    "contacts": {
+      "fields": [
+        "info",
+        "_id",
+        "last_updated",
+        "created_at",
+        "numero",
+        "unique_id",
+        "canal",
+        "subscriber_id"
+      ],
+      "samples": [
+        {
+          "_id": "683fa66d7c149aacc9a63614",
+          "subscriber_id": "1142809890",
+          "canal": "facebook",
+          "created_at": "2025-06-04T01:50:37.581000",
+          "last_updated": "2025-06-04T01:50:37.581000",
+          "unique_id": "01",
+          "info": {
+            "id": "1142809890",
+            "page_id": "391502007965579",
+            "user_refs": [],
+            "status": "active",
+            "first_name": "Luisa",
+            "last_name": "Bustamante",
+            "name": "Luisa Bustamante",
+            "gender": "female",
+            "profile_pic": "https://app.manychat.com/ava/1582357/1142809890/b79692d57f7040660d1c16583bd64b74",
+            "locale": "es_LA",
+            "language": "Spanish",
+            "timezone": "UTC±00",
+            "live_chat_url": "https://app.manychat.com/fb1582357/chat/1142809890",
+            "last_input_text": "Hola tienes sede en Vietnam ?",
+            "optin_phone": false,
+            "optin_email": false,
+            "subscribed": "2025-05-30T16:14:45-05:00",
+            "last_interaction": "2025-06-03T17:05:40-05:00",
+            "is_followup_enabled": true,
+            "optin_whatsapp": false,
+            "custom_fields": [
+              {
+                "id": 12930019,
+                "name": "user_input",
+                "type": "text",
+                "description": "",
+                "value": "Hola tienes sede en Vietnam ?"
+              }
+            ],
+            "tags": [],
+            "tt_optin": false
+          }
+        },
+        {
+          "_id": "683fa66d7c149aacc9a63615",
+          "subscriber_id": "247058493",
+          "canal": "instagram",
+          "created_at": "2025-06-04T01:50:37.908000",
+          "last_updated": "2025-06-04T01:50:37.908000",
+          "unique_id": "02",
+          "info": {
+            "id": "247058493",
+            "page_id": "391502007965579",
+            "user_refs": [],
+            "status": "active",
+            "first_name": "Luisa",
+            "last_name": "Bustamante",
+            "name": "Luisa Bustamante",
+            "profile_pic": "https://app.manychat.com/ava/1582357/247058493/7db01e595bed44f4b1c94d02d788f10e",
+            "timezone": "UTC±00",
+            "live_chat_url": "https://app.manychat.com/fb1582357/chat/247058493",
+            "last_input_text": "Quiero información sede poblado",
+            "optin_phone": false,
+            "optin_email": false,
+            "subscribed": "2025-06-03T12:34:20-05:00",
+            "ig_last_interaction": "2025-06-03T12:34:21-05:00",
+            "ig_last_seen": "2025-06-03T12:34:21-05:00",
+            "is_followup_enabled": true,
+            "ig_username": "luiisafbs",
+            "ig_id": 1128315612318239,
+            "optin_whatsapp": false,
+            "custom_fields": [],
+            "tags": [],
+            "tt_optin": false
+          }
+        },
+        {
+          "_id": "683fa67f9f87feff02e49358",
+          "subscriber_id": "482072757",
+          "canal": "tiktok",
+          "created_at": "2025-06-04T01:50:55.524000",
+          "info": {
+            "first_name": "Janna💋",
+            "last_name": "",
+            "phone": null,
+            "email": null,
+            "custom_fields": [
+              {
+                "id": 12957618,
+                "name": "Nombre y whatsapp",
+                "type": "text",
+                "description": "tiktok",
+                "value": "Janna moreno 3008546073"
+              }
+            ],
+            "tags": [],
+            "gender": null,
+            "locale": null,
+            "timezone": "UTC±00",
+            "subscribed": "2025-05-05T16:13:44-05:00",
+            "last_seen": null,
+            "status": "active",
+            "live_chat_url": "https://app.manychat.com/fb1582357/chat/482072757",
+            "tt_username": "janna_mj1",
+            "tt_user_id": "+dZj6I+kX0kdSIImZgtZqLa/d6yiBdTT3NAcXmIJaGLM4m1EYHEhpcWJZYlr96Q8",
+            "ig_username": null,
+            "ig_id": null,
+            "ig_last_interaction": null,
+            "page_id": "391502007965579",
+            "profile_pic": "https://app.manychat.com/ava/1582357/482072757/7437310709fe734d45129fbe86571ea4",
+            "last_interaction": null,
+            "optin_whatsapp": false
+          },
+          "last_updated": "2025-06-04T01:50:55.524000",
+          "numero": null,
+          "unique_id": "03"
+        },
+        {
+          "_id": "683fa6b89f87feff02e4935a",
+          "subscriber_id": "393689180",
+          "canal": "whatsapp",
+          "created_at": "2025-06-04T01:51:52.830000",
+          "info": {
+            "first_name": "Luisa",
+            "last_name": "Bustamante",
+            "phone": null,
+            "email": null,
+            "custom_fields": [
+              {
+                "id": 12930019,
+                "name": "user_input",
+                "type": "text",
+                "description": "",
+                "value": "Que precio tiene el despunte en cabello rizado?Es en Bogotá NizaSi quiero agendar cita en Nizay cuanto cuestan los productos?Cita en Bogotá."
+              },
+              {
+                "id": 13108152,
+                "name": "mensaje_completo",
+                "type": "text",
+                "description": "",
+                "value": "que costo tienen los productos?Que precio tiene el despunte en cabello rizado?Es en Bogotá NizaSi quiero agendar cita en Nizay cuanto cuestan los productos?Cita en Bogotá."
+              }
+            ],
+            "tags": [],
+            "gender": null,
+            "locale": null,
+            "timezone": "UTC±00",
+            "subscribed": "2025-05-31T22:23:39-05:00",
+            "last_seen": null,
+            "status": "active",
+            "live_chat_url": "https://app.manychat.com/fb1582357/chat/393689180",
+            "tt_username": null,
+            "tt_user_id": null,
+            "ig_username": null,
+            "ig_id": null,
+            "ig_last_interaction": null,
+            "page_id": "391502007965579",
+            "profile_pic": null,
+            "last_interaction": null,
+            "optin_whatsapp": true
+          },
+          "last_updated": "2025-06-04T01:51:52.830000",
+          "numero": "+573175938249",
+          "unique_id": "04"
+        },
+        {
+          "_id": "683fc14f7c149aacc9a63617",
+          "subscriber_id": "1374973470",
+          "canal": "whatsapp",
+          "created_at": "2025-06-04T03:45:19.727000",
+          "last_updated": "2025-06-04T13:54:36.898000",
+          "unique_id": "05",
+          "info": {
+            "first_name": "Naty",
+            "last_name": "Unicornio 🦄",
+            "phone": null,
+            "email": null,
+            "custom_fields": [
+              {
+                "id": 12930019,
+                "name": "user_input",
+                "type": "text",
+                "description": "",
+                "value": "quiero hacerme una permanente."
+              },
+              {
+                "id": 13108152,
+                "name": "mensaje_completo",
+                "type": "text",
+                "description": "",
+                "value": "Hola, tienen citas para mañana?quiero hacerme una permanente."
+              }
+            ],
+            "tags": [],
+            "gender": null,
+            "locale": null,
+            "timezone": "UTC±00",
+            "subscribed": "2025-06-03T22:11:15-05:00",
+            "last_seen": null,
+            "status": "active",
+            "live_chat_url": "https://app.manychat.com/fb1582357/chat/1374973470",
+            "tt_username": null,
+            "tt_user_id": null,
+            "ig_username": null,
+            "ig_id": null,
+            "ig_last_interaction": null,
+            "page_id": "391502007965579",
+            "profile_pic": null,
+            "last_interaction": null,
+            "optin_whatsapp": true
+          },
+          "numero": "+573023751183"
+        },
+        {
+          "_id": "68404f027c149aacc9a6361d",
+          "subscriber_id": "1075368113",
+          "canal": "whatsapp",
+          "created_at": "2025-06-04T13:49:54.846000",
+          "last_updated": "2025-06-04T13:55:33.343000",
+          "unique_id": "06",
+          "info": {
+            "first_name": "Vero",
+            "last_name": "mi diagnóstico mi diagnóstico Gómez",
+            "phone": null,
+            "email": null,
+            "custom_fields": [
+              {
+                "id": 12930019,
+                "name": "user_input",
+                "type": "text",
+                "description": "",
+                "value": "Tienen disponibilidad para cita en medellín?Hola tienes cita en medellín?."
+              },
+              {
+                "id": 13108152,
+                "name": "mensaje_completo",
+                "type": "text",
+                "description": "",
+                "value": "Que sedes hay disponibles en medellín?Tienen disponibilidad para cita en medellín?Hola tienes cita en medellín?."
+              },
+              {
+                "id": 11456345,
+                "name": "PLASTICIDAD",
+                "type": "text",
+                "description": "",
+                "value": "DIFICILMENTE"
+              },
+              {
+                "id": 11456406,
+                "name": "PERMEABILIDAD",
+                "type": "text",
+                "description": "Al mojar tu cabello, el agua entra:",
+                "value": "SE DEMORA EN MOJARSE"
+              },
+              {
+                "id": 11456438,
+                "name": "DENSIDAD",
+                "type": "text",
+                "description": "La cantidad de cabello que tienes es:",
+                "value": "POCO"
+              },
+              {
+                "id": 11456541,
+                "name": "POROSIDAD",
+                "type": "text",
+                "description": "Al momento de aplicar producto ( crema o gel ), como sientes el cabello?",
+                "value": "PESADO"
+              },
+              {
+                "id": 11456553,
+                "name": "OLEOSIDAD",
+                "type": "text",
+                "description": "Tu cuero cabelludo es:",
+                "value": "GRASOSO"
+              },
+              {
+                "id": 11456570,
+                "name": "HEBRA",
+                "type": "text",
+                "description": "Que tan gruesa es tu hebra capilar?",
+                "value": "DELGADO"
+              },
+              {
+                "id": 11456575,
+                "name": "TEXTURA",
+                "type": "text",
+                "description": "Que patron de rizo tiene tu cabello?",
+                "value": "ONDULADO"
+              },
+              {
+                "id": 11459879,
+                "name": "First Name",
+                "type": "text",
+                "description": "",
+                "value": "Vero"
+              },
+              {
+                "id": 11472276,
+                "name": "TIPO CABELLO",
+                "type": "text",
+                "description": "NATURAL, USO DE TINTES, USO KERATINAS",
+                "value": "USO TINTES"
+              },
+              {
+                "id": 11521648,
+                "name": "DIFICILMENTE",
+                "type": "text",
+                "description": "BAJA",
+                "value": "BAJA"
+              },
+              {
+                "id": 11521675,
+                "name": "SE DEMORA EN MOJARSE",
+                "type": "text",
+                "description": "BAJA",
+                "value": "BAJA"
+              },
+              {
+                "id": 11521676,
+                "name": "POCO",
+                "type": "text",
+                "description": "ALTA",
+                "value": "BAJA"
+              },
+              {
+                "id": 11521681,
+                "name": "PESADO",
+                "type": "text",
+                "description": "ALTA",
+                "value": "ALTA"
+              },
+              {
+                "id": 11521683,
+                "name": "GRASOSO",
+                "type": "text",
+                "description": "ALTA",
+                "value": "ALTA"
+              }
+            ],
+            "tags": [],
+            "gender": null,
+            "locale": null,
+            "timezone": "UTC±00",
+            "subscribed": "2024-07-20T22:27:16-05:00",
+            "last_seen": null,
+            "status": "active",
+            "live_chat_url": "https://app.manychat.com/fb1582357/chat/1075368113",
+            "tt_username": null,
+            "tt_user_id": null,
+            "ig_username": null,
+            "ig_id": null,
+            "ig_last_interaction": null,
+            "page_id": "391502007965579",
+            "profile_pic": null,
+            "last_interaction": null,
+            "optin_whatsapp": true
+          },
+          "numero": "+573234390947"
+        },
+        {
+          "_id": "68434a5d7c149aacc9a63625",
+          "subscriber_id": "1942709477",
+          "canal": "unknown",
+          "created_at": "2025-06-06T20:06:53.232000",
+          "last_updated": "2025-06-06T20:06:53.232000",
+          "unique_id": "07",
+          "info": {
+            "id": "1942709477",
+            "page_id": "391502007965579",
+            "user_refs": [],
+            "status": "active",
+            "first_name": "Mariana Acevedo",
+            "name": "Mariana Acevedo",
+            "timezone": "UTC±00",
+            "live_chat_url": "https://app.manychat.com/fb1582357/chat/1942709477",
+            "last_input_text": "Muchas gracias",
+            "optin_phone": false,
+            "optin_email": false,
+            "subscribed": "2025-04-24T18:52:17-05:00",
+            "is_followup_enabled": true,
+            "whatsapp_phone": "+573148301463",
+            "optin_whatsapp": true,
+            "custom_fields": [
+              {
+                "id": 11456345,
+                "name": "PLASTICIDAD",
+                "type": "text",
+                "description": "",
+                "value": "ALTA"
+              },
+              {
+                "id": 11456406,
+                "name": "PERMEABILIDAD",
+                "type": "text",
+                "description": "Al mojar tu cabello, el agua entra:",
+                "value": "ALTA"
+              },
+              {
+                "id": 11456438,
+                "name": "DENSIDAD",
+                "type": "text",
+                "description": "La cantidad de cabello que tienes es:",
+                "value": "ALTA"
+              },
+              {
+                "id": 11456541,
+                "name": "POROSIDAD",
+                "type": "text",
+                "description": "Al momento de aplicar producto ( crema o gel ), como sientes el cabello?",
+                "value": "BAJA"
+              },
+              {
+                "id": 11456553,
+                "name": "OLEOSIDAD",
+                "type": "text",
+                "description": "Tu cuero cabelludo es:",
+                "value": "BAJA"
+              },
+              {
+                "id": 11456570,
+                "name": "HEBRA",
+                "type": "text",
+                "description": "Que tan gruesa es tu hebra capilar?",
+                "value": "MEDIA O GRUESA"
+              },
+              {
+                "id": 11456575,
+                "name": "TEXTURA",
+                "type": "text",
+                "description": "Que patron de rizo tiene tu cabello?",
+                "value": "RIZADO"
+              },
+              {
+                "id": 11459879,
+                "name": "First Name",
+                "type": "text",
+                "description": "",
+                "value": "Mariana Acevedo"
+              },
+              {
+                "id": 11472276,
+                "name": "TIPO CABELLO",
+                "type": "text",
+                "description": "NATURAL, USO DE TINTES, USO KERATINAS",
+                "value": "NATURAL"
+              },
+              {
+                "id": 12930019,
+                "name": "user_input",
+                "type": "text",
+                "description": "",
+                "value": "."
+              },
+              {
+                "id": 13108152,
+                "name": "mensaje_completo",
+                "type": "text",
+                "description": "",
+                "value": "Muchas gracias."
+              }
+            ],
+            "tags": [],
+            "tt_optin": false
+          }
+        },
+        {
+          "_id": "68434a5d7c149aacc9a63626",
+          "subscriber_id": "24233452916239081",
+          "canal": "facebook",
+          "created_at": "2025-06-06T20:06:53.579000",
+          "last_updated": "2025-06-06T20:06:53.579000",
+          "unique_id": "08",
+          "info": {
+            "id": "24233452916239081",
+            "page_id": "391502007965579",
+            "user_refs": [],
+            "status": "active",
+            "first_name": "溪流",
+            "last_name": "溪流",
+            "name": "溪流溪流",
+            "gender": "female",
+            "profile_pic": "https://app.manychat.com/ava/1582357/24233452916239081/3df18ecde2747eb12f011b1e1bf184f6",
+            "locale": "es_ES",
+            "language": "Spanish",
+            "timezone": "UTC±00",
+            "live_chat_url": "https://app.manychat.com/fb1582357/chat/24233452916239081",
+            "last_input_text": "Hola! En donde se ubican",
+            "optin_phone": false,
+            "optin_email": false,
+            "subscribed": "2025-06-06T10:48:22-05:00",
+            "last_interaction": "2025-06-06T10:48:23-05:00",
+            "is_followup_enabled": true,
+            "optin_whatsapp": false,
+            "custom_fields": [
+              {
+                "id": 12930019,
+                "name": "user_input",
+                "type": "text",
+                "description": "",
+                "value": "Hola! En donde se ubican"
+              }
+            ],
+            "tags": [],
+            "tt_optin": false
+          }
+        },
+        {
+          "_id": "68434a5d7c149aacc9a63627",
+          "subscriber_id": "9736511983142269",
+          "canal": "facebook",
+          "created_at": "2025-06-06T20:06:53.920000",
+          "last_updated": "2025-06-06T20:06:53.920000",
+          "unique_id": "09",
+          "info": {
+            "id": "9736511983142269",
+            "page_id": "391502007965579",
+            "user_refs": [],
+            "status": "active",
+            "first_name": "Andeza",
+            "last_name": "Andeza",
+            "name": "Andeza Andeza",
+            "gender": "female",
+            "profile_pic": "https://app.manychat.com/ava/1582357/9736511983142269/8e81a1e2047f2f8183167fb197946f29",
+            "locale": "es_ES",
+            "language": "Spanish",
+            "timezone": "UTC±00",
+            "live_chat_url": "https://app.manychat.com/fb1582357/chat/9736511983142269",
+            "last_input_text": "Hola buena tarde, como puedo adquirir sus productos",
+            "optin_phone": false,
+            "optin_email": false,
+            "subscribed": "2025-06-06T12:27:07-05:00",
+            "last_interaction": "2025-06-06T12:27:07-05:00",
+            "is_followup_enabled": true,
+            "optin_whatsapp": false,
+            "custom_fields": [
+              {
+                "id": 12930019,
+                "name": "user_input",
+                "type": "text",
+                "description": "",
+                "value": "Hola buena tarde, como puedo adquirir sus productos"
+              }
+            ],
+            "tags": [],
+            "tt_optin": false
+          }
+        },
+        {
+          "_id": "6848f6b27c149aacc9a63648",
+          "subscriber_id": "465032934",
+          "canal": "instagram",
+          "created_at": "2025-06-11T03:23:30.374000",
+          "last_updated": "2025-06-11T03:23:30.374000",
+          "unique_id": "10",
+          "info": {
+            "id": "465032934",
+            "page_id": "391502007965579",
+            "user_refs": [],
+            "status": "active",
+            "first_name": "Monica",
+            "last_name": "Ramos",
+            "name": "Monica Ramos",
+            "profile_pic": "https://app.manychat.com/ava/1582357/465032934/c8a13b39a289f2ac743bb69f116a798b",
+            "timezone": "UTC±00",
+            "live_chat_url": "https://app.manychat.com/fb1582357/chat/465032934",
+            "last_input_text": "estoy en Cundinamarca",
+            "optin_phone": false,
+            "optin_email": false,
+            "subscribed": "2025-06-09T08:03:22-05:00",
+            "ig_last_interaction": "2025-06-09T08:51:58-05:00",
+            "ig_last_seen": "2025-06-09T09:11:51-05:00",
+            "is_followup_enabled": true,
+            "ig_username": "monik_ram57",
+            "ig_id": 681649371356439,
+            "optin_whatsapp": false,
+            "custom_fields": [
+              {
+                "id": 12930019,
+                "name": "user_input",
+                "type": "text",
+                "description": "",
+                "value": "¡Hola! Quiero más información."
+              }
+            ],
+            "tags": [],
+            "tt_optin": false
+          }
+        }
+      ]
+    },
+    "conversations": {
+      "fields": [
+        "user_id",
+        "last_message",
+        "platform",
+        "messages",
+        "raw",
+        "_id",
+        "unread",
+        "name",
+        "timestamp",
+        "text"
+      ],
+      "samples": [
+        {
+          "_id": "689130c3fe13906a6664654b",
+          "platform": "whatsapp",
+          "user_id": "573175938249",
+          "last_message": "Hola",
+          "messages": [
+            {
+              "sender": "user",
+              "content": "Hola!",
+              "timestamp": "2025-08-04T22:14:27.545000"
+            },
+            {
+              "sender": "user",
+              "content": "Mensaje prueba",
+              "timestamp": "2025-08-04T22:14:31.141000"
+            },
+            {
+              "sender": "user",
+              "content": "Hola.",
+              "timestamp": "2025-08-04T22:14:59.206000"
+            },
+            {
+              "sender": "user",
+              "content": "Gracias",
+              "timestamp": "2025-08-04T22:20:32.166000"
+            },
+            {
+              "sender": "user",
+              "content": "Gracias por la info",
+              "timestamp": "2025-08-04T22:21:56.011000"
+            },
+            {
+              "sender": "user",
+              "content": "Si recibido",
+              "timestamp": "2025-08-04T23:54:11.003000"
+            },
+            {
+              "sender": "user",
+              "content": "Hola prueba desde whatsapp",
+              "timestamp": "2025-08-05T00:12:12.847000"
+            },
+            {
+              "sender": "user",
+              "content": "Prueba",
+              "timestamp": "2025-08-06T18:05:26.908000"
+            },
+            {
+              "sender": "user",
+              "content": "Hola",
+              "timestamp": "2025-08-06T18:05:26.901000"
+            },
+            {
+              "sender": "user",
+              "content": "Recibido",
+              "timestamp": "2025-08-06T18:08:03.564000"
+            },
+            {
+              "sender": "system",
+              "name": "Juan Esteban Rivero",
+              "content": "Hola",
+              "timestamp": "2025-08-08T22:36:21.355000"
+            }
+          ],
+          "name": "Luisa Bustamante",
+          "timestamp": "2025-08-06T18:08:03.564000",
+          "unread": 10
+        },
+        {
+          "_id": "689141e4fe13906a666466e5",
+          "platform": "instagram",
+          "user_id": "1518917002822513",
+          "last_message": "Hila verificar",
+          "messages": [
+            {
+              "sender": "user",
+              "content": "Hola prueba desde api",
+              "timestamp": "2025-08-04T23:27:33.597000"
+            },
+            {
+              "sender": "user",
+              "content": "Hola",
+              "timestamp": "2025-08-04T23:51:40.692000"
+            },
+            {
+              "sender": "user",
+              "content": "Gracias por escribirme",
+              "timestamp": "2025-08-04T23:51:45.005000"
+            },
+            {
+              "sender": "user",
+              "content": "Hola prueba desde apu",
+              "timestamp": "2025-08-05T00:11:53.678000"
+            },
+            {
+              "sender": "user",
+              "content": "*api",
+              "timestamp": "2025-08-05T00:11:55.774000"
+            },
+            {
+              "sender": "user",
+              "content": "Hola recibido",
+              "timestamp": "2025-08-05T18:19:07.890000"
+            },
+            {
+              "sender": "user",
+              "content": "Hola",
+              "timestamp": "2025-08-05T19:43:07.195000"
+            },
+            {
+              "sender": "user",
+              "content": "Mensaje desde Instagram",
+              "timestamp": "2025-08-05T19:43:10.772000"
+            },
+            {
+              "sender": "user",
+              "content": "Enviado desde Instagram",
+              "timestamp": "2025-08-05T19:47:05.446000"
+            },
+            {
+              "sender": "user",
+              "content": "Hola",
+              "timestamp": "2025-08-05T23:02:22.401000"
+            },
+            {
+              "sender": "user",
+              "content": "Prueba desde instagram",
+              "timestamp": "2025-08-05T23:02:31.967000"
+            },
+            {
+              "sender": "user",
+              "content": "Hola prueba",
+              "timestamp": "2025-08-05T23:04:53.809000"
+            },
+            {
+              "sender": "user",
+              "content": "Desde instagram",
+              "timestamp": "2025-08-05T23:04:58.043000"
+            },
+            {
+              "sender": "user",
+              "content": "Hola verificar nombre",
+              "timestamp": "2025-08-06T17:31:23.702000"
+            },
+            {
+              "sender": "user",
+              "content": "Hila verificar",
+              "timestamp": "2025-08-06T18:55:03.644000"
+            }
+          ],
+          "name": "Luisa Bustamante",
+          "timestamp": "2025-08-06T18:55:03.644000",
+          "unread": 15
+        },
+        {
+          "_id": "689142effe13906a6664673f",
+          "user_id": "17841475903771793",
+          "platform": "instagram",
+          "last_message": "Hello desde el front",
+          "messages": [
+            {
+              "sender": "user",
+              "content": "mensaje para instagram",
+              "timestamp": "2025-08-04T23:31:59.974000"
+            },
+            {
+              "sender": "user",
+              "content": "mensaje para instagram",
+              "timestamp": "2025-08-04T23:35:02.186000"
+            },
+            {
+              "sender": "user",
+              "content": "Hola desde el back",
+              "timestamp": "2025-08-05T23:11:24.081000"
+            },
+            {
+              "sender": "user",
+              "content": "Hello desde el front",
+              "timestamp": "2025-08-05T23:11:35.807000"
+            }
+          ],
+          "name": "Desconocido",
+          "timestamp": "2025-08-05T23:11:35.807000",
+          "unread": 4
+        },
+        {
+          "_id": "68925e036cd139e5e4059799",
+          "raw": {
+            "object": "page",
+            "entry": [
+              {
+                "time": 1754422785226,
+                "id": "746788788511599",
+                "messaging": [
+                  {
+                    "sender": {
+                      "id": "25214491031506870"
+                    },
+                    "recipient": {
+                      "id": "746788788511599"
+                    },
+                    "timestamp": 1754419641882,
+                    "message": {
+                      "mid": "m_epM-3Ws8iTRri8lvL0xM7RDhjux83YXi4i3HFKZYHn4U-77P2KPzAg7aJG7-rUfka8-3Gvqu5QLaL9bF62_gDw",
+                      "text": "Messenger"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "_id": "68925e036cd139e5e405979a",
+          "raw": {
+            "object": "page",
+            "entry": [
+              {
+                "time": 1754422785974,
+                "id": "746788788511599",
+                "messaging": [
+                  {
+                    "sender": {
+                      "id": "25214491031506870"
+                    },
+                    "recipient": {
+                      "id": "746788788511599"
+                    },
+                    "timestamp": 1754419998558,
+                    "message": {
+                      "mid": "m_nYOdtYcewCA2tI2bYRA1RBDhjux83YXi4i3HFKZYHn6MAOtiJDJfSAKi2zchbwmWDIXJFCdv7VAF7cnaacJ9iA",
+                      "text": "Hola soy Luisa"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "_id": "68925e026cd139e5e4059796",
+          "raw": {
+            "object": "page",
+            "entry": [
+              {
+                "time": 1754422784245,
+                "id": "746788788511599",
+                "messaging": [
+                  {
+                    "sender": {
+                      "id": "25214491031506870"
+                    },
+                    "recipient": {
+                      "id": "746788788511599"
+                    },
+                    "timestamp": 1754419639627,
+                    "message": {
+                      "mid": "m_vweLMM7hI-FpiMZFZDaIzxDhjux83YXi4i3HFKZYHn5VhtB8s_C7FOax9YPFMMMfQnbO-s7xsurtqS-wLVBBzw",
+                      "text": "Desde facebook"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "_id": "68925e046cd139e5e405979b",
+          "raw": {
+            "object": "page",
+            "entry": [
+              {
+                "time": 1754422786718,
+                "id": "746788788511599",
+                "messaging": [
+                  {
+                    "sender": {
+                      "id": "25214491031506870"
+                    },
+                    "recipient": {
+                      "id": "746788788511599"
+                    },
+                    "timestamp": 1754420170705,
+                    "message": {
+                      "mid": "m_pQHgng9YKtI85O1XnvLpGBDhjux83YXi4i3HFKZYHn7MDrHbpfO3s_Z1sw1mZAiaFvXt4aNCv_P5nOJUqoycRw",
+                      "text": "Holaaaaa prueba desde mi messenger luisa"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "_id": "68925e056cd139e5e405979c",
+          "raw": {
+            "object": "page",
+            "entry": [
+              {
+                "time": 1754422787474,
+                "id": "746788788511599",
+                "messaging": [
+                  {
+                    "sender": {
+                      "id": "25214491031506870"
+                    },
+                    "recipient": {
+                      "id": "746788788511599"
+                    },
+                    "timestamp": 1754421688569,
+                    "message": {
+                      "mid": "m_GQmQPM5CxWbd3lN9Y48xcxDhjux83YXi4i3HFKZYHn52ESjqKH4P-mmQCB6WKeOZ6Wox0JomCzweePkUxFby2w",
+                      "text": "Recibido"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "_id": "68925e066cd139e5e405979d",
+          "raw": {
+            "object": "page",
+            "entry": [
+              {
+                "time": 1754422788478,
+                "id": "746788788511599",
+                "messaging": [
+                  {
+                    "sender": {
+                      "id": "25214491031506870"
+                    },
+                    "recipient": {
+                      "id": "746788788511599"
+                    },
+                    "timestamp": 1754421693035,
+                    "message": {
+                      "mid": "m_58Hw6tFuTTyRQg7jRmFxBxDhjux83YXi4i3HFKZYHn6EVy1XC1H2H8Kx2NsDolGVPBvIqt3-J_PI6sWNXaM2jw",
+                      "text": "Hola"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "_id": "68925e066cd139e5e405979e",
+          "raw": {
+            "object": "page",
+            "entry": [
+              {
+                "time": 1754422789166,
+                "id": "746788788511599",
+                "messaging": [
+                  {
+                    "sender": {
+                      "id": "25214491031506870"
+                    },
+                    "recipient": {
+                      "id": "746788788511599"
+                    },
+                    "timestamp": 1754422204474,
+                    "message": {
+                      "mid": "m_bpkHqNpmFxsn2k8f-TILFBDhjux83YXi4i3HFKZYHn6JCQjlbxXcsR9fVJyloOY1LDBKSMolk_LAnD-2l8uSEA",
+                      "text": "Hola"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "users": {
+      "fields": [
+        "password",
+        "country",
+        "id",
+        "role",
+        "_id",
+        "email",
+        "created_at",
+        "name"
+      ],
+      "samples": [
+        {
+          "_id": "684a76f229c444736e6fc098",
+          "id": "85a3e1bb-e8ab-448a-bf08-4728c2b36c1b",
+          "name": "Juan Esteban Rivero",
+          "email": "rivejuan987@gmail.com",
+          "country": "Colombia",
+          "password": "$2b$12$.GWUrGLpOxoyuD74oo6vqeWSADve688T/LhWDdJqR42eP8NzrprTi",
+          "role": "admin",
+          "created_at": "2025-06-12T06:42:58.632881"
+        },
+        {
+          "_id": "685eda4290bc4252880242ae",
+          "id": "e2e3747e-fb37-46a3-b232-aa39421c3ce4",
+          "name": "Natalia Arredondo",
+          "email": "natalia@unicornioindustries.co",
+          "country": "Colombia",
+          "password": "$2b$12$JFl.FlhdU6WciDbHb0BgJ.jDlQW42QJlgv1cOq1qSWAUKXp7ckdB2",
+          "role": "admin",
+          "created_at": "2025-06-27T17:52:02.115812"
+        },
+        {
+          "_id": "685eda9690bc4252880242af",
+          "id": "68588c2d-e9d6-4846-b3b5-6183b98bd079",
+          "name": "Luisa Bustamante",
+          "email": "luisafbs3@gmail.com",
+          "country": "Colombia",
+          "password": "$2b$12$oVaPbQK.RUouHbwGojg10u1hPob2GVVHWlO4UVOEPmGpsQMUff26a",
+          "role": "admin",
+          "created_at": "2025-06-27T17:53:26.789728"
+        }
+      ]
+    }
+  },
+  "DatabaseInvetary": {
+    "distribuidores": {
+      "fields": [
+        "hashed_password",
+        "correo_electronico",
+        "fecha_ultimo_acceso",
+        "cdi",
+        "cid",
+        "pais",
+        "estado",
+        "id",
+        "_id",
+        "tipo_precio",
+        "phone",
+        "admin_id",
+        "unidades_individuales",
+        "rol",
+        "nombre"
+      ],
+      "samples": [
+        {
+          "_id": "67e98c3f131077f33c33ca78",
+          "id": "U006",
+          "nombre": "Luisa Bustamante",
+          "pais": "Colombia",
+          "correo_electronico": "luisafbs3@gmail.com",
+          "phone": "3175938249",
+          "hashed_password": "$2b$12$ZWXhV9gHTKOt2DyHYqn01efRuKHiUSCFBrSZB8gU.Lh75VMla7pBO",
+          "rol": "distribuidor_internacional",
+          "estado": "Activo",
+          "fecha_ultimo_acceso": "2025-07-02 15:39",
+          "admin_id": "67e9757223161d00b6fff79e",
+          "tipo_precio": "sin_iva_internacional",
+          "unidades_individuales": false,
+          "cdi": "guarne"
+        },
+        {
+          "_id": "67e98c6c131077f33c33ca79",
+          "id": "U007",
+          "nombre": "Natalia Arredondo ",
+          "pais": "México",
+          "correo_electronico": "natalia@unicornioindustries.co",
+          "phone": "+5700000000",
+          "hashed_password": "$2b$12$sXDQutNhNi8Sw9B1ck9XMeA8YD4zhUwa6rvie3UTDqBA..mAyG1Ni",
+          "rol": "distribuidor",
+          "estado": "Activo",
+          "fecha_ultimo_acceso": "2025-04-03 21:03",
+          "admin_id": "67e9757223161d00b6fff79e",
+          "tipo_precio": "con_iva",
+          "unidades_individuales": true
+        },
+        {
+          "_id": "67e9a2de131077f33c33ca7d",
+          "id": "U010",
+          "nombre": "prueba",
+          "pais": "Colombia",
+          "correo_electronico": "prueba@rizosfelices.co",
+          "phone": "0000000",
+          "hashed_password": "$2b$12$gwGj7x4BFK3cQXFL06R89eTkS7KrnYu7sN.pU4BJiYGVeO.RyRod6",
+          "rol": "distribuidor",
+          "estado": "Activo",
+          "fecha_ultimo_acceso": "2025-03-30 20:00",
+          "admin_id": "67e9757223161d00b6fff79e",
+          "tipo_precio": "con_iva",
+          "unidades_individuales": false
+        },
+        {
+          "_id": "67eb320c24383e487efd6fcf",
+          "id": "U011",
+          "nombre": "Bogotá Niza",
+          "pais": "Colombia",
+          "correo_electronico": "luzastridmartinezsantamaria@gmail.com",
+          "phone": "+570000000000",
+          "hashed_password": "$2b$12$TRwTM2sCXJ6pXFP7fuSio.6rSSeNCXxCS4A/HsYFMiBVkvM0nelgq",
+          "rol": "distribuidor_nacional",
+          "estado": "Activo",
+          "fecha_ultimo_acceso": "2025-08-05 17:13",
+          "admin_id": "67e9757223161d00b6fff79e",
+          "tipo_precio": "con_iva",
+          "unidades_individuales": true,
+          "cdi": "medellin"
+        },
+        {
+          "_id": "67eb324324383e487efd6fd0",
+          "id": "U012",
+          "nombre": "Bogotá Outlet",
+          "pais": "Colombia",
+          "correo_electronico": "rizosfelicesbogota@gmail.com",
+          "phone": "+570000000000",
+          "hashed_password": "$2b$12$DfkjrcClbXW.Vp8j57i8QuGwqOoI0Prqgd2vuPuqjIelNyB7aXx52",
+          "rol": "distribuidor_nacional",
+          "estado": "Activo",
+          "fecha_ultimo_acceso": "2025-04-01 00:47",
+          "admin_id": "67e9757223161d00b6fff79e",
+          "tipo_precio": "con_iva",
+          "unidades_individuales": true,
+          "cdi": "medellin"
+        },
+        {
+          "_id": "67eb326424383e487efd6fd1",
+          "id": "U013",
+          "nombre": "Bucaramanga",
+          "pais": "Colombia",
+          "correo_electronico": "rizosfelicesbucaramanga@gmail.com",
+          "phone": "+570000000000",
+          "hashed_password": "$2b$12$Sw7smDSHsX3Lmqvog5QRVORZtwR61p0pPuZgq0I0/LlcJK96RG7Wm",
+          "rol": "distribuidor_nacional",
+          "estado": "Activo",
+          "fecha_ultimo_acceso": "2025-07-02 14:00",
+          "admin_id": "67e9757223161d00b6fff79e",
+          "tipo_precio": "con_iva",
+          "unidades_individuales": true,
+          "cid": "medellin"
+        },
+        {
+          "_id": "67eb32b024383e487efd6fd3",
+          "id": "U015",
+          "nombre": "Barranquilla",
+          "pais": "Colombia",
+          "correo_electronico": "rizosfelicesbarranquilla@gmail.com",
+          "phone": "+570000000000",
+          "hashed_password": "$2b$12$9656jlBT8windyZL64tJcePGsIzBreLCHBe3Cn0ExqJwmMjChkWoW",
+          "rol": "distribuidor_nacional",
+          "estado": "Activo",
+          "fecha_ultimo_acceso": "2025-08-09 16:14",
+          "admin_id": "67e9757223161d00b6fff79e",
+          "tipo_precio": "con_iva",
+          "unidades_individuales": true,
+          "cdi": "medellin"
+        },
+        {
+          "_id": "67eb32d224383e487efd6fd4",
+          "id": "U016",
+          "nombre": "Rionegro",
+          "pais": "Colombia",
+          "correo_electronico": "rizosfelicesrrionegro@gmail.com",
+          "phone": "+570000000000",
+          "hashed_password": "$2b$12$C4fVwpYfLnS2Z3O8/LNCX.Wzl/lfNCVKgzRYNgXh8NeKbS3aJMoZq",
+          "rol": "distribuidor_nacional",
+          "estado": "Activo",
+          "fecha_ultimo_acceso": "2025-07-25 16:06",
+          "admin_id": "67e9757223161d00b6fff79e",
+          "tipo_precio": "con_iva",
+          "unidades_individuales": true,
+          "cdi": "medellin"
+        },
+        {
+          "_id": "67eb330824383e487efd6fd5",
+          "id": "U017",
+          "nombre": "Cali",
+          "pais": "Colombia",
+          "correo_electronico": "rizosfelicescali22@gmail.com",
+          "phone": "",
+          "hashed_password": "$2b$12$tRuv.ei4fIatUXK0iqY2M.OOZVx5weOcBAr6Ea5asfYx3nkB0xVl6",
+          "rol": "distribuidor_nacional",
+          "estado": "Activo",
+          "fecha_ultimo_acceso": "2025-08-08 21:21",
+          "admin_id": "67e9757223161d00b6fff79e",
+          "tipo_precio": "con_iva",
+          "unidades_individuales": true,
+          "cdi": "medellin"
+        },
+        {
+          "_id": "67eb333c24383e487efd6fd6",
+          "id": "U018",
+          "nombre": "Niquia",
+          "pais": "Colombia",
+          "correo_electronico": "rizosfelicesniquia@gmail.com",
+          "phone": "+570000000000",
+          "hashed_password": "$2b$12$5vA7wbR84utjhTxFs.GSj./LIRIBit0Z5Kadknou0pyJpssjetQEe",
+          "rol": "distribuidor_nacional",
+          "estado": "Activo",
+          "fecha_ultimo_acceso": "2025-08-01 14:52",
+          "admin_id": "67e9757223161d00b6fff79e",
+          "tipo_precio": "sin_iva",
+          "unidades_individuales": true,
+          "cdi": "medellin"
+        }
+      ]
+    },
+    "pedidos": {
+      "fields": [
+        "distribuidor_nombre",
+        "estado",
+        "iva",
+        "notas",
+        "direccion",
+        "id",
+        "productos",
+        "_id",
+        "total",
+        "tipo_precio",
+        "distribuidor_phone",
+        "distribuidor_id",
+        "fecha",
+        "subtotal"
+      ],
+      "samples": [
+        {
+          "_id": "67edaf2a4ad4a26c53e30754",
+          "id": "PED-20250402214202",
+          "distribuidor_id": "67eb38cf24383e487efd6fdb",
+          "distribuidor_nombre": "Poblado",
+          "distribuidor_phone": "+57 000000000",
+          "productos": [
+            {
+              "id": "P003",
+              "nombre": "ACONDICIONADOR 250 ML",
+              "cantidad": 24,
+              "precio": 35750.0,
+              "precio_sin_iva": 35750.0,
+              "iva_unitario": 0.0,
+              "total": 858000.0,
+              "tipo_precio": "con_iva"
+            },
+            {
+              "id": "P004",
+              "nombre": "CREMA 3 EN 1 250 ML",
+              "cantidad": 60,
+              "precio": 35750.0,
+              "precio_sin_iva": 35750.0,
+              "iva_unitario": 0.0,
+              "total": 2145000.0,
+              "tipo_precio": "con_iva"
+            },
+            {
+              "id": "P005",
+              "nombre": "GEL 250 ML",
+              "cantidad": 48,
+              "precio": 35750.0,
+              "precio_sin_iva": 35750.0,
+              "iva_unitario": 0.0,
+              "total": 1716000.0,
+              "tipo_precio": "con_iva"
+            },
+            {
+              "id": "P006",
+              "nombre": "ACEITE 30 ML",
+              "cantidad": 12,
+              "precio": 24585.0,
+              "precio_sin_iva": 24585.0,
+              "iva_unitario": 0.0,
+              "total": 351.074,
+              "tipo_precio": "con_iva"
+            },
+            {
+              "id": "P012",
+              "nombre": "KIT VIAJERO",
+              "cantidad": 2,
+              "precio": 26950.0,
+              "precio_sin_iva": 26950.0,
+              "iva_unitario": 0.0,
+              "total": 53900.0,
+              "tipo_precio": "con_iva"
+            },
+            {
+              "id": "P013",
+              "nombre": "GORRO DE UN LADO SATIN PEQUEÑO",
+              "cantidad": 1,
+              "precio": 25800.0,
+              "precio_sin_iva": 25800.0,
+              "iva_unitario": 0.0,
+              "total": 25800.0,
+              "tipo_precio": "con_iva"
+            },
+            {
+              "id": "P014",
+              "nombre": "GORRO TOALLA DE MICROFIBRA ",
+              "cantidad": 24,
+              "precio": 26950.0,
+              "precio_sin_iva": 26950.0,
+              "iva_unitario": 0.0,
+              "total": 646800.0,
+              "tipo_precio": "con_iva"
+            },
+            {
+              "id": "P015",
+              "nombre": "GORRO DE UN LADO SATIN GRANDE",
+              "cantidad": 2,
+              "precio": 25800.0,
+              "precio_sin_iva": 25800.0,
+              "iva_unitario": 0.0,
+              "total": 51600.0,
+              "tipo_precio": "con_iva"
+            },
+            {
+              "id": "P016",
+              "nombre": "USO SALON GEL MOLDEADOR",
+              "cantidad": 2,
+              "precio": 103000.0,
+              "precio_sin_iva": 103000.0,
+              "iva_unitario": 0.0,
+              "total": 206000.0,
+              "tipo_precio": "con_iva"
+            },
+            {
+              "id": "P017",
+              "nombre": "USO SALON ACONDICIONADOR",
+              "cantidad": 3,
+              "precio": 103000.0,
+              "precio_sin_iva": 103000.0,
+              "iva_unitario": 0.0,
+              "total": 309000.0,
+              "tipo_precio": "con_iva"
+            },
+            {
+              "id": "P019",
+              "nombre": "USO SALON SHAMPOO",
+              "cantidad": 3,
+              "precio": 103000.0,
+              "precio_sin_iva": 103000.0,
+              "iva_unitario": 0.0,
+              "total": 309000.0,
+              "tipo_precio": "con_iva"
+            },
+            {
+              "id": "P002",
+              "nombre": "SHAMPOO 250 ML",
+              "cantidad": 36,
+              "precio": 35750.0,
+              "precio_sin_iva": 35750.0,
+              "iva_unitario": 0.0,
+              "total": 1287000.0,
+              "tipo_precio": "con_iva"
+            },
+            {
+              "id": "P022",
+              "nombre": "USO SALON ACONDICIONADOR MEN",
+              "cantidad": 1,
+              "precio": 103000.0,
+              "precio_sin_iva": 103000.0,
+              "iva_unitario": 0.0,
+              "total": 103000.0,
+              "tipo_precio": "con_iva"
+            }
+          ],
+          "direccion": "Carrera 43 a # 6 sur 26 local 320 CC Rio Sur",
+          "notas": "Estamos de 8 AM a 6 pm lunes a sábado domingos de 9 AM a 4 pm",
+          "fecha": "2025-04-02T21:42:02.416000",
+          "estado": "facturado",
+          "subtotal": 8140100.0,
+          "iva": 0.0,
+          "total": 8140100.0,
+          "tipo_precio": "con_iva"
+        },
+        {
+          "_id": "67edb9c64ad4a26c53e30756",
+          "id": "PED-20250402222718",
+          "distribuidor_id": "67edab6d4ad4a26c53e30753",
+          "distribuidor_nombre": "Fredy Morales",
+          "distribuidor_phone": "+570000000000",
+          "productos": [
+            {
+              "id": "P003",
+              "nombre": "ACONDICIONADOR 250 ML",
+              "cantidad": 12,
+              "precio": 35750.0,
+              "precio_sin_iva": 35750.0,
+              "iva_unitario": 0.0,
+              "total": 429000.0,
+              "tipo_precio": "con_iva"
+            },
+            {
+              "id": "P004",
+              "nombre": "CREMA 3 EN 1 250 ML",
+              "cantidad": 20,
+              "precio": 35750.0,
+              "precio_sin_iva": 35750.0,
+              "iva_unitario": 0.0,
+              "total": 715000.0,
+              "tipo_precio": "con_iva"
+            },
+            {
+              "id": "P005",
+              "nombre": "GEL 250 ML",
+              "cantidad": 7,
+              "precio": 35750.0,
+              "precio_sin_iva": 35750.0,
+              "iva_unitario": 0.0,
+              "total": 250250.0,
+              "tipo_precio": "con_iva"
+            },
+            {
+              "id": "P002",
+              "nombre": "SHAMPOO 250 ML",
+              "cantidad": 15,
+              "precio": 35750.0,
+              "precio_sin_iva": 35750.0,
+              "iva_unitario": 0.0,
+              "total": 536250.0,
+              "tipo_precio": "con_iva"
+            },
+            {
+              "id": "P024",
+              "nombre": "USO SALON SHAMPOO MEN",
+              "cantidad": 1,
+              "precio": 103000.0,
+              "precio_sin_iva": 103000.0,
+              "iva_unitario": 0.0,
+              "total": 103000.0,
+              "tipo_precio": "con_iva"
+            },
+            {
+              "id": "P025",
+              "nombre": "ACEITE 120 ML",
+              "cantidad": 2,
+              "precio": 35750.0,
+              "precio_sin_iva": 35750.0,
+              "iva_unitario": 0.0,
+              "total": 71500.0,
+              "tipo_precio": "con_iva"
+            }
+          ],
+          "direccion": "Jhon Fredy ",
+          "notas": "",
+          "fecha": "2025-04-02T22:27:18.845000",
+          "estado": "facturado",
+          "subtotal": 2140750.0,
+          "iva": 406743.0,
+          "total": 2547493.0,
+          "tipo_precio": "con_iva"
+        },
+        {
+          "_id": "67edbaaa4ad4a26c53e30757",
+          "id": "PED-20250402223106",
+          "distribuidor_id": "67eb38cf24383e487efd6fdb",
+          "distribuidor_nombre": "Poblado",
+          "distribuidor_phone": "+57 000000000",
+          "productos": [
+            {
+              "id": "P003",
+              "nombre": "ACONDICIONADOR 250 ML",
+              "cantidad": 12,
+              "precio": 35750.0,
+              "precio_sin_iva": 35750.0,
+              "iva_unitario": 0.0,
+              "total": 429000.0,
+              "tipo_precio": "con_iva"
+            },
+            {
+              "id": "P005",
+              "nombre": "GEL 250 ML",
+              "cantidad": 12,
+              "precio": 35750.0,
+              "precio_sin_iva": 35750.0,
+              "iva_unitario": 0.0,
+              "total": 429000.0,
+              "tipo_precio": "con_iva"
+            },
+            {
+              "id": "P006",
+              "nombre": "ACEITE 30 ML",
+              "cantidad": 12,
+              "precio": 24585.0,
+              "precio_sin_iva": 24585.0,
+              "iva_unitario": 0.0,
+              "total": 351.074,
+              "tipo_precio": "con_iva"
+            },
+            {
+              "id": "P007",
+              "nombre": "SHAMPOO MEN 250 ML",
+              "cantidad": 12,
+              "precio": 35750.0,
+              "precio_sin_iva": 35750.0,
+              "iva_unitario": 0.0,
+              "total": 429000.0,
+              "tipo_precio": "con_iva"
+            },
+            {
+              "id": "P008",
+              "nombre": "ACONDICIONADOR MEN 250 ML",
+              "cantidad": 12,
+              "precio": 35750.0,
+              "precio_sin_iva": 35750.0,
+              "iva_unitario": 0.0,
+              "total": 429000.0,
+              "tipo_precio": "con_iva"
+            },
+            {
+              "id": "P009",
+              "nombre": "GEL MEN 250 ML",
+              "cantidad": 12,
+              "precio": 35750.0,
+              "precio_sin_iva": 35750.0,
+              "iva_unitario": 0.0,
+              "total": 429000.0,
+              "tipo_precio": "con_iva"
+            },
+            {
+              "id": "P010",
+              "nombre": "CREMA 3 EN 1 MEN 250 ML",
+              "cantidad": 12,
+              "precio": 35750.0,
+              "precio_sin_iva": 35750.0,
+              "iva_unitario": 0.0,
+              "total": 429000.0,
+              "tipo_precio": "con_iva"
+            },
+            {
+              "id": "P014",
+              "nombre": "GORRO TOALLA DE MICROFIBRA ",
+              "cantidad": 12,
+              "precio": 26950.0,
+              "precio_sin_iva": 26950.0,
+              "iva_unitario": 0.0,
+              "total": 323400.0,
+              "tipo_precio": "con_iva"
+            },
+            {
+              "id": "P025",
+              "nombre": "ACEITE 120 ML",
+              "cantidad": 12,
+              "precio": 35750.0,
+              "precio_sin_iva": 35750.0,
+              "iva_unitario": 0.0,
+              "total": 429000.0,
+              "tipo_precio": "con_iva"
+            }
+          ],
+          "direccion": "carrera 43 a #6 sur 26 local 320 CC  RIO SUR",
+          "notas": "",
+          "fecha": "2025-04-02T22:31:06.664000",
+          "estado": "facturado",
+          "subtotal": 3755400.0,
+          "iva": 0.0,
+          "total": 3755400.0,
+          "tipo_precio": "con_iva"
+        },
+        {
+          "_id": "67f03b8edbb44a2d1c3e9161",
+          "id": "PED-20250404200534",
+          "distribuidor_id": "67eb39ff24383e487efd6fdd",
+          "distribuidor_nombre": "Suramericana",
+          "distribuidor_phone": "+57000000",
+          "productos": [
+            {
+              "id": "P003",
+              "nombre": "ACONDICIONADOR 250 ML",
+              "cantidad": 24,
+              "precio": 42543.0,
+              "precio_sin_iva": 42543.0,
+              "iva_unitario": 0,
+              "total": 1021032.0,
+              "tipo_precio": "sin_iva"
+            },
+            {
+              "id": "P004",
+              "nombre": "CREMA 3 EN 1 250 ML",
+              "cantidad": 24,
+              "precio": 42543.0,
+              "precio_sin_iva": 42543.0,
+              "iva_unitario": 0,
+              "total": 1021032.0,
+              "tipo_precio": "sin_iva"
+            },
+            {
+              "id": "P005",
+              "nombre": "GEL 250 ML",
+              "cantidad": 12,
+              "precio": 42543.0,
+              "precio_sin_iva": 42543.0,
+              "iva_unitario": 0,
+              "total": 510516.0,
+              "tipo_precio": "sin_iva"
+            },
+            {
+              "id": "P006",
+              "nombre": "ACEITE 30 ML",
+              "cantidad": 24,
+              "precio": 29256.0,
+              "precio_sin_iva": 29256.0,
+              "iva_unitario": 0,
+              "total": 702144.0,
+              "tipo_precio": "sin_iva"
+            },
+            {
+              "id": "P007",
+              "nombre": "SHAMPOO MEN 250 ML",
+              "cantidad": 12,
+              "precio": 42543.0,
+              "precio_sin_iva": 42543.0,
+              "iva_unitario": 0,
+              "total": 510516.0,
+              "tipo_precio": "sin_iva"
+            },
+            {
+              "id": "P008",
+              "nombre": "ACONDICIONADOR MEN 250 ML",
+              "cantidad": 12,
+              "precio": 42543.0,
+              "precio_sin_iva": 42543.0,
+              "iva_unitario": 0,
+              "total": 510516.0,
+              "tipo_precio": "sin_iva"
+            },
+            {
+              "id": "P009",
+              "nombre": "GEL MEN 250 ML",
+              "cantidad": 12,
+              "precio": 42543.0,
+              "precio_sin_iva": 42543.0,
+              "iva_unitario": 0,
+              "total": 510516.0,
+              "tipo_precio": "sin_iva"
+            },
+            {
+              "id": "P011",
+              "nombre": "RIZOPROTECTORES",
+              "cantidad": 12,
+              "precio": 36890.0,
+              "precio_sin_iva": 36890.0,
+              "iva_unitario": 0,
+              "total": 442680.0,
+              "tipo_precio": "sin_iva"
+            },
+            {
+              "id": "P014",
+              "nombre": "GORRO TOALLA DE MICROFIBRA ",
+              "cantidad": 12,
+              "precio": 32071.0,
+              "precio_sin_iva": 32071.0,
+              "iva_unitario": 0,
+              "total": 384852.0,
+              "tipo_precio": "sin_iva"
+            },
+            {
+              "id": "P016",
+              "nombre": "USO SALON GEL MOLDEADOR",
+              "cantidad": 12,
+              "precio": 103000.0,
+              "precio_sin_iva": 103000.0,
+              "iva_unitario": 0,
+              "total": 1236000.0,
+              "tipo_precio": "sin_iva"
+            },
+            {
+              "id": "P017",
+              "nombre": "USO SALON ACONDICIONADOR",
+              "cantidad": 12,
+              "precio": 103000.0,
+              "precio_sin_iva": 103000.0,
+              "iva_unitario": 0,
+              "total": 1236000.0,
+              "tipo_precio": "sin_iva"
+            },
+            {
+              "id": "P018",
+              "nombre": "USO SALON CREMA 3 EN 1",
+              "cantidad": 12,
+              "precio": 103000.0,
+              "precio_sin_iva": 103000.0,
+              "iva_unitario": 0,
+              "total": 1236000.0,
+              "tipo_precio": "sin_iva"
+            },
+            {
+              "id": "P019",
+              "nombre": "USO SALON SHAMPOO",
+              "cantidad": 12,
+              "precio": 103000.0,
+              "precio_sin_iva": 103000.0,
+              "iva_unitario": 0,
+              "total": 1236000.0,
+              "tipo_precio": "sin_iva"
+            },
+            {
+              "id": "P002",
+              "nombre": "SHAMPOO 250 ML",
+              "cantidad": 36,
+              "precio": 42543.0,
+              "precio_sin_iva": 42543.0,
+              "iva_unitario": 0,
+              "total": 1531548.0,
+              "tipo_precio": "sin_iva"
+            },
+            {
+              "id": "P021",
+              "nombre": "USO SALON GEL MOLDEADOR MEN",
+              "cantidad": 1,
+              "precio": 103000.0,
+              "precio_sin_iva": 103000.0,
+              "iva_unitario": 0,
+              "total": 103000.0,
+              "tipo_precio": "sin_iva"
+            },
+            {
+              "id": "P023",
+              "nombre": "USO SALON CREMA 3 EN 1 MEN",
+              "cantidad": 1,
+              "precio": 103000.0,
+              "precio_sin_iva": 103000.0,
+              "iva_unitario": 0,
+              "total": 103000.0,
+              "tipo_precio": "sin_iva"
+            },
+            {
+              "id": "P024",
+              "nombre": "USO SALON SHAMPOO MEN",
+              "cantidad": 1,
+              "precio": 103000.0,
+              "precio_sin_iva": 103000.0,
+              "iva_unitario": 0,
+              "total": 103000.0,
+              "tipo_precio": "sin_iva"
+            },
+            {
+              "id": "P025",
+              "nombre": "ACEITE 120 ML",
+              "cantidad": 12,
+              "precio": 35450.0,
+              "precio_sin_iva": 35450.0,
+              "iva_unitario": 0,
+              "total": 425400.0,
+              "tipo_precio": "sin_iva"
+            }
+          ],
+          "direccion": "Calle 49 B 65-36 Local 105 Bloque B Ccial. Los Sauces",
+          "notas": "Entregan en recepción con RM ",
+          "fecha": "2025-04-04T20:05:34.808000",
+          "estado": "Procesando",
+          "subtotal": 12823752.0,
+          "iva": 0,
+          "total": 12823752.0,
+          "tipo_precio": "sin_iva"
+        },
+        {
+          "_id": "67f1580089aa5b493fd4800b",
+          "id": "PED-20250405161912",
+          "distribuidor_id": "67eb333c24383e487efd6fd6",
+          "distribuidor_nombre": "Niquia",
+          "distribuidor_phone": "+570000000000",
+          "productos": [
+            {
+              "id": "P003",
+              "nombre": "ACONDICIONADOR 250 ML",
+              "cantidad": 12,
+              "precio": 42543.0,
+              "precio_sin_iva": 42543.0,
+              "iva_unitario": 0,
+              "total": 510516.0,
+              "tipo_precio": "sin_iva"
+            },
+            {
+              "id": "P004",
+              "nombre": "CREMA 3 EN 1 250 ML",
+              "cantidad": 12,
+              "precio": 42543.0,
+              "precio_sin_iva": 42543.0,
+              "iva_unitario": 0,
+              "total": 510516.0,
+              "tipo_precio": "sin_iva"
+            },
+            {
+              "id": "P005",
+              "nombre": "GEL 250 ML",
+              "cantidad": 12,
+              "precio": 42543.0,
+              "precio_sin_iva": 42543.0,
+              "iva_unitario": 0,
+              "total": 510516.0,
+              "tipo_precio": "sin_iva"
+            },
+            {
+              "id": "P006",
+              "nombre": "ACEITE 30 ML",
+              "cantidad": 12,
+              "precio": 29256.0,
+              "precio_sin_iva": 29256.0,
+              "iva_unitario": 0,
+              "total": 351072.0,
+              "tipo_precio": "sin_iva"
+            },
+            {
+              "id": "P007",
+              "nombre": "SHAMPOO MEN 250 ML",
+              "cantidad": 6,
+              "precio": 42543.0,
+              "precio_sin_iva": 42543.0,
+              "iva_unitario": 0,
+              "total": 255258.0,
+              "tipo_precio": "sin_iva"
+            },
+            {
+              "id": "P008",
+              "nombre": "ACONDICIONADOR MEN 250 ML",
+              "cantidad": 6,
+              "precio": 42543.0,
+              "precio_sin_iva": 42543.0,
+              "iva_unitario": 0,
+              "total": 255258.0,
+              "tipo_precio": "sin_iva"
+            },
+            {
+              "id": "P009",
+              "nombre": "GEL MEN 250 ML",
+              "cantidad": 6,
+              "precio": 42543.0,
+              "precio_sin_iva": 42543.0,
+              "iva_unitario": 0,
+              "total": 255258.0,
+              "tipo_precio": "sin_iva"
+            },
+            {
+              "id": "P010",
+              "nombre": "CREMA 3 EN 1 MEN 250 ML",
+              "cantidad": 6,
+              "precio": 42543.0,
+              "precio_sin_iva": 42543.0,
+              "iva_unitario": 0,
+              "total": 255258.0,
+              "tipo_precio": "sin_iva"
+            },
+            {
+              "id": "P011",
+              "nombre": "RIZOPROTECTORES",
+              "cantidad": 6,
+              "precio": 36890.0,
+              "precio_sin_iva": 36890.0,
+              "iva_unitario": 0,
+              "total": 221340.0,
+              "tipo_precio": "sin_iva"
+            },
+            {
+              "id": "P014",
+              "nombre": "GORRO TOALLA DE MICROFIBRA ",
+              "cantidad": 6,
+              "precio": 32071.0,
+              "precio_sin_iva": 32071.0,
+              "iva_unitario": 0,
+              "total": 192426.0,
+              "tipo_precio": "sin_iva"
+            },
+            {
+              "id": "P017",
+              "nombre": "USO SALON ACONDICIONADOR",
+              "cantidad": 1,
+              "precio": 103000.0,
+              "precio_sin_iva": 103000.0,
+              "iva_unitario": 0,
+              "total": 103000.0,
+              "tipo_precio": "sin_iva"
+            },
+            {
+              "id": "P018",
+              "nombre": "USO SALON CREMA 3 EN 1",
+              "cantidad": 1,
+              "precio": 103000.0,
+              "precio_sin_iva": 103000.0,
+              "iva_unitario": 0,
+              "total": 103000.0,
+              "tipo_precio": "sin_iva"
+            },
+            {
+              "id": "P019",
+              "nombre": "USO SALON SHAMPOO",
+              "cantidad": 1,
+              "precio": 103000.0,
+              "precio_sin_iva": 103000.0,
+              "iva_unitario": 0,
+              "total": 103000.0,
+              "tipo_precio": "sin_iva"
+            },
+            {
+              "id": "P020",
+              "nombre": "FRAGANCIA",
+              "cantidad": 1,
+              "precio": 18000.0,
+              "precio_sin_iva": 18000.0,
+              "iva_unitario": 0,
+              "total": 18000.0,
+              "tipo_precio": "sin_iva"
+            },
+            {
+              "id": "P002",
+              "nombre": "SHAMPOO 250 ML",
+              "cantidad": 6,
+              "precio": 42543.0,
+              "precio_sin_iva": 42543.0,
+              "iva_unitario": 0,
+              "total": 255258.0,
+              "tipo_precio": "sin_iva"
+            },
+            {
+              "id": "P025",
+              "nombre": "ACEITE 120 ML",
+              "cantidad": 2,
+              "precio": 35450.0,
+              "precio_sin_iva": 35450.0,
+              "iva_unitario": 0,
+              "total": 70900.0,
+              "tipo_precio": "sin_iva"
+            }
+          ],
+          "direccion": "Carrera 34a # 71 -51 ",
+          "notas": "",
+          "fecha": "2025-04-05T16:19:12.846000",
+          "estado": "facturado",
+          "subtotal": 3970576.0,
+          "iva": 0,
+          "total": 3970576.0,
+          "tipo_precio": "sin_iva"
+        },
+        {
+          "_id": "67f163a389aa5b493fd4800c",
+          "id": "PED-20250405170851",
+          "distribuidor_id": "67eb32d224383e487efd6fd4",
+          "distribuidor_nombre": "Rionegro",
+          "distribuidor_phone": "+570000000000",
+          "productos": [
+            {
+              "id": "P003",
+              "nombre": "ACONDICIONADOR 250 ML",
+              "cantidad": 12,
+              "precio": 42542.5,
+              "precio_sin_iva": 35750.0,
+              "iva_unitario": 6792.5,
+              "total": 510510.0,
+              "tipo_precio": "con_iva"
+            },
+            {
+              "id": "P004",
+              "nombre": "CREMA 3 EN 1 250 ML",
+              "cantidad": 12,
+              "precio": 42542.5,
+              "precio_sin_iva": 35750.0,
+              "iva_unitario": 6792.5,
+              "total": 510510.0,
+              "tipo_precio": "con_iva"
+            },
+            {
+              "id": "P005",
+              "nombre": "GEL 250 ML",
+              "cantidad": 6,
+              "precio": 42542.5,
+              "precio_sin_iva": 35750.0,
+              "iva_unitario": 6792.5,
+              "total": 255255.0,
+              "tipo_precio": "con_iva"
+            },
+            {
+              "id": "P006",
+              "nombre": "ACEITE 30 ML",
+              "cantidad": 12,
+              "precio": 29256.15,
+              "precio_sin_iva": 24585.0,
+              "iva_unitario": 4671.15,
+              "total": 351073.80000000005,
+              "tipo_precio": "con_iva"
+            },
+            {
+              "id": "P002",
+              "nombre": "SHAMPOO 250 ML",
+              "cantidad": 12,
+              "precio": 42542.5,
+              "precio_sin_iva": 35750.0,
+              "iva_unitario": 6792.5,
+              "total": 510510.0,
+              "tipo_precio": "con_iva"
+            }
+          ],
+          "direccion": "Calle 47 #70B -98 CC. Río del Este, Local 1061  ",
+          "notas": "",
+          "fecha": "2025-04-05T17:08:51.585000",
+          "estado": "facturado",
+          "subtotal": 1796520.0,
+          "iva": 341338.8,
+          "total": 2137858.8,
+          "tipo_precio": "con_iva"
+        },
+        {
+          "_id": "67f3e0ae89aa5b493fd4800d",
+          "id": "PED-20250407142654",
+          "distribuidor_id": "67eb320c24383e487efd6fcf",
+          "distribuidor_nombre": "Bogotá Niza",
+          "distribuidor_phone": "+570000000000",
+          "productos": [
+            {
+              "id": "P004",
+              "nombre": "CREMA 3 EN 1 250 ML",
+              "cantidad": 24,
+              "precio": 42542.5,
+              "precio_sin_iva": 35750.0,
+              "iva_unitario": 6792.5,
+              "total": 1021020.0,
+              "tipo_precio": "con_iva"
+            },
+            {
+              "id": "P005",
+              "nombre": "GEL 250 ML",
+              "cantidad": 24,
+              "precio": 42542.5,
+              "precio_sin_iva": 35750.0,
+              "iva_unitario": 6792.5,
+              "total": 1021020.0,
+              "tipo_precio": "con_iva"
+            },
+            {
+              "id": "P006",
+              "nombre": "ACEITE 30 ML",
+              "cantidad": 6,
+              "precio": 29256.15,
+              "precio_sin_iva": 24585.0,
+              "iva_unitario": 4671.15,
+              "total": 175536.90000000002,
+              "tipo_precio": "con_iva"
+            },
+            {
+              "id": "P016",
+              "nombre": "USO SALON GEL MOLDEADOR",
+              "cantidad": 2,
+              "precio": 122570.0,
+              "precio_sin_iva": 103000.0,
+              "iva_unitario": 19570.0,
+              "total": 245140.0,
+              "tipo_precio": "con_iva"
+            },
+            {
+              "id": "P019",
+              "nombre": "USO SALON SHAMPOO",
+              "cantidad": 2,
+              "precio": 122570.0,
+              "precio_sin_iva": 103000.0,
+              "iva_unitario": 19570.0,
+              "total": 245140.0,
+              "tipo_precio": "con_iva"
+            },
+            {
+              "id": "P025",
+              "nombre": "ACEITE 120 ML",
+              "cantidad": 3,
+              "precio": 42185.5,
+              "precio_sin_iva": 35450.0,
+              "iva_unitario": 6735.5,
+              "total": 126556.5,
+              "tipo_precio": "con_iva"
+            }
+          ],
+          "direccion": "ak 58 #127-59 local 1100",
+          "notas": "centro comercial bulevar niva",
+          "fecha": "2025-04-07T14:26:54.830000",
+          "estado": "facturado",
+          "subtotal": 2381860.0,
+          "iva": 452553.4,
+          "total": 2834413.4,
+          "tipo_precio": "con_iva"
+        },
+        {
+          "_id": "67f5459189aa5b493fd4800e",
+          "id": "PED-20250408154937",
+          "distribuidor_id": "67eb32b024383e487efd6fd3",
+          "distribuidor_nombre": "Barranquilla",
+          "distribuidor_phone": "+570000000000",
+          "productos": [
+            {
+              "id": "P003",
+              "nombre": "ACONDICIONADOR 250 ML",
+              "cantidad": 12,
+              "precio": 42542.5,
+              "precio_sin_iva": 35750.0,
+              "iva_unitario": 6792.5,
+              "total": 510510.0,
+              "tipo_precio": "con_iva"
+            },
+            {
+              "id": "P004",
+              "nombre": "CREMA 3 EN 1 250 ML",
+              "cantidad": 12,
+              "precio": 42542.5,
+              "precio_sin_iva": 35750.0,
+              "iva_unitario": 6792.5,
+              "total": 510510.0,
+              "tipo_precio": "con_iva"
+            },
+            {
+              "id": "P005",
+              "nombre": "GEL 250 ML",
+              "cantidad": 12,
+              "precio": 42542.5,
+              "precio_sin_iva": 35750.0,
+              "iva_unitario": 6792.5,
+              "total": 510510.0,
+              "tipo_precio": "con_iva"
+            },
+            {
+              "id": "P006",
+              "nombre": "ACEITE 30 ML",
+              "cantidad": 6,
+              "precio": 29256.15,
+              "precio_sin_iva": 24585.0,
+              "iva_unitario": 4671.15,
+              "total": 175536.90000000002,
+              "tipo_precio": "con_iva"
+            },
+            {
+              "id": "P007",
+              "nombre": "SHAMPOO MEN 250 ML",
+              "cantidad": 12,
+              "precio": 42542.5,
+              "precio_sin_iva": 35750.0,
+              "iva_unitario": 6792.5,
+              "total": 510510.0,
+              "tipo_precio": "con_iva"
+            },
+            {
+              "id": "P008",
+              "nombre": "ACONDICIONADOR MEN 250 ML",
+              "cantidad": 6,
+              "precio": 42542.5,
+              "precio_sin_iva": 35750.0,
+              "iva_unitario": 6792.5,
+              "total": 255255.0,
+              "tipo_precio": "con_iva"
+            },
+            {
+              "id": "P010",
+              "nombre": "CREMA 3 EN 1 MEN 250 ML",
+              "cantidad": 12,
+              "precio": 42542.5,
+              "precio_sin_iva": 35750.0,
+              "iva_unitario": 6792.5,
+              "total": 510510.0,
+              "tipo_precio": "con_iva"
+            },
+            {
+              "id": "P016",
+              "nombre": "USO SALON GEL MOLDEADOR",
+              "cantidad": 2,
+              "precio": 122570.0,
+              "precio_sin_iva": 103000.0,
+              "iva_unitario": 19570.0,
+              "total": 245140.0,
+              "tipo_precio": "con_iva"
+            },
+            {
+              "id": "P017",
+              "nombre": "USO SALON ACONDICIONADOR",
+              "cantidad": 1,
+              "precio": 122570.0,
+              "precio_sin_iva": 103000.0,
+              "iva_unitario": 19570.0,
+              "total": 122570.0,
+              "tipo_precio": "con_iva"
+            },
+            {
+              "id": "P018",
+              "nombre": "USO SALON CREMA 3 EN 1",
+              "cantidad": 1,
+              "precio": 122570.0,
+              "precio_sin_iva": 103000.0,
+              "iva_unitario": 19570.0,
+              "total": 122570.0,
+              "tipo_precio": "con_iva"
+            },
+            {
+              "id": "P019",
+              "nombre": "USO SALON SHAMPOO",
+              "cantidad": 1,
+              "precio": 122570.0,
+              "precio_sin_iva": 103000.0,
+              "iva_unitario": 19570.0,
+              "total": 122570.0,
+              "tipo_precio": "con_iva"
+            }
+          ],
+          "direccion": "calle 106#50-106 local 6",
+          "notas": "la entrega puede ser de lunes a sabado de 9am a 5 y media pm",
+          "fecha": "2025-04-08T15:49:37.775000",
+          "estado": "facturado",
+          "subtotal": 3022010.0,
+          "iva": 574181.9,
+          "total": 3596191.9,
+          "tipo_precio": "con_iva"
+        },
+        {
+          "_id": "67f7d88e89aa5b493fd48011",
+          "id": "PED-20250410144118",
+          "distribuidor_id": "67f7d7ce89aa5b493fd48010",
+          "distribuidor_nombre": "Línea estética ",
+          "distribuidor_phone": "+570000000000",
+          "productos": [
+            {
+              "id": "P003",
+              "nombre": "ACONDICIONADOR 250 ML",
+              "cantidad": 12,
+              "precio": 42542.5,
+              "precio_sin_iva": 35750.0,
+              "iva_unitario": 6792.5,
+              "total": 510510.0,
+              "tipo_precio": "con_iva"
+            },
+            {
+              "id": "P004",
+              "nombre": "CREMA 3 EN 1 250 ML",
+              "cantidad": 24,
+              "precio": 42542.5,
+              "precio_sin_iva": 35750.0,
+              "iva_unitario": 6792.5,
+              "total": 1021020.0,
+              "tipo_precio": "con_iva"
+            },
+            {
+              "id": "P006",
+              "nombre": "ACEITE 30 ML",
+              "cantidad": 30,
+              "precio": 29256.15,
+              "precio_sin_iva": 24585.0,
+              "iva_unitario": 4671.15,
+              "total": 877684.5,
+              "tipo_precio": "con_iva"
+            }
+          ],
+          "direccion": "carrera 43# 27-30 LOMA SAN JULIAN LINEA ESTETICA",
+          "notas": "",
+          "fecha": "2025-04-10T14:41:18.153000",
+          "estado": "Procesando",
+          "subtotal": 2024550.0,
+          "iva": 384664.5,
+          "total": 2409214.5,
+          "tipo_precio": "con_iva"
+        },
+        {
+          "_id": "67f7f02289aa5b493fd48013",
+          "id": "PED-20250410162154",
+          "distribuidor_id": "67f7ef8289aa5b493fd48012",
+          "distribuidor_nombre": "Santa Cuidado Integral",
+          "distribuidor_phone": "+570000000000",
+          "productos": [
+            {
+              "id": "P003",
+              "nombre": "ACONDICIONADOR 250 ML",
+              "cantidad": 24,
+              "precio": 42542.5,
+              "precio_sin_iva": 35750.0,
+              "iva_unitario": 6792.5,
+              "total": 1021020.0,
+              "tipo_precio": "con_iva"
+            },
+            {
+              "id": "P004",
+              "nombre": "CREMA 3 EN 1 250 ML",
+              "cantidad": 24,
+              "precio": 42542.5,
+              "precio_sin_iva": 35750.0,
+              "iva_unitario": 6792.5,
+              "total": 1021020.0,
+              "tipo_precio": "con_iva"
+            },
+            {
+              "id": "P005",
+              "nombre": "GEL 250 ML",
+              "cantidad": 12,
+              "precio": 42542.5,
+              "precio_sin_iva": 35750.0,
+              "iva_unitario": 6792.5,
+              "total": 510510.0,
+              "tipo_precio": "con_iva"
+            },
+            {
+              "id": "P006",
+              "nombre": "ACEITE 30 ML",
+              "cantidad": 6,
+              "precio": 29256.15,
+              "precio_sin_iva": 24585.0,
+              "iva_unitario": 4671.15,
+              "total": 175536.90000000002,
+              "tipo_precio": "con_iva"
+            },
+            {
+              "id": "P002",
+              "nombre": "SHAMPOO 250 ML",
+              "cantidad": 24,
+              "precio": 42542.5,
+              "precio_sin_iva": 35750.0,
+              "iva_unitario": 6792.5,
+              "total": 1021020.0,
+              "tipo_precio": "con_iva"
+            }
+          ],
+          "direccion": "Santa cuidado integral",
+          "notas": "",
+          "fecha": "2025-04-10T16:21:54.935000",
+          "estado": "facturado",
+          "subtotal": 3150510.0,
+          "iva": 598596.9,
+          "total": 3749106.9,
+          "tipo_precio": "con_iva"
+        }
+      ]
+    },
+    "productos": {
+      "fields": [
+        "margenes",
+        "fecha_actualizacion",
+        "stock",
+        "precio_con_iva_colombia",
+        "codigo_tipo",
+        "precio_internacional",
+        "guarne",
+        "id",
+        "_id",
+        "categoria",
+        "precios",
+        "creado_en",
+        "admin_id",
+        "activo",
+        "precio_sin_iva_colombia",
+        "actualizado_en",
+        "medellin",
+        "nombre"
+      ],
+      "samples": [
+        {
+          "_id": "67e9c610131077f33c33ca83",
+          "id": "P003",
+          "admin_id": "67e9757223161d00b6fff79e",
+          "nombre": "ACONDICIONADOR 250 ML",
+          "categoria": "SPECIAL",
+          "precios": {
+            "sin_iva_colombia": 42543.0,
+            "con_iva_colombia": 35750.0,
+            "internacional": 5.9,
+            "fecha_actualizacion": "2025-03-30T22:30:40.121000"
+          },
+          "margenes": {
+            "descuento": 0.0,
+            "tipo_codigo": 1016
+          },
+          "stock": {
+            "medellin": "72",
+            "guarne": "0"
+          },
+          "activo": true,
+          "creado_en": "2025-03-30T22:30:40.121000",
+          "actualizado_en": "2025-06-04T22:50:56.771000",
+          "precio_internacional": 5
+        },
+        {
+          "_id": "67e9c688131077f33c33ca84",
+          "id": "P004",
+          "admin_id": "67e9757223161d00b6fff79e",
+          "nombre": "CREMA 3 EN 1 250 ML",
+          "categoria": "SPECIAL",
+          "precios": {
+            "sin_iva_colombia": 42543.0,
+            "con_iva_colombia": 35750.0,
+            "internacional": 5.9,
+            "fecha_actualizacion": "2025-03-30T22:32:40.422000"
+          },
+          "margenes": {
+            "descuento": 0.0,
+            "tipo_codigo": 1003
+          },
+          "stock": 208,
+          "activo": true,
+          "creado_en": "2025-03-30T22:32:40.422000",
+          "actualizado_en": "2025-06-04T22:49:45.844000",
+          "precio_internacional": 4
+        },
+        {
+          "_id": "67e9c6ab131077f33c33ca85",
+          "id": "P005",
+          "admin_id": "67e9757223161d00b6fff79e",
+          "nombre": "GEL 250 ML",
+          "categoria": "SPECIAL",
+          "precios": {
+            "sin_iva_colombia": 42543.0,
+            "con_iva_colombia": 35750.0,
+            "internacional": 5.9,
+            "fecha_actualizacion": "2025-03-30T22:33:15.709000"
+          },
+          "margenes": {
+            "descuento": 0.0,
+            "tipo_codigo": 1007
+          },
+          "stock": 476,
+          "activo": true,
+          "creado_en": "2025-03-30T22:33:15.709000",
+          "actualizado_en": "2025-06-04T22:50:23.342000"
+        },
+        {
+          "_id": "67e9c6c5131077f33c33ca86",
+          "id": "P006",
+          "admin_id": "67e9757223161d00b6fff79e",
+          "nombre": "ACEITE 30 ML",
+          "categoria": "SPECIAL",
+          "precios": {
+            "sin_iva_colombia": 29256.0,
+            "con_iva_colombia": 24585.0,
+            "internacional": 4.9,
+            "fecha_actualizacion": "2025-03-30T22:33:41.059000"
+          },
+          "margenes": {
+            "descuento": 0.0,
+            "tipo_codigo": 1018
+          },
+          "stock": 74,
+          "activo": true,
+          "creado_en": "2025-03-30T22:33:41.059000",
+          "actualizado_en": "2025-05-07T20:32:03.100000",
+          "precio_con_iva_colombia": 24585,
+          "precio_internacional": 4,
+          "precio_sin_iva_colombia": 24585
+        },
+        {
+          "_id": "67e9c741131077f33c33ca87",
+          "id": "P007",
+          "admin_id": "67e9757223161d00b6fff79e",
+          "nombre": "SHAMPOO MEN 250 ML",
+          "categoria": "MEN",
+          "precios": {
+            "sin_iva_colombia": 42543.0,
+            "con_iva_colombia": 35750.0,
+            "internacional": 5.9,
+            "fecha_actualizacion": "2025-03-30T22:35:45.237000"
+          },
+          "margenes": {
+            "descuento": 0.0,
+            "tipo_codigo": 1021
+          },
+          "stock": {
+            "medellin": "692",
+            "guarne": "0"
+          },
+          "activo": true,
+          "creado_en": "2025-03-30T22:35:45.237000",
+          "actualizado_en": "2025-06-04T22:51:45.054000"
+        },
+        {
+          "_id": "67e9c75d131077f33c33ca88",
+          "id": "P008",
+          "admin_id": "67e9757223161d00b6fff79e",
+          "nombre": "ACONDICIONADOR MEN 250 ML",
+          "categoria": "MEN",
+          "precios": {
+            "sin_iva_colombia": 42543.0,
+            "con_iva_colombia": 35750.0,
+            "internacional": 5.9,
+            "fecha_actualizacion": "2025-03-30T22:36:13.499000"
+          },
+          "margenes": {
+            "descuento": 0.0,
+            "tipo_codigo": 1008
+          },
+          "stock": {
+            "medellin": "95",
+            "guarne": "0"
+          },
+          "activo": true,
+          "creado_en": "2025-03-30T22:36:13.499000",
+          "actualizado_en": "2025-05-07T20:35:43.746000"
+        },
+        {
+          "_id": "67e9c77c131077f33c33ca89",
+          "id": "P009",
+          "admin_id": "67e9757223161d00b6fff79e",
+          "nombre": "GEL MEN 250 ML",
+          "categoria": "MEN",
+          "precios": {
+            "sin_iva_colombia": 42543.0,
+            "con_iva_colombia": 35750.0,
+            "internacional": 5.9,
+            "fecha_actualizacion": "2025-03-30T22:36:44.556000"
+          },
+          "margenes": {
+            "descuento": 0.0,
+            "tipo_codigo": 1014
+          },
+          "stock": 476,
+          "activo": true,
+          "creado_en": "2025-03-30T22:36:44.556000",
+          "actualizado_en": "2025-05-26T16:05:13.077000"
+        },
+        {
+          "_id": "67e9c79c131077f33c33ca8a",
+          "id": "P010",
+          "admin_id": "67e9757223161d00b6fff79e",
+          "nombre": "CREMA 3 EN 1 MEN 250 ML",
+          "categoria": "MEN",
+          "precios": {
+            "sin_iva_colombia": 42543.0,
+            "con_iva_colombia": 35750.0,
+            "internacional": 5.9,
+            "fecha_actualizacion": "2025-03-30T22:37:16.105000"
+          },
+          "margenes": {
+            "descuento": 0.45,
+            "tipo_codigo": 1012
+          },
+          "stock": 686,
+          "activo": true,
+          "creado_en": "2025-03-30T22:37:16.105000",
+          "actualizado_en": "2025-06-04T22:50:34.391000"
+        },
+        {
+          "_id": "67e9c7d6131077f33c33ca8b",
+          "id": "P011",
+          "admin_id": "67e9757223161d00b6fff79e",
+          "nombre": "RIZOPROTECTORES",
+          "categoria": "ACCESORIO",
+          "precios": {
+            "sin_iva_colombia": 36890.0,
+            "con_iva_colombia": 31000.0,
+            "internacional": 6.5,
+            "fecha_actualizacion": "2025-03-30T22:38:14.795000"
+          },
+          "margenes": {
+            "descuento": 0.45,
+            "tipo_codigo": 1020
+          },
+          "stock": {
+            "medellin": 0,
+            "guarne": 0
+          },
+          "activo": true,
+          "creado_en": "2025-03-30T22:38:14.795000",
+          "actualizado_en": "2025-03-30T22:38:14.795000"
+        },
+        {
+          "_id": "67e9c803131077f33c33ca8c",
+          "id": "P012",
+          "admin_id": "67e9757223161d00b6fff79e",
+          "nombre": "KIT VIAJERO",
+          "categoria": "ACCESORIO",
+          "precios": {
+            "sin_iva_colombia": 32071.0,
+            "con_iva_colombia": 26950.0,
+            "internacional": 5.5,
+            "fecha_actualizacion": "2025-03-30T22:38:59.063000"
+          },
+          "margenes": {
+            "descuento": 0.0,
+            "tipo_codigo": 1025
+          },
+          "stock": {
+            "medellin": 0,
+            "guarne": 0
+          },
+          "activo": true,
+          "creado_en": "2025-03-30T22:38:59.063000",
+          "actualizado_en": "2025-03-30T22:38:59.063000",
+          "precio_internacional": 5
+        }
+      ]
+    },
+    "admin": {
+      "fields": [
+        "hashed_password",
+        "correo_electronico",
+        "whatsapp",
+        "fecha_ultimo_acceso",
+        "pais",
+        "_id",
+        "rol",
+        "nombre"
+      ],
+      "samples": [
+        {
+          "_id": "67e9757223161d00b6fff79e",
+          "nombre": "Admin Rizos Felices",
+          "pais": "Colombia",
+          "whatsapp": "+573225909265",
+          "correo_electronico": "natalia@unicornioindustries.co",
+          "hashed_password": "$2b$12$fORvtWureC//PMcOxRH1I.P/hLEuzQWTrqdDgiDA.Yndp9CSzUDkC",
+          "rol": "Admin",
+          "fecha_ultimo_acceso": "2025-08-09 19:11"
+        }
+      ]
+    },
+    "bodega": {
+      "fields": [
+        "hashed_password",
+        "correo_electronico",
+        "fecha_ultimo_acceso",
+        "cdi",
+        "pais",
+        "estado",
+        "id",
+        "_id",
+        "phone",
+        "admin_id",
+        "rol",
+        "nombre"
+      ],
+      "samples": [
+        {
+          "_id": "687ab781d5d98343ca9c2512",
+          "id": "U042",
+          "nombre": "Bodega Guarne",
+          "pais": "Colombia",
+          "correo_electronico": "bodegaguarne@gmail.com",
+          "phone": "+573000000000",
+          "hashed_password": "$2b$12$iBO6ysHc0m37lIN5IncQvOqAaSdsR.R0sMcjx3.9JfB2EBB99lRf2",
+          "rol": "bodega",
+          "estado": "Activo",
+          "fecha_ultimo_acceso": "2025-08-09 19:23",
+          "admin_id": "67e9757223161d00b6fff79e",
+          "cdi": "guarne"
+        },
+        {
+          "_id": "687fb0ce53f10d57c28f77c1",
+          "id": "U047",
+          "nombre": "Bodega Medellin",
+          "pais": "Colombia",
+          "correo_electronico": "cdimedellin@rizosfelices.co",
+          "phone": "+573000000000",
+          "hashed_password": "$2b$12$CgVkad/rSCL8dLNqBcmkh.tzTs5vsfM080ojzkcQuSW1UkpQVWT82",
+          "rol": "bodega",
+          "estado": "Activo",
+          "fecha_ultimo_acceso": "2025-07-25 19:27",
+          "admin_id": "67e9757223161d00b6fff79e",
+          "cdi": "medellin"
+        }
+      ]
+    },
+    "produccion": {
+      "fields": [
+        "hashed_password",
+        "correo_electronico",
+        "fecha_ultimo_acceso",
+        "cdi",
+        "pais",
+        "estado",
+        "id",
+        "_id",
+        "phone",
+        "admin_id",
+        "rol",
+        "nombre"
+      ],
+      "samples": [
+        {
+          "_id": "67e2e682dbddff7a59edbdac",
+          "id": "U004",
+          "nombre": "Almacen Rizos Felices",
+          "pais": "Colombia",
+          "correo_electronico": "juan.rivero@iejva.edu.co",
+          "phone": "+573225909265",
+          "hashed_password": "$2b$12$/AlwauMBU1k2iWvuE5Sv0.vf9odMTyU7Z.5b4COqnuvfcWi52lwyi",
+          "rol": "produccion",
+          "estado": "Activo",
+          "fecha_ultimo_acceso": "2025-07-20 00:37",
+          "admin_id": "67d3402e95ea2875ff5f8290",
+          "cdi": "medellin"
+        },
+        {
+          "_id": "67e98e12131077f33c33ca7b",
+          "id": "U009",
+          "nombre": "produccion1",
+          "pais": "Colombia",
+          "correo_electronico": "produccion1@rizosfelices.co",
+          "phone": "00000000",
+          "hashed_password": "$2b$12$l0redmXY6N2xj2RsI90Rbu.lrSavRivEY.2KfSku/yk8qMkWuQm9q",
+          "rol": "produccion",
+          "estado": "Activo",
+          "fecha_ultimo_acceso": "2025-04-04 15:29",
+          "admin_id": "67e9757223161d00b6fff79e"
+        },
+        {
+          "_id": "67effc19721d724ac7e9df56",
+          "id": "U031",
+          "nombre": "Produccion",
+          "pais": "Colombia",
+          "correo_electronico": "produccion@rizosfelices.co",
+          "phone": "+570000000000",
+          "hashed_password": "$2b$12$GOVqrrFywm3ew4JelzAtR.Ys6iNh25ymi6n/8tfcdE8ThJhtttsKC",
+          "rol": "produccion",
+          "estado": "Activo",
+          "fecha_ultimo_acceso": "2025-08-08 16:10",
+          "admin_id": "67e9757223161d00b6fff79e"
+        }
+      ]
+    },
+    "facturadores": {
+      "fields": [
+        "hashed_password",
+        "correo_electronico",
+        "fecha_ultimo_acceso",
+        "pais",
+        "estado",
+        "id",
+        "_id",
+        "phone",
+        "admin_id",
+        "rol",
+        "nombre"
+      ],
+      "samples": [
+        {
+          "_id": "67e98dea131077f33c33ca7a",
+          "id": "U008",
+          "nombre": "facturacion ",
+          "pais": "Colombia",
+          "correo_electronico": "facturacion@rizosfelices.co",
+          "phone": "00000000",
+          "hashed_password": "$2b$12$J16lfMFPrGmkUb/KkSUcGuXuCfAgR43aX6DrxZF5OcCjaDGb58Y/C",
+          "rol": "facturacion",
+          "estado": "Activo",
+          "fecha_ultimo_acceso": "2025-04-04 16:24",
+          "admin_id": "67e9757223161d00b6fff79e"
+        },
+        {
+          "_id": "67f00ab8721d724ac7e9df5c",
+          "id": "U032",
+          "nombre": "Facturacion",
+          "pais": "Colombia",
+          "correo_electronico": "tesoreria@rizosfelices.co",
+          "phone": "+57 0000000",
+          "hashed_password": "$2b$12$H5SKkQzq9IO9MoT.LvHCwO.HPkUOFTV60d2aH.pPd5UJPJc3PUMDu",
+          "rol": "facturacion",
+          "estado": "Activo",
+          "fecha_ultimo_acceso": "2025-08-11 16:48",
+          "admin_id": "67e9757223161d00b6fff79e"
+        }
+      ]
+    }
+  }
+}

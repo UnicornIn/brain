@@ -11,9 +11,11 @@ import json
 
 router = APIRouter()
 
-
 @router.post("/whatsapp/send-message")
-async def send_message(data: WhatsAppMessageSchema):
+async def send_message(
+    data: WhatsAppMessageSchema,
+    user: dict = Depends(get_current_user(["admin"]))
+):
     phone_number_id = os.getenv("WHATSAPP_PHONE_ID")
     print(f"Received data: {data}")
     print(f"Using phone_number_id: {phone_number_id}")
@@ -25,8 +27,30 @@ async def send_message(data: WhatsAppMessageSchema):
     try:
         result = await send_whatsapp_message(data.wa_id, data.text, phone_number_id)
         print(f"send_whatsapp_message result: {result}")
+
+        # Guardar en conversación
+        await messages_collection.update_one(
+            {"user_id": data.wa_id, "platform": "whatsapp"},
+            {
+                "$push": {
+                    "messages": {
+                        "sender": "system",
+                        "name": user["name"],
+                        "content": data.text,
+                        "timestamp": datetime.utcnow()
+                    }
+                },
+                "$set": {
+                    "last_message": data.text
+                }
+            },
+            upsert=True
+        )
+
         return {"status": "ok", "response": result}
+
     except Exception as e:
         print(f"Error sending WhatsApp message: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
 
