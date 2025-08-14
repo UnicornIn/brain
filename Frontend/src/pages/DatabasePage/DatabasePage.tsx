@@ -39,7 +39,7 @@ const DatabasePage = () => {
       setLoading(true);
       setError(null);
       
-      const response = await fetch('https://apibrain.rizosfelices.co/client/contacts/info');
+      const response = await fetch('https://staging-brain.rizosfelices.co/client/contacts/info');
       
       if (!response.ok) {
         throw new Error(`Error ${response.status}: ${response.statusText}`);
