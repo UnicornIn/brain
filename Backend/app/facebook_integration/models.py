@@ -1,12 +1,10 @@
 from pydantic import BaseModel
 from typing import List
 
-class InstagramData(BaseModel):
+class MessengerData(BaseModel):
     user_id: str
     text: str
 
-class InstagramSendMessage(BaseModel):
-    data: InstagramData
+class MessengerSendMessage(BaseModel):
+    data: MessengerData
     allowed_roles: List[str]
-    
-    

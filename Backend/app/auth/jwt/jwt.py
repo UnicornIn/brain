@@ -27,29 +27,31 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
 # ✅ La función base
-async def get_current_user(token: str = Depends(oauth2_scheme), allowed_roles: list[str] = None):
-    credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
+def get_current_user(allowed_roles: list[str] = None):
+    async def _get_user(token: str = Depends(oauth2_scheme)):
+        credentials_exception = HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
 
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        user_id = payload.get("sub")
-        role = payload.get("role")
+        try:
+            payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+            user_id = payload.get("sub")
+            role = payload.get("role")
 
-        if not user_id or (allowed_roles and role not in allowed_roles):
+            if not user_id or (allowed_roles and role not in allowed_roles):
+                raise credentials_exception
+
+        except JWTError:
             raise credentials_exception
 
-    except JWTError:
-        raise credentials_exception
+        user = await user_collection.find_one({"id": user_id})
+        if not user:
+            raise credentials_exception
 
-    user = await user_collection.find_one({"id": user_id})
-    if not user:
-        raise credentials_exception
-
-    return user
+        return user
+    return _get_user
 
 # ✅ Wrapper para roles personalizados
 def get_current_user_with_roles(allowed_roles: list[str]):

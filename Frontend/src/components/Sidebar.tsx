@@ -33,7 +33,7 @@ const Icons = {
         strokeLinecap="round"
         strokeLinejoin="round"
         strokeWidth={2}
-        d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+        d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
       />
     </svg>
   ),
@@ -47,6 +47,16 @@ const Icons = {
       />
     </svg>
   ),
+  bell: () => (
+    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M12 22a2 2 0 002-2H8a2 2 0 002 2zm6-6V9a6 6 0 10-12 0v7l-2 2v1h16v-1l-2-2z"
+      />
+    </svg>
+  ),
   Intelligence: () => (
     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
       <path
@@ -54,6 +64,16 @@ const Icons = {
         strokeLinejoin="round"
         strokeWidth={2}
         d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+      />
+    </svg>
+  ),
+  AlertTriangle: () => (
+    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M12 9v2m0 4h.01M21.752 17.168l-9-15a1.992 1.992 0 00-3.504 0l-9 15A2.002 2.002 0 003.999 20h16a2.002 2.002 0 001.753-2.832z"
       />
     </svg>
   ),
@@ -104,13 +124,15 @@ const Sidebar = () => {
   const { user, logout } = useAuth()
   const location = useLocation()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [isCollapsed, setIsCollapsed] = useState(true)
 
   const modules = [
     { name: "Dashboard", path: "/dashboard", icon: Icons.Dashboard },
     { name: "Base de Datos", path: "/database", icon: Icons.Database },
     // { name: "Datos de Negocio", path: "/business", icon: Icons.Business },
-    { name: "Omnicanal", path: "/omnichannel", icon: Icons.Omnichannel },
+    { name: "Alertas", path: "/alerts", icon: Icons.bell },
     { name: "Comunidades", path: "/communities", icon: BarChart3 },
+    { name: "Onmicanal", path: "/onnichannel", icon: Icons.Omnichannel },
     { name: "Inteligencia de Negocios", path: "/intelligence", icon: Icons.Intelligence },
   ]
 
@@ -122,48 +144,68 @@ const Sidebar = () => {
     setIsMobileMenuOpen(false)
   }, [])
 
+  const expandSidebar = useCallback(() => {
+    setIsCollapsed(false)
+  }, [])
+
+  const collapseSidebar = useCallback(() => {
+    setIsCollapsed(true)
+  }, [])
+
   type Module = {
     name: string
     path: string
     icon: React.FC
   }
 
-  const NavItem = ({ module }: { module: Module }) => (
+  const NavItem = ({ module, collapsed }: { module: Module; collapsed?: boolean }) => (
     <Link
       to={module.path}
-      onClick={closeMobileMenu}
-      className={`flex items-center px-4 py-2 text-sm font-medium rounded-md ${location.pathname === module.path
-        ? "bg-blue-100 text-blue-700"
-        : "text-gray-700 hover:bg-gray-100"
-        }`}
+      onClick={() => {
+        closeMobileMenu()
+        if (collapsed) {
+          expandSidebar()
+        }
+      }}
+      onMouseEnter={collapsed ? expandSidebar : undefined}
+      className={`flex items-center ${collapsed ? 'justify-center px-2' : 'px-4'} py-2 text-sm font-medium rounded-md transition-all duration-200 ${
+        location.pathname === module.path
+          ? "bg-blue-100 text-blue-700"
+          : "text-gray-700 hover:bg-gray-100"
+      }`}
       aria-current={location.pathname === module.path ? "page" : undefined}
+      title={collapsed ? module.name : undefined}
     >
       <module.icon />
-      <span className="ml-3">{module.name}</span>
+      {!collapsed && <span className="ml-3 whitespace-nowrap">{module.name}</span>}
     </Link>
   )
 
-  const UserProfile = () => (
+  const UserProfile = ({ collapsed }: { collapsed?: boolean }) => (
     <div className="border-t p-4">
-      <div className="flex items-center">
+      <div className={`flex items-center ${collapsed ? 'justify-center' : ''}`}>
         <div className="flex-shrink-0">
           <div className="h-8 w-8 rounded-full bg-gray-300 flex items-center justify-center text-gray-600">
             {user?.name?.charAt(0) || "U"}
           </div>
         </div>
-        <div className="ml-3">
-          <p className="text-sm font-medium text-gray-700">{user?.name || "Usuario"}</p>
-          <p className="text-xs text-gray-500">{user?.email || ""}</p>
-        </div>
+        {!collapsed && (
+          <div className="ml-3">
+            <p className="text-sm font-medium text-gray-700 whitespace-nowrap">{user?.name || "Usuario"}</p>
+            <p className="text-xs text-gray-500 whitespace-nowrap">{user?.email || ""}</p>
+          </div>
+        )}
       </div>
-      <div className="mt-3 space-y-1">
+      <div className={`mt-3 space-y-1 ${collapsed ? 'flex justify-center' : ''}`}>
         <button
           onClick={logout}
-          className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md"
+          onMouseEnter={collapsed ? expandSidebar : undefined}
+          className={`flex items-center ${collapsed ? 'justify-center px-2' : 'w-full px-4'} py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-all duration-200`}
           aria-label="Cerrar sesión"
+          title={collapsed ? "Cerrar Sesión" : undefined}
         >
           <Icons.Logout />
-          <span className="ml-3">Cerrar Sesión</span>
+          {!collapsed && <span className="ml-3 whitespace-nowrap">Cerrar Sesión</span>}
         </button>
       </div>
     </div>
@@ -186,13 +228,14 @@ const Sidebar = () => {
 
       {/* Mobile sidebar */}
       <div
-        className={`md:hidden fixed inset-0 z-10 bg-gray-800 bg-opacity-75 transition-opacity ${isMobileMenuOpen ? "opacity-100" : "opacity-0 pointer-events-none"
-          }`}
+        className={`md:hidden fixed inset-0 z-10 bg-gray-800 bg-opacity-75 transition-opacity ${
+          isMobileMenuOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+        }`}
         aria-hidden={!isMobileMenuOpen}
       >
         <div className="fixed inset-y-0 left-0 max-w-xs w-full bg-white shadow-xl transition transform ease-in-out duration-300">
           <div className="h-full flex flex-col">
-            <div className="flex items-center justify-between h-16 px-4 border-b " >
+            <div className="flex items-center justify-between h-16 px-4 border-b">
               <div className="flex items-center ml-[50px]">
                 <Icons.Dashboard />
                 <span className="ml-2 font-semibold text-lg">Brain CRM</span>
@@ -216,27 +259,43 @@ const Sidebar = () => {
             <UserProfile />
           </div>
         </div>
-      </div >
+      </div>
 
       {/* Desktop sidebar */}
-      < div className="hidden md:flex md:flex-shrink-0" >
-        <div className="flex flex-col w-64">
+      <div className="hidden md:flex md:flex-shrink-0">
+        <div 
+          className={`flex flex-col transition-all duration-500 ${isCollapsed ? 'w-16' : 'w-64'}`}
+          onMouseLeave={collapseSidebar}
+        >
           <div className="flex flex-col h-0 flex-1 border-r border-gray-200 bg-white">
-            <div className="flex items-center h-16 flex-shrink-0 px-4 border-b">
-              <Icons.Dashboard />
-              <span className="ml-2 font-semibold text-lg">Brain CRM</span>
+            {/* Header */}
+            <div className={`flex items-center h-16 flex-shrink-0 px-4 border-b ${isCollapsed ? 'justify-center' : ''}`}>
+              {!isCollapsed ? (
+                <div className="flex items-center">
+                  <Icons.Dashboard />
+                  <span className="ml-2 font-semibold text-lg whitespace-nowrap">Brain CRM</span>
+                </div>
+              ) : (
+                <div className="flex items-center">
+                  <Icons.Dashboard />
+                </div>
+              )}
             </div>
+
+            {/* Navigation */}
             <div className="flex-1 flex flex-col overflow-y-auto">
-              <nav className="flex-1 px-2 py-4 space-y-1">
+              <nav className={`flex-1 px-2 py-4 space-y-1`}>
                 {modules.map((module) => (
-                  <NavItem key={module.path} module={module} />
+                  <NavItem key={module.path} module={module} collapsed={isCollapsed} />
                 ))}
               </nav>
             </div>
-            <UserProfile />
+
+            {/* User Profile */}
+            <UserProfile collapsed={isCollapsed} />
           </div>
         </div>
-      </div >
+      </div>
     </>
   )
 }

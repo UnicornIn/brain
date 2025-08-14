@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Query, HTTPException
 from datetime import datetime, timedelta
 from typing import Optional
-from app.database.mongo import messages_collection, contacts_collection
+from app.database.mongo import message_collection, contacts_collection
 from app.manychat.controllers import get_subscriber_info
 
 router = APIRouter()
@@ -11,7 +11,7 @@ async def process_new_contacts():
     contactos_nuevos = []
     processed_ids = set()
     
-    async for message in messages_collection.find().sort("timestamp", -1):
+    async for message in message_collection.find().sort("timestamp", -1):
         try:
             subscriber_id = message.get("subscriber_id")
             if not subscriber_id or subscriber_id in processed_ids:

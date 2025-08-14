@@ -99,7 +99,7 @@ export default function CommunitiesPage({ stats, counts }: CommunitiesPageProps)
           setLoading(false);
         }
 
-        const response = await fetch('https://apibrain.rizosfelices.co/community/get-communities/');
+        const response = await fetch('https://staging-brain.rizosfelices.co/community/get-communities/');
         if (!response.ok) {
           throw new Error('Error al obtener las comunidades');
         }
@@ -152,7 +152,7 @@ export default function CommunitiesPage({ stats, counts }: CommunitiesPageProps)
   const refreshData = async () => {
     try {
       setLoading(true);
-      const response = await fetch('https://apibrain.rizosfelices.co/community/get-communities/');
+      const response = await fetch('https://staging-brain.rizosfelices.co/community/get-communities/');
       if (!response.ok) {
         throw new Error('Error al actualizar las comunidades');
       }

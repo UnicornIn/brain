@@ -1,146 +1,162 @@
-import { Link } from "react-router-dom"
+import { useState, useRef, useEffect } from "react"
+import { Bot, User } from "lucide-react"
+import { Card, CardContent } from "../../components/ui/card"
+import { Input } from "../../components/ui/input"
+import { Avatar, AvatarFallback } from "../../components/ui/avatar"
 
-const DashboardPage = () => {
-  const modules = [
-    {
-      title: "Base de Datos",
-      description: "Gestión de datos de clientes y perfiles",
-      path: "/database",
-      color: "bg-blue-100 text-blue-700",
-      icon: () => (
-        <svg
-          className="w-6 h-6"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"
-          />
-        </svg>
-      ),
-    },
-    // {
-    //   title: "Datos de Negocio",
-    //   description: "Gestión de información empresarial, precios, reglas y horarios",
-    //   path: "/business",
-    //   color: "bg-green-100 text-green-700",
-    //   icon: () => (
-    //     <svg
-    //       className="w-6 h-6"
-    //       fill="none"
-    //       stroke="currentColor"
-    //       viewBox="0 0 24 24"
-    //       xmlns="http://www.w3.org/2000/svg"
-    //     >
-    //       <path
-    //         strokeLinecap="round"
-    //         strokeLinejoin="round"
-    //         strokeWidth={2}
-    //         d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-    //       />
-    //     </svg>
-    //   ),
-    // },
-    {
-      title: "Omnicanal",
-      description: "Gestión de comunicaciones con clientes",
-      path: "/omnichannel",
-      color: "bg-purple-100 text-purple-700",
-      icon: () => (
-        <svg
-          className="w-6 h-6"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-          />
-        </svg>
-      ),
-    },
-    {
-      title: "Comunidades",
-      description: "Gestión de grupos y comunidades de clientes",
-      path: "/communities",
-      color: "bg-pink-100 text-pink-700",
-      icon: () => (
-        <svg
-          className="w-6 h-6"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-          />
-        </svg>
-      ),
-    },
-    // {
-    //   title: "Inteligencia de Negocios",
-    //   description: "Análisis y visualización de datos",
-    //   path: "/intelligence",
-    //   color: "bg-amber-100 text-amber-700",
-    //   icon: () => (
-    //     <svg
-    //       className="w-6 h-6"
-    //       fill="none"
-    //       stroke="currentColor"
-    //       viewBox="0 0 24 24"
-    //       xmlns="http://www.w3.org/2000/svg"
-    //     >
-    //       <path
-    //         strokeLinecap="round"
-    //         strokeLinejoin="round"
-    //         strokeWidth={2}
-    //         d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-    //       />
-    //     </svg>
-    //   ),
-    // },
+export default function BusinessDashboard() {
+  const salesData = [
+    { title: "Salon Sales", value: "$0" },
+    { title: "Website Sales", value: "$0" },
+    { title: "Product Sales", value: "$0" },
   ]
 
-  return (
-    <div className="container mx-auto">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 text-center md:text-left">Dashboard</h1>
-        <p className="text-gray-500 text-center md:text-left">Bienvenido al sistema Brain CRM</p>
-      </div>
+  // Historial de mensajes
+  const [messages, setMessages] = useState<{ role: string; text: string }[]>([])
+  const [userMessage, setUserMessage] = useState("")
+  const [loading, setLoading] = useState(false)
+  const chatEndRef = useRef<HTMLDivElement | null>(null)
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        {modules.map((module) => (
-          <div key={module.path} className="bg-white overflow-hidden shadow rounded-lg">
-            <div className="p-5">
-              <div className={`w-12 h-12 rounded-lg flex items-center justify-center mb-4 ${module.color}`}>
-                <module.icon />
-              </div>
-              <h3 className="text-lg font-medium text-gray-900">{module.title}</h3>
-              <p className="mt-1 text-sm text-gray-500">{module.description}</p>
+  // Scroll automático al final
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, loading]);
+
+  // Manejar envío de mensajes
+  const handleSendMessage = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (userMessage.trim() === "") return;
+
+    const userMsg = { role: "user", text: userMessage };
+    setMessages((prev) => [...prev, userMsg]);
+    setUserMessage("");
+    setLoading(true);
+
+    try {
+      const res = await fetch("https://staging-app.rizosfelices.co/agent/api/ask?mode=production", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-user-id": "default_user" // O usa un ID de usuario real
+        },
+        body: JSON.stringify({ question: userMessage }), // Cambiado de 'query' a 'question'
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.detail || "Error en la respuesta del servidor");
+      }
+
+      const data = await res.json();
+      const agentResponse = data.response || data.answer || "No response from agent.";
+
+      setMessages((prev) => [...prev, { role: "agent", text: agentResponse }]);
+    } catch (err) {
+      console.error("Error al enviar mensaje:", err);
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "agent",
+          text: err instanceof Error ? `❌ ${err.message}` : "❌ Error desconocido"
+        },
+      ]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-full bg-white flex flex-col">
+      {/* Header - Dashboard Cards */}
+      <header className="border-b border-gray-100 p-6">
+        <div className="max-w-7xl mx-auto">
+          <h1 className="text-2xl font-bold text-black mb-6">Dashboard</h1>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {salesData.map((item, index) => (
+              <Card key={index} className="bg-white shadow-sm border border-gray-100 rounded-xl">
+                <CardContent className="p-4">
+                  <div className="space-y-2">
+                    <h3 className="text-sm font-medium text-gray-600">{item.title}</h3>
+                    <p className="text-xl font-semibold text-black">{item.value}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content - Business AI Agent Assistant */}
+      <main className="flex-1 p-8 relative">
+        <div className="max-w-5xl mx-auto h-full flex flex-col pb-24">
+          {/* Profile Avatar */}
+          <div className="flex justify-end mb-6">
+            <Avatar className="h-10 w-10">
+              <AvatarFallback className="bg-gray-100">
+                <User className="h-5 w-5 text-gray-600" />
+              </AvatarFallback>
+            </Avatar>
+          </div>
+
+          {/* AI Agent Section */}
+          <div className="flex-1 flex flex-col">
+            <div className="flex items-center gap-2 mb-6">
+              <Bot className="h-5 w-5 text-black" />
+              <h2 className="text-xl font-semibold text-black">Business AI Agent</h2>
             </div>
-            <div className="bg-gray-50 px-5 py-3">
-              <Link to={module.path} className="text-sm font-medium text-blue-600 hover:text-blue-500">
-                Acceder al módulo
-              </Link>
+
+            {/* Chat Messages */}
+            <div
+              className="space-y-4 flex-1 mb-8 overflow-y-auto pr-2 custom-scrollbar"
+              style={{ maxHeight: "450px" }}
+            >
+              {messages.map((msg, index) => (
+                <div
+                  key={index}
+                  className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+                >
+                  <Card
+                    className={`shadow-sm rounded-2xl px-4 py-3 max-w-3xl break-words ${msg.role === "user"
+                        ? "bg-gray-700 text-white"
+                        : "bg-white text-gray-900 border border-gray-200"
+                      }`}
+                  >
+                    <p className="text-sm leading-relaxed whitespace-pre-line">{msg.text}</p>
+                  </Card>
+                </div>
+              ))}
+
+              {loading && (
+                <Card className="bg-gray-100 shadow-sm rounded-xl max-w-3xl px-4 py-3">
+                  <p className="text-sm text-gray-500">Escribiendo...</p>
+                </Card>
+              )}
+              <div ref={chatEndRef}></div>
             </div>
           </div>
-        ))}
-      </div>
+        </div>
+
+        {/* Input Area - Fixed Bottom */}
+        <form
+          onSubmit={handleSendMessage}
+          className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4"
+        >
+          <div className="max-w-5xl mx-auto flex gap-2">
+            <Input
+              value={userMessage}
+              onChange={(e) => setUserMessage(e.target.value)}
+              placeholder="Type here to talk to your business agent..."
+              className="flex-1 bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+            <button
+              type="submit"
+              className="px-4 py-2 bg-gray-900 text-white rounded-xl hover:bg-black transition"
+            >
+              Send
+            </button>
+          </div>
+        </form>
+      </main>
     </div>
   )
 }
-
-export default DashboardPage

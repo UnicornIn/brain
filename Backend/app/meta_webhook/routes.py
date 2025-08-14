@@ -1,12 +1,29 @@
 from fastapi import APIRouter, Request, Query, Response
-from app.database import messages_collection
-from app.websocket import notify_all
+from app.database.mongo import messages_collection
+from app.websocket.routes import notify_all
+from datetime import datetime
+import pytz
 import os
 from dotenv import load_dotenv
 import json
 
 load_dotenv()
 router = APIRouter()
+
+
+def save_message(sender_id: str, platform: str, text: str, direction: str = "inbound"):
+    """
+    Guarda un mensaje estructurado en la base de datos.
+    """
+    message = {
+        "sender_id": sender_id,
+        "platform": platform,
+        "text": text,
+        "timestamp": datetime.utcnow().isoformat(),
+        "direction": direction,
+        "conversation_id": sender_id  # puedes usar el sender como ID de conversación
+    }
+    messages_collection.insert_one(message)
 
 @router.get("/webhook")
 async def verify_webhook(
@@ -24,55 +41,151 @@ async def verify_webhook(
 
 @router.post("/webhook")
 async def meta_webhook(request: Request):
-    """
-    Recibe todos los eventos de Meta (WhatsApp, Instagram y Facebook Messenger).
-    Detecta la plataforma según el contenido del JSON.
-    """
     body = await request.json()
     print("🔔 Webhook recibido:", json.dumps(body, indent=2))
 
-    # Guardar el evento crudo en la base de datos
     try:
-        messages_collection.insert_one({"raw": body})
+        messages_collection.insert_one({"raw": body})  # Opcional: debug/log
     except Exception:
         pass
 
-    # Notificar a todos los clientes WebSocket conectados
-    notify_all(json.dumps(body))
+    await notify_all(json.dumps(body))  # WebSocket debug
 
-    # ----------------------------
-    # Detectar la plataforma Meta
-    # ----------------------------
     object_type = body.get("object", "")
+    if "entry" not in body:
+        return {"status": "no_entry"}
 
-    if "entry" in body:
-        for entry in body["entry"]:
-            # --- WhatsApp Business API ---
-            if "changes" in entry:
-                for change in entry.get("changes", []):
-                    value = change.get("value", {})
-                    for msg in value.get("messages", []):
-                        wa_id = msg.get("from", "")
-                        text = msg.get("text", {}).get("body", "")
-                        print(f"[WhatsApp] Mensaje de {wa_id}: {text}")
+    for entry in body["entry"]:
 
-            # --- Facebook Messenger ---
-            if object_type == "page" and "messaging" in entry:
-                for messaging_event in entry.get("messaging", []):
-                    sender_id = messaging_event.get("sender", {}).get("id", "")
-                    message_text = messaging_event.get("message", {}).get("text", "")
-                    print(f"[Messenger] Mensaje de {sender_id}: {message_text}")
+        # 📲 WHATSAPP
+        if "changes" in entry:
+            for change in entry.get("changes", []):
+                value = change.get("value", {})
+                for msg in value.get("messages", []):
+                    wa_id = msg.get("from")
+                    text = msg.get("text", {}).get("body", "")
+                    profile_name = value.get("contacts", [{}])[0].get("profile", {}).get("name", "")
+                    timestamp = datetime.now(pytz.timezone('America/Bogota'))
 
-            # --- Instagram Messaging ---
-            if object_type == "instagram":
-                # Algunos eventos de Instagram llegan como entry.messaging o standby
-                messaging_events = entry.get("messaging", []) or entry.get("standby", [])
-                for event in messaging_events:
-                    sender_id = event.get("sender", {}).get("id", "")
-                    message_text = event.get("message", {}).get("text", "")
-                    print(f"[Instagram] Mensaje de {sender_id}: {message_text}")
+                    new_message = {
+                        "sender": "user",
+                        "content": text,
+                        "timestamp": timestamp
+                    }
+
+                    ws_message = {
+                        "user_id": wa_id,
+                        "conversation_id": wa_id,
+                        "platform": "whatsapp",
+                        "text": text,
+                        "timestamp": timestamp.isoformat(),
+                        "direction": "inbound",
+                        "remitente": profile_name or wa_id
+                    }
+
+                    existing = messages_collection.find_one({"user_id": wa_id, "platform": "whatsapp"})
+                    update_data = {
+                        "$set": {
+                            "last_message": text,
+                            "timestamp": timestamp
+                        },
+                        "$inc": {"unread": 1},
+                        "$push": {"messages": new_message}
+                    }
+                    if not existing:
+                        update_data["$set"]["name"] = profile_name
+
+                    messages_collection.update_one(
+                        {"user_id": wa_id, "platform": "whatsapp"},
+                        update_data,
+                        upsert=True
+                    )
+
+                    print(f"[WhatsApp] {profile_name or wa_id}: {text}")
+                    await notify_all(ws_message)
+
+        # 💬 FACEBOOK MESSENGER
+        if object_type == "page" and "messaging" in entry:
+            for event in entry.get("messaging", []):
+                sender_id = event.get("sender", {}).get("id")
+                message_text = event.get("message", {}).get("text", "")
+                timestamp = datetime.utcnow()
+
+                if sender_id and message_text:
+                    new_message = {
+                        "sender": "user",
+                        "content": message_text,
+                        "timestamp": timestamp
+                    }
+
+                    existing = messages_collection.find_one({"user_id": sender_id, "platform": "messenger"})
+                    update_data = {
+                        "$set": {
+                            "last_message": message_text,
+                            "timestamp": timestamp
+                        },
+                        "$inc": {"unread": 1},
+                        "$push": {"messages": new_message}
+                    }
+                    if not existing:
+                        update_data["$set"]["name"] = None
+
+                    messages_collection.update_one(
+                        {"user_id": sender_id, "platform": "messenger"},
+                        update_data,
+                        upsert=True
+                    )
+                    await notify_all()
+                    print(f"[Messenger] {sender_id}: {message_text}")
+
+        # 📷 INSTAGRAM
+        if object_type == "instagram":
+            messaging_events = entry.get("messaging", []) or entry.get("standby", [])
+            for event in messaging_events:
+                sender_id = event.get("sender", {}).get("id")
+                message_text = event.get("message", {}).get("text", "")
+                timestamp = datetime.utcnow()
+
+                if sender_id and message_text:
+                    new_message = {
+                        "sender": "user",
+                        "content": message_text,
+                        "timestamp": timestamp
+                    }
+
+                    ws_message = {
+                        "user_id": sender_id,
+                        "conversation_id": sender_id,
+                        "platform": "instagram",
+                        "text": message_text,
+                        "timestamp": timestamp.isoformat(),
+                        "direction": "inbound",
+                        "remitente": sender_id
+                    }
+
+                    existing = messages_collection.find_one({"user_id": sender_id, "platform": "instagram"})
+                    update_data = {
+                        "$set": {
+                            "last_message": message_text,
+                            "timestamp": timestamp
+                        },
+                        "$inc": {"unread": 1},
+                        "$push": {"messages": new_message}
+                    }
+                    if not existing:
+                        update_data["$set"]["name"] = "Desconocido"
+
+                    messages_collection.update_one(
+                        {"user_id": sender_id, "platform": "instagram"},
+                        update_data,
+                        upsert=True
+                    )
+
+                    print(f"[Instagram] {sender_id}: {message_text}")
+                    await notify_all(ws_message)
 
     return {"status": "received"}
 
 
 
+ 
