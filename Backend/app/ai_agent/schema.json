@@ -1,0 +1,49 @@
+{
+  "DataUser": {
+    "alerts": {
+      "fields": ["type", "message", "created_at", "metadata", "status"]
+    },
+    "community": {
+      "fields": ["community_id", "name", "description", "country", "created_at"]
+    },
+    "contacts": {
+      "fields": ["contact_id", "name", "email", "phone", "created_at", "company"]
+    },
+    "conversations": {
+      "fields": ["conversation_id", "member_id", "messages", "created_at"]
+    },
+    "members": {
+      "fields": [
+        {"community_id": "string"},
+        {"user_id": "string"},
+        {"full_name": "string"},
+        {"email": "string"},
+        {"phone": "string"},
+        {"city": "string"},
+        {"country": "string"},
+        {"role": "string"},
+        {"status": "string"},
+        {"registration_date": "date"}
+      ]
+},
+    "message": {
+      "fields": ["message_id", "sender_id", "receiver_id", "content", "created_at"]
+    },
+    "users": {
+      "fields": ["user_id", "full_name", "email", "role", "status", "created_at"]
+    }
+  },
+  "DatabaseInvetary": {
+    "pedidos": {
+      "fields": ["pedido_id", "distribuidor_nombre", "fecha", "estado", "cliente_id", "total"]
+    },
+    "productos": {
+      "fields": ["producto_id", "nombre", "precio", "stock", "categoria"]
+    },
+    "clientes": {
+      "fields": ["cliente_id", "nombre", "email", "telefono", "direccion"]
+    }
+  }
+}
+
+

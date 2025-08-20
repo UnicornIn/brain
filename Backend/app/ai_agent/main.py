@@ -1,13 +1,13 @@
-from fastapi import FastAPI, Header, HTTPException
+from fastapi import Header, HTTPException
 from pydantic import BaseModel
-from app.ai_agent.query_generator import query_generator
+from app.ai_agent.query_generator_pydantic import query_generator
 from app.ai_agent.rag_search import execute_queries
 from dotenv import load_dotenv
 from fastapi import UploadFile, File, Form
 from app.ai_agent.campaigns_whatsapp import create_and_send_campaign
-from fastapi import APIRouter
 import shutil
 from openai import OpenAI
+from fastapi import APIRouter
 import datetime
 from fastapi import Query
 import re
@@ -22,9 +22,8 @@ OPENAI_KEY = os.getenv("OPENAI_API_KEY")
 openai = OpenAI(api_key=OPENAI_KEY)
 
 router = APIRouter(
-    prefix="/api",
-    tags=["RAG Agent"],
-    responses={404: {"description": "Not found"}}
+    prefix="/agent",   # opcional, ruta base
+    tags=["RAG agent"] # opcional, etiqueta para la doc
 )
 
 class QueryIn(BaseModel):
@@ -100,6 +99,7 @@ def ask(
         "Responde de forma clara y profesional, eliminando saltos de línea innecesarios, "
         "pero conservando viñetas o listas si la información lo requiere. "
         "Si no hay datos, indícalo claramente."
+        "cuando se pregunte sobre cantidades haz un conteo y me devuelves en valor numerico si preguntan algo como cuantas, cuantos, cantidad"
     )
 
     try:

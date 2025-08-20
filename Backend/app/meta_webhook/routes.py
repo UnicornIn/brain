@@ -135,7 +135,7 @@ async def meta_webhook(request: Request):
                         update_data,
                         upsert=True
                     )
-                    await notify_all()
+                    await notify_all(new_message)
                     print(f"[Messenger] {sender_id}: {message_text}")
 
         # 📷 INSTAGRAM
