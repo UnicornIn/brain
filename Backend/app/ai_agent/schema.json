@@ -4,7 +4,7 @@
       "fields": ["type", "message", "created_at", "metadata", "status"]
     },
     "community": {
-      "fields": ["community_id", "name", "description", "country", "created_at"]
+      "fields": ["community_id", "created_at", "description", "members", "created_at", "title"]
     },
     "contacts": {
       "fields": ["contact_id", "name", "email", "phone", "created_at", "company"]

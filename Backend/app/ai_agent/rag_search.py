@@ -1,5 +1,5 @@
 #rag_search.py
-from app.ai_agent.db_clients import mongo_client, chroma_collection
+from app.ai_agent.db_clients import mongo_client, chroma_collections
 
 def _mongo_search_single(mongo_entry):
     results = []
@@ -58,8 +58,8 @@ def execute_queries(queries: dict) -> dict:
     """
     Ejecuta queries con enrutamiento híbrido:
     - Si source = mongo → primero Mongo, si vacío y hay chroma, entonces fallback a Chroma.
-    - Si source = chroma → solo Chroma.
-    - Si source = both → primero Mongo, si vacío entonces Chroma.
+    - Si source = chroma → busca en todas las colecciones de Chroma.
+    - Si source = both → primero Mongo, si vacío entonces busca en Chroma.
     """
     out = {"chosen_source": None, "mongo": {}, "chroma": None}
 
@@ -68,9 +68,9 @@ def execute_queries(queries: dict) -> dict:
     chroma_query = queries.get("chroma")
 
     mongo_results = {}
-    chroma_results = None
+    chroma_results = {}
 
-    # Ejecutar Mongo si aplica
+    # --- Ejecutar Mongo si aplica ---
     if source in ["mongo", "both"]:
         for m in mongo_queries:
             if not m:
@@ -79,60 +79,67 @@ def execute_queries(queries: dict) -> dict:
             for it in items:
                 mongo_results.update(it)
 
-    # Caso solo Mongo con fallback a Chroma
+    # --- Caso solo Mongo con fallback a Chroma ---
     if source == "mongo":
         out["chosen_source"] = "mongo"
         out["mongo"] = mongo_results
 
         if not any(mongo_results.values()) and chroma_query and chroma_query.get("text"):
-            try:
-                chroma_res = chroma_collection.query(
-                    query_texts=[chroma_query["text"]],
-                    n_results=chroma_query.get("limit", 5)
-                )
-                chroma_results = chroma_res.get("results", chroma_res)
-                out["chosen_source"] = "chroma"
-                out["chroma"] = chroma_results
-            except Exception as e:
-                out["chroma"] = {"error": str(e)}
+            for name, collection in chroma_collections.items():
+                try:
+                    res = collection.query(
+                        query_texts=[chroma_query["text"]],
+                        n_results=chroma_query.get("limit", 5)
+                    )
+                    chroma_results[name] = res.get("results", res)
+                except Exception as e:
+                    chroma_results[name] = {"error": str(e)}
+
+            out["chosen_source"] = "chroma"
+            out["chroma"] = chroma_results
 
         return out
 
-    # Caso solo Chroma
+    # --- Caso solo Chroma ---
     if source == "chroma":
         if chroma_query and chroma_query.get("text"):
-            try:
-                chroma_res = chroma_collection.query(
-                    query_texts=[chroma_query["text"]],
-                    n_results=chroma_query.get("limit", 5)
-                )
-                chroma_results = chroma_res.get("results", chroma_res)
-            except Exception as e:
-                chroma_results = {"error": str(e)}
+            for name, collection in chroma_collections.items():
+                try:
+                    res = collection.query(
+                        query_texts=[chroma_query["text"]],
+                        n_results=chroma_query.get("limit", 5)
+                    )
+                    chroma_results[name] = res.get("results", res)
+                except Exception as e:
+                    chroma_results[name] = {"error": str(e)}
+
         out["chosen_source"] = "chroma"
         out["chroma"] = chroma_results
         return out
 
-    # Caso BOTH → prioridad a Mongo si encontró docs
+    # --- Caso BOTH ---
     if source == "both":
         if any(mongo_results.values()):
             out["chosen_source"] = "mongo"
             out["mongo"] = mongo_results
         else:
             if chroma_query and chroma_query.get("text"):
-                try:
-                    chroma_res = chroma_collection.query(
-                        query_texts=[chroma_query["text"]],
-                        n_results=chroma_query.get("limit", 5)
-                    )
-                    chroma_results = chroma_res.get("results", chroma_res)
-                except Exception as e:
-                    chroma_results = {"error": str(e)}
+                for name, collection in chroma_collections.items():
+                    try:
+                        res = collection.query(
+                            query_texts=[chroma_query["text"]],
+                            n_results=chroma_query.get("limit", 5)
+                        )
+                        chroma_results[name] = res.get("results", res)
+                    except Exception as e:
+                        chroma_results[name] = {"error": str(e)}
+
             out["chosen_source"] = "chroma" if chroma_results else "none"
             out["chroma"] = chroma_results
         return out
 
+    # --- Si no aplica nada ---
     out["chosen_source"] = "none"
-    print(mongo_results)
-    print(chroma_results)
+    out["mongo"] = mongo_results
+    out["chroma"] = chroma_results
     return out

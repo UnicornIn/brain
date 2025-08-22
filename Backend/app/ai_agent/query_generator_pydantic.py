@@ -283,6 +283,7 @@ def query_generator(user_prompt: str) -> dict:
         + "\n\n"
         "Instrucciones:\n"
         "- Escoge correctamente 'source' según la pregunta.\n"
+        "- en 'source' escoge 'chroma' si la pregunta incluye citas, direcciones, servicios.\n"
         "- Para Mongo, usa solo los nombres de base/colección y campos listados arriba.\n"
         "- El filtro debe ser un objeto compatible con Mongo (puede incluir $eq, $gte, $in, $regex, $exists).\n"
         "- Límite por defecto 50 si no se especifica.\n"
@@ -290,6 +291,8 @@ def query_generator(user_prompt: str) -> dict:
         "Responde SOLO con el JSON del esquema indicado.\n"
         "- Si la pregunta es sobre información no estructurada (ej. direcciones, historia, políticas, respuestas frecuentes, documentación, citas, servicios), usa \"chroma\".\n"
         "Ejemplo: \"¿Cuál es la dirección de la sede suramericana?\" → { \"source\": \"chroma\", \"chroma\": {\"text\": \"direccion sede suramericana\", \"limit\": 5}, \"mongo\": [] }"
+        "- Utiliza chroma para buscar información no estructurada como citas, direcciones, servicios ejemplo  → { \"source\": \"chroma\", \"chroma\": {\"text\": \"que servicio ha solicitado \"nombre del cliente\"\", \"limit\": 5}, \"mongo\": [] }"
+        "- si no estas seguro de donde buscar utiliza \"chroma\" o \"both\" en 'source' por default"
         )
 
     print(f"LLM input:\n{user_content}\n")
