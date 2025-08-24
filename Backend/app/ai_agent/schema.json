@@ -4,7 +4,7 @@
       "fields": ["type", "message", "created_at", "metadata", "status"]
     },
     "community": {
-      "fields": ["community_id", "created_at", "description", "members", "created_at", "title"]
+      "fields": ["community_id", "created_at", "description", "members", "title"]
     },
     "contacts": {
       "fields": ["contact_id", "name", "email", "phone", "created_at", "company"]
@@ -25,12 +25,26 @@
         {"status": "string"},
         {"registration_date": "date"}
       ]
-},
+    },
     "message": {
       "fields": ["message_id", "sender_id", "receiver_id", "content", "created_at"]
     },
     "users": {
       "fields": ["user_id", "full_name", "email", "role", "status", "created_at"]
+    },
+    "sales": {
+      "fields": [
+        {"sale_id": "string"}, 
+        {"identificador": "number"},
+        {"fecha_pago": "date"},
+        {"local": "string"},
+        {"nombre_cliente": "string"},
+        {"email_cliente": "string"},
+        {"telefono_cliente": "string"},
+        {"monto": "number"},
+        {"descuento": "string"},
+        {"usuario_ultima_modificacion": "string"}
+      ]
     }
   },
   "DatabaseInvetary": {
@@ -45,5 +59,3 @@
     }
   }
 }
-
-
