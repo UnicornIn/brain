@@ -15,6 +15,8 @@ from app.meta_webhook.routes import router as meta_webhook_router
 from app.facebook_integration.routes import router as facebook_router
 from app.conversations.routes import router as conversations_router 
 from app.ai_agent.main import router as agent_router
+from app.companies.router import router as companies_router
+from app.campaign.routes import router as campaign_router
 
 load_dotenv()
 
@@ -39,6 +41,7 @@ app.include_router(login_router, prefix="/auth", tags=["Auth"])
 app.include_router(create_user_router, prefix="/auth", tags=["Create User"])
 app.include_router(manychat_router, prefix="/manychat", tags=["Manychat"])
 app.include_router(client_router, prefix="/client", tags=["Client"])
+app.include_router(companies_router, prefix="/companies", tags=["Companies"])
 app.include_router(agents_router, prefix="/agents", tags=["Openai"])
 app.include_router(community_router, prefix="/community", tags=["Community"])
 app.include_router(member_router, prefix="/community", tags=["Community Member"])
@@ -48,4 +51,5 @@ app.include_router(instagram_router, prefix="/instagram", tags=["Instagram Integ
 app.include_router(meta_webhook_router, prefix="/meta-webhook", tags=["Meta Webhook"])
 app.include_router(facebook_router, prefix="/facebook", tags=["Facebook Integration"])
 app.include_router(conversations_router, prefix="/conversations", tags=["Conversations"])
+app.include_router(campaign_router, prefix="/campaign", tags=["Campaign"])
 app.include_router(agent_router, prefix="/agent", tags=["Agent"])
