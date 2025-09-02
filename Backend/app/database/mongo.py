@@ -20,7 +20,6 @@ community_collection = db["community"]
 user_collection = db["users"]
 member_collection = db["members"]
 messages_collection = db["conversations"]
-company_collection = db["companies"]
 
 # This function is no longer needed, but we keep it for compatibility
 def connect_to_mongo():
