@@ -19,7 +19,8 @@ alerts_collection = db["alerts"]
 community_collection = db["community"]
 user_collection = db["users"]
 member_collection = db["members"]
-messages_collection = db["conversations"]
+conversations_collection = db["conversations"]
+messages_collection = db["messages"]
 
 # This function is no longer needed, but we keep it for compatibility
 def connect_to_mongo():
