@@ -1,55 +1,74 @@
 from fastapi import APIRouter, Request, Query, Response
-from app.database.mongo import messages_collection
+from app.database.mongo import conversations_collection, messages_collection
 from app.websocket.routes import notify_all
+from app.meta_webhook.controllers import get_instagram_username, get_messenger_user
 from datetime import datetime
 import pytz
 import os
-from dotenv import load_dotenv
 import json
+import requests
+import boto3
+from dotenv import load_dotenv
 
 load_dotenv()
 router = APIRouter()
 
+# --- AWS S3 ---
+AWS_ACCESS_KEY = os.getenv("AWS_ACCESS_KEY")
+AWS_SECRET_KEY = os.getenv("AWS_SECRET_KEY")
+BUCKET_NAME = "imgbrain"
+REGION = "us-east-1"
 
-def save_message(sender_id: str, platform: str, text: str, direction: str = "inbound"):
-    """
-    Guarda un mensaje estructurado en la base de datos.
-    """
-    message = {
-        "sender_id": sender_id,
-        "platform": platform,
-        "text": text,
-        "timestamp": datetime.utcnow().isoformat(),
-        "direction": direction,
-        "conversation_id": sender_id  # puedes usar el sender como ID de conversación
-    }
-    messages_collection.insert_one(message)
+s3 = boto3.client(
+    "s3",
+    aws_access_key_id=AWS_ACCESS_KEY,
+    aws_secret_access_key=AWS_SECRET_KEY,
+    region_name=REGION
+)
 
+# --- WhatsApp ---
+WHATSAPP_TOKEN = os.getenv("WHATSAPP_TOKEN")
+
+
+def upload_to_s3(file_bytes: bytes, filename: str, content_type: str) -> str:
+    s3.put_object(
+        Bucket=BUCKET_NAME,
+        Key=filename,
+        Body=file_bytes,
+        ContentType=content_type,
+    )
+    return f"https://{BUCKET_NAME}.s3.{REGION}.amazonaws.com/{filename}"
+
+
+def get_whatsapp_media_url(media_id: str) -> dict:
+    url = f"https://graph.facebook.com/v20.0/{media_id}"
+    headers = {"Authorization": f"Bearer {WHATSAPP_TOKEN}"}
+    return requests.get(url, headers=headers).json()
+
+
+def download_whatsapp_media(download_url: str) -> bytes:
+    headers = {"Authorization": f"Bearer {WHATSAPP_TOKEN}"}
+    return requests.get(download_url, headers=headers).content
+
+
+# --- Verify webhook ---
 @router.get("/webhook")
 async def verify_webhook(
     hub_mode: str = Query(None, alias="hub.mode"),
     hub_challenge: str = Query(None, alias="hub.challenge"),
     hub_verify_token: str = Query(None, alias="hub.verify_token")
 ):
-    """
-    Verifica el webhook con Meta para cualquier producto (WhatsApp, Instagram, Facebook).
-    """
     VERIFY_TOKEN = os.getenv("VERIFY_TOKEN", "my_verify_token")
     if hub_mode == "subscribe" and hub_verify_token == VERIFY_TOKEN:
         return Response(content=hub_challenge or "", media_type="text/plain")
     return {"error": "Verification failed"}
 
+
+# --- Receive webhook ---
 @router.post("/webhook")
 async def meta_webhook(request: Request):
     body = await request.json()
     print("🔔 Webhook recibido:", json.dumps(body, indent=2))
-
-    try:
-        messages_collection.insert_one({"raw": body})  # Opcional: debug/log
-    except Exception:
-        pass
-
-    await notify_all(json.dumps(body))  # WebSocket debug
 
     object_type = body.get("object", "")
     if "entry" not in body:
@@ -57,135 +76,237 @@ async def meta_webhook(request: Request):
 
     for entry in body["entry"]:
 
-        # 📲 WHATSAPP
+        # 📲 WhatsApp
         if "changes" in entry:
             for change in entry.get("changes", []):
                 value = change.get("value", {})
                 for msg in value.get("messages", []):
                     wa_id = msg.get("from")
-                    text = msg.get("text", {}).get("body", "")
-                    profile_name = value.get("contacts", [{}])[0].get("profile", {}).get("name", "")
-                    timestamp = datetime.now(pytz.timezone('America/Bogota'))
+                    profile_name = value.get("contacts", [{}])[0].get("profile", {}).get("name", wa_id)
+                    tz_now = datetime.now(pytz.timezone('America/Bogota'))
 
-                    new_message = {
-                        "sender": "user",
-                        "content": text,
-                        "timestamp": timestamp
-                    }
+                    msg_type = "text"
+                    content = ""
+                    text_for_front = ""
 
-                    ws_message = {
-                        "user_id": wa_id,
-                        "conversation_id": wa_id,
-                        "platform": "whatsapp",
-                        "text": text,
-                        "timestamp": timestamp.isoformat(),
-                        "direction": "inbound",
-                        "remitente": profile_name or wa_id
-                    }
+                    if "text" in msg:
+                        content = msg["text"]["body"]
+                        text_for_front = content
+                        msg_type = "text"
 
-                    existing = messages_collection.find_one({"user_id": wa_id, "platform": "whatsapp"})
-                    update_data = {
-                        "$set": {
-                            "last_message": text,
-                            "timestamp": timestamp
-                        },
-                        "$inc": {"unread": 1},
-                        "$push": {"messages": new_message}
-                    }
-                    if not existing:
-                        update_data["$set"]["name"] = profile_name
+                    elif msg.get("type") == "image":
+                        media_id = msg["image"]["id"]
+                        mime_type = msg["image"]["mime_type"]
+                        media_info = get_whatsapp_media_url(media_id)
+                        media_url = media_info.get("url")
+                        media_bytes = download_whatsapp_media(media_url)
+                        ext = mime_type.split("/")[-1]
+                        filename = f"whatsapp/{wa_id}/{media_id}.{ext}"
+                        content = upload_to_s3(media_bytes, filename, mime_type)
+                        msg_type = "image"
+                        text_for_front = "📎 Archivo"
 
-                    messages_collection.update_one(
+                    else:
+                        continue
+
+                    # 1️⃣ Asegurar conversación
+                    conv = await conversations_collection.find_one_and_update(
                         {"user_id": wa_id, "platform": "whatsapp"},
-                        update_data,
-                        upsert=True
+                        {
+                            "$set": {
+                                "last_message": text_for_front,
+                                "timestamp": tz_now,
+                                "name": profile_name
+                            },
+                            "$inc": {"unread": 1}
+                        },
+                        upsert=True,
+                        return_document=True
                     )
 
-                    print(f"[WhatsApp] {profile_name or wa_id}: {text}")
+                    # 2️⃣ Guardar mensaje como documento independiente
+                    new_message = {
+                        "conversation_id": str(conv["_id"]),
+                        "sender": "user",
+                        "type": msg_type,
+                        "content": content,
+                        "timestamp": tz_now
+                    }
+                    await messages_collection.insert_one(new_message)
+
+                    # 3️⃣ Notificar al front
+                    ws_message = {
+                        "user_id": wa_id,
+                        "conversation_id": str(conv["_id"]),
+                        "platform": "whatsapp",
+                        "type": msg_type,
+                        "content": content,
+                        "timestamp": tz_now.isoformat(),
+                        "direction": "inbound",
+                        "remitente": profile_name,
+                    }
+
+                    if msg_type == "text":
+                        ws_message["text"] = text_for_front
+                    else:
+                        ws_message["media_url"] = content
+
+                    print(f"[WhatsApp] {profile_name}: {content}")
                     await notify_all(ws_message)
 
-        # 💬 FACEBOOK MESSENGER
+        # 💬 Messenger
         if object_type == "page" and "messaging" in entry:
             for event in entry.get("messaging", []):
                 sender_id = event.get("sender", {}).get("id")
-                message_text = event.get("message", {}).get("text", "")
-                timestamp = datetime.utcnow()
+                recipient_id = event.get("recipient", {}).get("id")
+                message = event.get("message", {}) or {}
+                message_text = message.get("text", "")
+                attachments = message.get("attachments", [])
+                is_echo = message.get("is_echo", False)
+                tz_now = datetime.now(pytz.timezone("America/Bogota"))
 
-                if sender_id and message_text:
-                    new_message = {
-                        "sender": "user",
-                        "content": message_text,
-                        "timestamp": timestamp
-                    }
+                if not sender_id:
+                    continue
 
-                    existing = messages_collection.find_one({"user_id": sender_id, "platform": "messenger"})
-                    update_data = {
-                        "$set": {
-                            "last_message": message_text,
-                            "timestamp": timestamp
-                        },
-                        "$inc": {"unread": 1},
-                        "$push": {"messages": new_message}
-                    }
-                    if not existing:
-                        update_data["$set"]["name"] = None
-
-                    messages_collection.update_one(
-                        {"user_id": sender_id, "platform": "messenger"},
-                        update_data,
-                        upsert=True
+                user_id = recipient_id if is_echo else sender_id
+                remitente = "system"
+                if not is_echo:
+                    user_info = await get_messenger_user(user_id)
+                    remitente = (
+                        f"{user_info.get('first_name', '')} {user_info.get('last_name', '')}".strip()
+                        if user_info else user_id
                     )
-                    await notify_all(new_message)
-                    print(f"[Messenger] {sender_id}: {message_text}")
 
-        # 📷 INSTAGRAM
+                msg_type = "text"
+                content = ""
+                text_for_front = ""
+
+                if message_text:
+                    content = message_text
+                    text_for_front = content
+                elif attachments:
+                    content = attachments[0]["payload"].get("url", "")
+                    msg_type = "file"
+                    text_for_front = "📎 Archivo"
+                else:
+                    continue
+
+                conv = await conversations_collection.find_one_and_update(
+                    {"user_id": user_id, "platform": "messenger"},
+                    {
+                        "$set": {
+                            "last_message": text_for_front,
+                            "timestamp": tz_now,
+                            "name": remitente
+                        },
+                        "$inc": {"unread": 1 if not is_echo else 0}
+                    },
+                    upsert=True,
+                    return_document=True
+                )
+
+                new_message = {
+                    "conversation_id": str(conv["_id"]),
+                    "sender": "user" if not is_echo else "system",
+                    "type": msg_type,
+                    "content": content,
+                    "timestamp": tz_now
+                }
+                await messages_collection.insert_one(new_message)
+
+                ws_message = {
+                    "user_id": user_id,
+                    "conversation_id": str(conv["_id"]),
+                    "platform": "messenger",
+                    "type": msg_type,
+                    "content": content,
+                    "timestamp": tz_now.isoformat(),
+                    "direction": "inbound" if not is_echo else "outbound",
+                    "remitente": remitente
+                }
+
+                if msg_type == "text":
+                    ws_message["text"] = content
+                else:
+                    ws_message["media_url"] = content
+
+                print(f"[Messenger] {remitente}: {content}")
+                await notify_all(ws_message)
+
+        # 📷 Instagram
         if object_type == "instagram":
             messaging_events = entry.get("messaging", []) or entry.get("standby", [])
             for event in messaging_events:
                 sender_id = event.get("sender", {}).get("id")
-                message_text = event.get("message", {}).get("text", "")
-                timestamp = datetime.utcnow()
+                recipient_id = event.get("recipient", {}).get("id")
+                message = event.get("message", {}) or {}
+                message_text = message.get("text", "")
+                attachments = message.get("attachments", [])
+                tz_now = datetime.now(pytz.timezone("America/Bogota"))
 
-                if sender_id and message_text:
-                    new_message = {
-                        "sender": "user",
-                        "content": message_text,
-                        "timestamp": timestamp
-                    }
+                if not sender_id:
+                    continue
 
-                    ws_message = {
-                        "user_id": sender_id,
-                        "conversation_id": sender_id,
-                        "platform": "instagram",
-                        "text": message_text,
-                        "timestamp": timestamp.isoformat(),
-                        "direction": "inbound",
-                        "remitente": sender_id
-                    }
+                is_echo = message.get("is_echo", False)
+                user_id = recipient_id if is_echo else sender_id
+                username = await get_instagram_username(user_id)
+                remitente = username or user_id
 
-                    existing = messages_collection.find_one({"user_id": sender_id, "platform": "instagram"})
-                    update_data = {
+                msg_type = "text"
+                content = ""
+                text_for_front = ""
+
+                if message_text:
+                    content = message_text
+                    text_for_front = content
+                elif attachments:
+                    content = attachments[0]["payload"].get("url", "")
+                    msg_type = "file"
+                    text_for_front = "📎 Archivo"
+                else:
+                    continue
+
+                conv = await conversations_collection.find_one_and_update(
+                    {"user_id": user_id, "platform": "instagram"},
+                    {
                         "$set": {
-                            "last_message": message_text,
-                            "timestamp": timestamp
+                            "last_message": text_for_front,
+                            "timestamp": tz_now,
+                            "name": remitente
                         },
-                        "$inc": {"unread": 1},
-                        "$push": {"messages": new_message}
-                    }
-                    if not existing:
-                        update_data["$set"]["name"] = "Desconocido"
+                        "$inc": {"unread": 1 if not is_echo else 0}
+                    },
+                    upsert=True,
+                    return_document=True
+                )
 
-                    messages_collection.update_one(
-                        {"user_id": sender_id, "platform": "instagram"},
-                        update_data,
-                        upsert=True
-                    )
+                new_message = {
+                    "conversation_id": str(conv["_id"]),
+                    "sender": "user" if not is_echo else "system",
+                    "type": msg_type,
+                    "content": content,
+                    "timestamp": tz_now
+                }
+                await messages_collection.insert_one(new_message)
 
-                    print(f"[Instagram] {sender_id}: {message_text}")
-                    await notify_all(ws_message)
+                ws_message = {
+                    "user_id": user_id,
+                    "conversation_id": str(conv["_id"]),
+                    "platform": "instagram",
+                    "type": msg_type,
+                    "content": content,
+                    "timestamp": tz_now.isoformat(),
+                    "direction": "inbound" if not is_echo else "outbound",
+                    "remitente": remitente
+                }
+
+                if msg_type == "text":
+                    ws_message["text"] = content
+                else:
+                    ws_message["media_url"] = content
+
+                print(f"[Instagram] {remitente}: {content}")
+                await notify_all(ws_message)
 
     return {"status": "received"}
 
-
-
- 

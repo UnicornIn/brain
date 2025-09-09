@@ -1,15 +1,14 @@
-from fastapi import APIRouter, Depends, HTTPException
-from app.whatsapp_integration.controllers import send_whatsapp_message
-from fastapi import Form, File, UploadFile
+from fastapi import APIRouter, Depends, HTTPException, Form, File, UploadFile
 from typing import Optional
-from app.database.mongo import messages_collection
+from app.whatsapp_integration.controllers import send_whatsapp_message
+from app.database.mongo import conversations_collection, messages_collection
 from app.auth.jwt.jwt import get_current_user
 from datetime import datetime
 import os
 import httpx
+import pytz
 
 WHATSAPP_TOKEN = os.getenv("WHATSAPP_TOKEN")
-
 
 router = APIRouter()
 
@@ -26,10 +25,13 @@ async def send_message(
         raise HTTPException(status_code=500, detail="WHATSAPP_PHONE_ID no configurado")
 
     try:
+        tz_now = datetime.now(pytz.timezone("America/Bogota"))
         last_message = None
+        msg_type = "text"
+        content = None
 
         if image:
-            # Subir la imagen a Facebook Graph API primero
+            # 📤 Subir la imagen a Facebook Graph API
             upload_url = f"https://graph.facebook.com/v19.0/{phone_number_id}/media"
             headers = {"Authorization": f"Bearer {WHATSAPP_TOKEN}"}
 
@@ -45,37 +47,52 @@ async def send_message(
 
             media_id = upload_json["id"]
 
-            # Enviar el mensaje de tipo imagen
+            # 📩 Enviar el mensaje de tipo imagen
             result = await send_whatsapp_message(wa_id, media_id, phone_number_id, "image_id")
-            last_message = "[Imagen enviada]"
+
+            last_message = "📎 Archivo"
+            content = media_id
+            msg_type = "image"
 
         elif text:
-            # Enviar texto normal
+            # 📩 Enviar texto normal
             result = await send_whatsapp_message(wa_id, text, phone_number_id, "text")
+
             last_message = text
+            content = text
+            msg_type = "text"
 
         else:
             raise HTTPException(status_code=400, detail="Debe enviar texto o imagen")
 
-        # Guardar en conversación
-        await messages_collection.update_one(
+        # 1️⃣ Asegurar conversación
+        conv = await conversations_collection.find_one_and_update(
             {"user_id": wa_id, "platform": "whatsapp"},
             {
-                "$push": {
-                    "messages": {
-                        "sender": "system",
-                        "name": user["name"],
-                        "content": last_message,
-                        "timestamp": datetime.utcnow()
-                    }
-                },
-                "$set": {"last_message": last_message}
+                "$set": {
+                    "last_message": last_message,
+                    "timestamp": tz_now,
+                    "name": user["name"]
+                }
             },
-            upsert=True
+            upsert=True,
+            return_document=True
         )
+
+        # 2️⃣ Guardar mensaje como documento independiente
+        new_message = {
+            "conversation_id": str(conv["_id"]),
+            "sender": "system",
+            "name": user["name"],
+            "type": msg_type,
+            "content": content,
+            "timestamp": tz_now
+        }
+        await messages_collection.insert_one(new_message)
 
         return {"status": "ok", "response": result}
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 

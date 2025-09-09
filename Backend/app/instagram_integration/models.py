@@ -1,12 +1,12 @@
 from pydantic import BaseModel
-from typing import List
 
-class InstagramData(BaseModel):
-    user_id: str
+class InstagramMessageData(BaseModel):
+    user_id: str        # siempre debe ser el sender_id numérico de Instagram
     text: str
+    username: str | None = None  # opcional, solo para mostrar en UI
 
 class InstagramSendMessage(BaseModel):
-    data: InstagramData
-    allowed_roles: List[str]
+    data: InstagramMessageData
+
     
     
