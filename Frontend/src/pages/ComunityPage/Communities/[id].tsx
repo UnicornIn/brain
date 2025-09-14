@@ -20,6 +20,7 @@ import {
   Phone,
   Check,
   X,
+  MapPin
 } from "lucide-react"
 import { Link, useParams } from "react-router-dom"
 import { useEffect, useState } from "react"
@@ -37,6 +38,8 @@ interface Member {
   email: string;
   phone: string;
   join_reason: string;
+  city?: string;
+  country?: string;
   has_completed_survey: boolean;
   registration_date: string;
   role: string;
@@ -71,6 +74,7 @@ export default function CommunityDetailPage() {
   const [filterStatus, setFilterStatus] = useState('all');
   const [selectedMember, setSelectedMember] = useState<Member | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [actualMemberCount, setActualMemberCount] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -78,7 +82,7 @@ export default function CommunityDetailPage() {
         setLoading(true);
 
         // Fetch community data
-        const communityResponse = await fetch(`https://apibrain.rizosfelices.co/community/communities/${communityUrl}`);
+        const communityResponse = await fetch(`https://staging-brain.rizosfelices.co/community/communities/${communityUrl}`);
         if (!communityResponse.ok) {
           throw new Error('Error al obtener los datos de la comunidad');
         }
@@ -86,12 +90,13 @@ export default function CommunityDetailPage() {
         setCommunity(communityData);
 
         // Fetch members data
-        const membersResponse = await fetch(`https://apibrain.rizosfelices.co/community/members/by-url/${communityUrl}`);
+        const membersResponse = await fetch(`https://staging-brain.rizosfelices.co/community/members/by-url/${communityUrl}`);
         if (!membersResponse.ok) {
           throw new Error('Error al obtener los miembros de la comunidad');
         }
         const membersData = await membersResponse.json();
         setMembers(membersData.members || []);
+        setActualMemberCount(membersData.members?.length || 0);
 
         // Prepare forms data from community data
         if (communityData) {
@@ -152,7 +157,9 @@ export default function CommunityDetailPage() {
     const matchesSearch =
       member.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       member.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      member.phone.toLowerCase().includes(searchTerm.toLowerCase());
+      member.phone.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (member.city && member.city.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (member.country && member.country.toLowerCase().includes(searchTerm.toLowerCase()));
 
     const matchesStatus = filterStatus === 'all' || member.status === filterStatus;
 
@@ -209,7 +216,7 @@ export default function CommunityDetailPage() {
             <CardDescription>Miembros registrados</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">{community.members}</div>
+            <div className="text-3xl font-bold">{actualMemberCount}</div>
           </CardContent>
         </Card>
         <Card className="flex-1">
@@ -281,6 +288,7 @@ export default function CommunityDetailPage() {
                   <TableRow>
                     <TableHead>Miembro</TableHead>
                     <TableHead>Contacto</TableHead>
+                    <TableHead>Ubicación</TableHead>
                     <TableHead>Encuesta</TableHead>
                     <TableHead>Estado</TableHead>
                     <TableHead>Fecha Registro</TableHead>
@@ -315,6 +323,14 @@ export default function CommunityDetailPage() {
                             <span>{member.phone}</span>
                           </div>
                         </div>
+                      </TableCell>
+                      <TableCell>
+                        {(member.city || member.country) && (
+                          <div className="flex items-center gap-1 text-sm">
+                            <MapPin className="h-3.5 w-3.5 text-muted-foreground" />
+                            <span>{[member.city, member.country].filter(Boolean).join(', ')}</span>
+                          </div>
+                        )}
                       </TableCell>
                       <TableCell>
                         {getSurveyBadge(member.has_completed_survey)}
@@ -363,7 +379,6 @@ export default function CommunityDetailPage() {
                     <TableHead>Registros</TableHead>
                     <TableHead>Creado</TableHead>
                     <TableHead>Estado</TableHead>
-                    {/* Columna de Acciones oculta pero necesaria para el layout */}
                     <TableHead className="hidden"></TableHead>
                   </TableRow>
                 </TableHeader>
@@ -381,14 +396,13 @@ export default function CommunityDetailPage() {
                           {form.url}
                         </a>
                       </TableCell>
-                      <TableCell>{community.members}</TableCell>
+                      <TableCell>{actualMemberCount}</TableCell>
                       <TableCell>{form.created_at}</TableCell>
                       <TableCell>
                         <Badge variant="outline" className="bg-green-100 text-green-800">
                           Activo
                         </Badge>
                       </TableCell>
-                      {/* Celda de acciones oculta pero necesaria para el layout */}
                       <TableCell className="hidden"></TableCell>
                     </TableRow>
                   ))}
@@ -465,6 +479,19 @@ export default function CommunityDetailPage() {
                         <p className="font-medium">{selectedMember.phone}</p>
                       </div>
                     </div>
+                    {(selectedMember.city || selectedMember.country) && (
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 bg-gray-100 rounded-full">
+                          <MapPin className="h-4 w-4 text-gray-600" />
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-500">Ubicación</p>
+                          <p className="font-medium">
+                            {[selectedMember.city, selectedMember.country].filter(Boolean).join(', ')}
+                          </p>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
 

@@ -63,7 +63,7 @@ export default function CommunityPublicPage() {
         setError(null)
 
         const response = await fetch(
-          `https://apibrain.rizosfelices.co/community/communities/by-slug/${slug}`,
+          `https://staging-brain.rizosfelices.co/community/communities/by-slug/${slug}`,
           {
             headers: {
               'Cache-Control': 'no-cache',
@@ -134,7 +134,7 @@ export default function CommunityPublicPage() {
     setFormError(null)
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/community/CreateMember', {
+      const response = await fetch('https://staging-brain.rizosfelices.co/community/CreateMember', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

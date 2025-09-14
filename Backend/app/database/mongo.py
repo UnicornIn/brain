@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Inicializa la conexión inmediatamente
+# Initialize the connection immediately
 uri = os.getenv("MONGODB_URI")
 db_name = os.getenv("MONGODB_NAME", "DataUser")
 
@@ -14,12 +14,14 @@ if not uri:
 client = AsyncIOMotorClient(uri)
 db = client[db_name]
 contacts_collection = db["contacts"]
-messages_collection = db["message"]
+message_collection = db["message"]
 alerts_collection = db["alerts"]
 community_collection = db["community"]
 user_collection = db["users"]
 member_collection = db["members"]
+conversations_collection = db["conversations"]
+messages_collection = db["messages"]
 
-# Esta función ya no es necesaria, pero la mantenemos por compatibilidad
+# This function is no longer needed, but we keep it for compatibility
 def connect_to_mongo():
     pass

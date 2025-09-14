@@ -15,9 +15,11 @@ import {
 import { Input } from "../../../components/ui/input"
 import { Label } from "../../../components/ui/label"
 import { toast } from "sonner"
+import { useAuth } from "../../../contexts/AuthContext" // Importa el hook useAuth
 
 export default function CreateCommunityPage() {
-  const navigate = useNavigate()
+  const navigate = useNavigate()  
+  const { user, logout } = useAuth() // Obtén user y logout del contexto
   const [isPublishing, setIsPublishing] = useState(false)
   const [showSuccessModal, setShowSuccessModal] = useState(false)
   const [copied, setCopied] = useState(false)
@@ -44,8 +46,19 @@ export default function CreateCommunityPage() {
     setError(null)
     setUrlError(null)
 
+    // Verificar autenticación usando el contexto
+    if (!user || !user.token) {
+      setError('No estás autenticado. Por favor inicia sesión.')
+      setIsPublishing(false)
+      toast.error('Autenticación requerida', {
+        position: 'top-center',
+        duration: 4000
+      })
+      return
+    }
+
     try {
-      // Basic validation
+      // Validación básica
       if (!communityData.title || !communityData.description) {
         throw new Error('El título y la descripción son obligatorios')
       }
@@ -70,36 +83,43 @@ export default function CreateCommunityPage() {
         formData.append('image', communityData.mediaFile)
       }
 
-      const response = await fetch('https://apibrain.rizosfelices.co/community/communities/', {
+      const response = await fetch('https://staging-brain.rizosfelices.co/community/communities/', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          'Authorization': `Bearer ${user.token}` // Usa el token del contexto
         },
         body: formData
       })
 
-      const data = await response.json()
-
+      // Manejar errores de respuesta
       if (!response.ok) {
-        // Check if error is due to duplicate URL
-        if (data.error?.includes('URL already exists') || data.message?.includes('URL already in use')) {
-          setUrlError('This URL is already in use. Please choose another one.')
+        const errorData = await response.json()
+        
+        // Error de autenticación
+        if (response.status === 401 || response.status === 403) {
+          logout() // Cierra la sesión si el token es inválido
+          throw new Error('Tu sesión ha expirado. Por favor inicia sesión nuevamente.')
+        }
+        
+        // Error de URL duplicada
+        if (errorData.error?.includes('URL already exists') || errorData.message?.includes('URL already in use')) {
+          setUrlError('Esta URL ya está en uso. Por favor elige otra.')
           return
         }
-
-        const errorMessage = data.message || data.error || 'Esa URL ya está en uso. Por favor, elige otra.'
-        throw new Error(errorMessage)
+        
+        throw new Error(errorData.message || errorData.error || 'Error al publicar la comunidad')
       }
 
+      await response.json()
       setShowSuccessModal(true)
-      toast.success('Community published successfully', {
+      toast.success('Comunidad publicada exitosamente', {
         position: 'top-center',
         duration: 3000
       })
 
     } catch (error) {
       console.error('Error:', error)
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error while publishing'
+      const errorMessage = error instanceof Error ? error.message : 'Error desconocido al publicar'
       setError(errorMessage)
       toast.error(errorMessage, {
         position: 'top-center',
@@ -115,7 +135,7 @@ export default function CreateCommunityPage() {
     navigator.clipboard.writeText(communityUrl)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
-    toast.success('Link copied to clipboard', {
+    toast.success('Enlace copiado al portapapeles', {
       position: 'top-center',
       duration: 2000
     })
@@ -153,7 +173,7 @@ export default function CreateCommunityPage() {
         </div>
       </div>
 
-      {/* Show error if exists */}
+      {/* Mostrar errores */}
       {error && (
         <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mx-4 mt-4">
           <p className="font-bold">Error</p>
@@ -163,7 +183,7 @@ export default function CreateCommunityPage() {
 
       {urlError && (
         <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mx-4 mt-4">
-          <p className="font-bold">Warning</p>
+          <p className="font-bold">Advertencia</p>
           <p>{urlError}</p>
         </div>
       )}
@@ -174,16 +194,16 @@ export default function CreateCommunityPage() {
         fixedButtonText
       />
 
-      {/* Success Modal */}
+      {/* Modal de éxito */}
       <Dialog open={showSuccessModal} onOpenChange={closeModal}>
-        <DialogContent className="sm:max-w-md bg-white"> {/* Agregado bg-white aquí */}
+        <DialogContent className="sm:max-w-md bg-white">
           <DialogHeader>
             <DialogTitle className="text-center">Comunidad creada</DialogTitle>
           </DialogHeader>
           <div className="flex items-center space-x-2">
             <div className="grid flex-1 gap-2">
               <Label htmlFor="link" className="sr-only">
-                Link
+                Enlace
               </Label>
               <Input
                 id="link"
@@ -201,7 +221,7 @@ export default function CreateCommunityPage() {
           </div>
           <div className="flex justify-end mt-4">
             <Button onClick={closeModal}>
-              Close
+              Cerrar
             </Button>
           </div>
         </DialogContent>
