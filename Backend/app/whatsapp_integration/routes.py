@@ -1,23 +1,46 @@
-from fastapi import APIRouter, Depends, HTTPException, Form, File, UploadFile
+from fastapi import APIRouter, HTTPException, Form, File, UploadFile
 from typing import Optional
 from app.whatsapp_integration.controllers import send_whatsapp_message
-from app.database.mongo import conversations_collection, messages_collection
-from app.auth.jwt.jwt import get_current_user
-from datetime import datetime
+from app.database.mongo import contacts_collection, messages_collection
+from datetime import datetime, timezone
 import os
 import httpx
+from bson import ObjectId
 import pytz
 
 WHATSAPP_TOKEN = os.getenv("WHATSAPP_TOKEN")
 
 router = APIRouter()
 
+# --- Utilidad para limpiar documentos de Mongo ---
+def clean_mongo_doc(doc: dict) -> dict:
+    """Convierte ObjectId y datetime en tipos serializables (str) y ajusta hora a Bogotá."""
+    clean = {}
+    bogota_tz = pytz.timezone("America/Bogota")
+
+    for k, v in doc.items():
+        if isinstance(v, ObjectId):
+            clean[k] = str(v)
+        elif isinstance(v, datetime):
+            # Si ya tiene zona horaria, convertir a Bogotá
+            if v.tzinfo is not None:
+                bogota_time = v.astimezone(bogota_tz)
+            else:
+                # Asumir que es UTC si no tiene zona horaria
+                utc_time = v.replace(tzinfo=pytz.UTC)
+                bogota_time = utc_time.astimezone(bogota_tz)
+            
+            clean[k] = bogota_time.isoformat()
+            clean[f"{k}_pretty"] = bogota_time.strftime("%Y-%m-%d %H:%M:%S")
+        else:
+            clean[k] = v
+    return clean
+
 @router.post("/whatsapp/send-message")
 async def send_message(
     wa_id: str = Form(...),
     text: Optional[str] = Form(None),
-    image: Optional[UploadFile] = File(None),
-    user: dict = Depends(get_current_user(["admin"]))
+    image: Optional[UploadFile] = File(None)
 ):
     phone_number_id = os.getenv("WHATSAPP_PHONE_ID")
 
@@ -25,7 +48,9 @@ async def send_message(
         raise HTTPException(status_code=500, detail="WHATSAPP_PHONE_ID no configurado")
 
     try:
-        tz_now = datetime.now(pytz.timezone("America/Bogota"))
+        # 🕒 Guardar SIEMPRE en UTC
+        utc_now = datetime.now(timezone.utc)
+
         last_message = None
         msg_type = "text"
         content = None
@@ -65,34 +90,46 @@ async def send_message(
         else:
             raise HTTPException(status_code=400, detail="Debe enviar texto o imagen")
 
-        # 1️⃣ Asegurar conversación
-        conv = await conversations_collection.find_one_and_update(
+        # 1️⃣ OBTENER EL NOMBRE REAL DEL CONTACTO EN LUGAR DE "invitado"
+        # Buscar la conversación existente para obtener el nombre real
+        existing_conv = await contacts_collection.find_one({"user_id": wa_id, "platform": "whatsapp"})
+        nombre_contacto = existing_conv.get("name", "Cliente") if existing_conv else "Cliente"
+
+        # 2️⃣ Asegurar conversación (usar el nombre real)
+        conv = await contacts_collection.find_one_and_update(
             {"user_id": wa_id, "platform": "whatsapp"},
             {
                 "$set": {
                     "last_message": last_message,
-                    "timestamp": tz_now,
-                    "name": user["name"]
+                    "timestamp": utc_now,   # 🔹 Guardamos UTC
+                    "name": nombre_contacto  # 🔹 Usar el nombre real, no "invitado"
                 }
             },
             upsert=True,
             return_document=True
         )
 
-        # 2️⃣ Guardar mensaje como documento independiente
+        # 3️⃣ Guardar mensaje como documento independiente (usar nombre real)
         new_message = {
             "conversation_id": str(conv["_id"]),
             "sender": "system",
-            "name": user["name"],
+            "name": nombre_contacto,  # 🔹 Usar el nombre real
             "type": msg_type,
             "content": content,
-            "timestamp": tz_now
+            "timestamp": utc_now   # 🔹 Guardamos UTC
         }
         await messages_collection.insert_one(new_message)
 
-        return {"status": "ok", "response": result}
+        # Convertir a hora de Bogotá para la respuesta
+        bogota_tz = pytz.timezone("America/Bogota")
+        bogota_time = utc_now.astimezone(bogota_tz)
+
+        return {
+            "status": "ok",
+            "response": result,
+            "timestamp": bogota_time.isoformat(),  # 👈 Enviamos en hora de Bogotá
+            "remitente": nombre_contacto  # 🔹 Enviar también el nombre para el frontend
+        }
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
-
