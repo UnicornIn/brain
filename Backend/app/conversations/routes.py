@@ -1,49 +1,53 @@
 from fastapi import APIRouter, HTTPException
-from app.database.mongo import conversations_collection, messages_collection
+from app.database.mongo import contacts_collection, messages_collection
 from datetime import datetime
 from bson import ObjectId
+import pytz
 
 router = APIRouter()
+
+# --- Utilidad para limpiar documentos de Mongo ---
+def clean_mongo_doc(doc: dict) -> dict:
+    """Convierte ObjectId y datetime en tipos serializables (str) y ajusta hora a Bogotá."""
+    clean = {}
+    bogota_tz = pytz.timezone("America/Bogota")
+
+    for k, v in doc.items():
+        if isinstance(v, ObjectId):
+            clean[k] = str(v)
+        elif isinstance(v, datetime):
+            # Si ya tiene zona horaria, convertir a Bogotá
+            if v.tzinfo is not None:
+                bogota_time = v.astimezone(bogota_tz)
+            else:
+                # Asumir que es UTC si no tiene zona horaria
+                utc_time = v.replace(tzinfo=pytz.UTC)
+                bogota_time = utc_time.astimezone(bogota_tz)
+            
+            clean[k] = bogota_time.isoformat()
+            clean[f"{k}_pretty"] = bogota_time.strftime("%Y-%m-%d %H:%M:%S")
+        else:
+            clean[k] = v
+    return clean
 
 
 @router.get("/get-conversations/")
 async def get_all_conversations():
-    """
-    Retorna todas las conversaciones con la misma estructura que espera el front.
-    Aunque los mensajes se guardan en otra colección, aquí se agrupan.
-    """
-    conversations_cursor = conversations_collection.find().sort("timestamp", -1).limit(100)
+    conversations_cursor = contacts_collection.find().sort("timestamp", -1).limit(100)
     results = []
-
     async for conv in conversations_cursor:
-        if "_id" in conv and isinstance(conv["_id"], ObjectId):
-            conv["_id"] = str(conv["_id"])
+        conv = clean_mongo_doc(conv)
 
         user_id = conv.get("user_id")
         if not user_id:
             continue
 
-        # Buscar los mensajes asociados a esta conversación
         msgs_cursor = messages_collection.find({"conversation_id": conv["_id"]}).sort("timestamp", 1)
         all_messages = await msgs_cursor.to_list(length=None)
+        all_messages = [clean_mongo_doc(m) for m in all_messages]
 
-        # Normalizar timestamps
-        for msg in all_messages:
-            ts = msg.get("timestamp")
-            if isinstance(ts, datetime):
-                msg["timestamp"] = ts.isoformat()
-
-        # Último mensaje
         last_message = all_messages[-1]["content"] if all_messages else ""
         latest_timestamp = all_messages[-1]["timestamp"] if all_messages else None
-
-        pretty_time = ""
-        if isinstance(latest_timestamp, str):
-            try:
-                dt = datetime.fromisoformat(latest_timestamp.replace("Z", "+00:00"))
-                pretty_time = dt.strftime("%Y-%m-%d %H:%M:%S")
-            except Exception:
-                pretty_time = latest_timestamp
 
         results.append({
             "_id": conv["_id"],
@@ -52,39 +56,29 @@ async def get_all_conversations():
             "platform": conv.get("platform", ""),
             "platform_icon": "🟢" if conv.get("platform") == "whatsapp" else "📘",
             "last_message": last_message,
-            "timestamp": latest_timestamp,
-            "pretty_time": pretty_time,
+            "timestamp": latest_timestamp,      # Bogotá
+            "pretty_time": all_messages[-1].get("timestamp_pretty") if all_messages else "",
             "unread": conv.get("unread", 0),
             "estado": "Pendiente",
             "messages": all_messages
         })
 
     results.sort(key=lambda r: r.get("timestamp") or "", reverse=True)
-
     return results
 
 
 @router.get("/conversations/messages/{user_id}")
 async def get_messages_by_user(user_id: str):
-    """
-    Retorna todos los mensajes de un usuario como una sola conversación.
-    Se arma igual a como lo espera el front.
-    """
     try:
-        # Buscar la conversación
-        conv = await conversations_collection.find_one({"user_id": user_id})
+        conv = await contacts_collection.find_one({"user_id": user_id})
         if not conv:
             raise HTTPException(status_code=404, detail="No se encontró conversación para este usuario.")
 
-        # Buscar mensajes
-        msgs_cursor = messages_collection.find({"conversation_id": str(conv["_id"])}).sort("timestamp", 1)
-        all_messages = await msgs_cursor.to_list(length=None)
+        conv = clean_mongo_doc(conv)
 
-        # Normalizar
-        for msg in all_messages:
-            ts = msg.get("timestamp")
-            if isinstance(ts, datetime):
-                msg["timestamp"] = ts.isoformat()
+        msgs_cursor = messages_collection.find({"conversation_id": conv["_id"]}).sort("timestamp", 1)
+        all_messages = await msgs_cursor.to_list(length=None)
+        all_messages = [clean_mongo_doc(m) for m in all_messages]
 
         response = {
             "user_id": user_id,
@@ -92,12 +86,14 @@ async def get_messages_by_user(user_id: str):
             "platform": conv.get("platform", ""),
             "last_message": all_messages[-1]["content"] if all_messages else "",
             "timestamp": all_messages[-1]["timestamp"] if all_messages else "",
+            "pretty_time": all_messages[-1].get("timestamp_pretty") if all_messages else "",
             "unread": conv.get("unread", 0),
             "messages": [
                 {
                     "sender": m.get("sender", ""),
                     "content": m.get("content", ""),
-                    "timestamp": m.get("timestamp")
+                    "timestamp": m.get("timestamp"),
+                    "pretty_time": m.get("timestamp_pretty", "")
                 }
                 for m in all_messages
             ]
@@ -107,3 +103,14 @@ async def get_messages_by_user(user_id: str):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error interno del servidor: {str(e)}")
+
+# --- Marcar contacto como gestionado ---
+@router.post("/contacts/{contact_id}/gestionado")
+async def marcar_gestionado(contact_id: str):
+    result = await contacts_collection.update_one(
+        {"_id": ObjectId(contact_id)},
+        {"$set": {"gestionado": True}}
+    )
+    if result.modified_count == 1:
+        return {"status": "ok", "contact_id": contact_id, "gestionado": True}
+    return {"status": "not_found", "contact_id": contact_id}
