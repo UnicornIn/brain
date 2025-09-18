@@ -165,7 +165,7 @@ async def meta_webhook(request: Request):
 
                     # 4️⃣ Reenviar a n8n 🚀
                     try:
-                        n8n_url = os.getenv("N8N_WEBHOOK_URL")
+                        n8n_url = os.getenv("N8N_WEBHOOK_URL_WHATSAPP")
                         payload = {
                             "user_id": wa_id,
                             "name": profile_name,
@@ -266,7 +266,7 @@ async def meta_webhook(request: Request):
                 print(f"[Messenger] {remitente}: {content}")
                 await notify_all(ws_message)
                 try:
-                    n8n_url = os.getenv("N8N_WEBHOOK_URL")
+                    n8n_url = os.getenv("N8N_WEBHOOK_URL_FACEBOOK")
                     payload = {
                         "user_id": user_id,
                         "name": remitente,
@@ -363,7 +363,7 @@ async def meta_webhook(request: Request):
                 print(f"[Instagram] {remitente}: {content}")
                 await notify_all(ws_message)
                 try:
-                    n8n_url = os.getenv("N8N_WEBHOOK_URL")
+                    n8n_url = os.getenv("N8N_WEBHOOK_URL_INSTAGRAM")
                     payload = {
                         "user_id": user_id,
                         "name": remitente,
