@@ -1,9 +1,8 @@
 from app.instagram_integration.controllers import send_instagram_message
 from app.instagram_integration.models import InstagramSendMessage
 from app.database.mongo import contacts_collection, messages_collection
-from app.auth.jwt.jwt import get_current_user
 from app.websocket.routes import notify_all
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, HTTPException
 from datetime import datetime, timezone
 import pytz
 from bson import ObjectId
@@ -35,13 +34,11 @@ def clean_mongo_doc(doc: dict) -> dict:
             clean[k] = v
     return clean
 
+
 @router.post("/instagram/send")
-async def send_message_instagram(
-    payload: InstagramSendMessage,
-    user: dict = Depends(get_current_user(["admin"]))
-):
+async def send_message_instagram(payload: InstagramSendMessage):
     """
-    Enviar mensaje a un usuario de Instagram.
+    Enviar mensaje a un usuario de Instagram sin autenticación.
     Guarda contacto y mensaje como documento independiente en messages_collection.
     """
     try:
@@ -95,7 +92,7 @@ async def send_message_instagram(
             "content": last_message,
             "timestamp": now_utc.isoformat(),
             "direction": "outbound",
-            "remitente": user["name"]
+            "remitente": "Sistema"  # 👈 ya no depende de usuario logueado
         }
         await notify_all(ws_message)
 

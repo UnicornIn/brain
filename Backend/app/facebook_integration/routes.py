@@ -1,8 +1,7 @@
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query
 from app.facebook_integration.controllers import send_messenger_message, get_messenger_user_name
 from app.facebook_integration.models import MessengerSendMessage
 from app.database.mongo import contacts_collection, messages_collection
-from app.auth.jwt.jwt import get_current_user
 from app.websocket.routes import notify_all
 from datetime import datetime, timezone
 import httpx
@@ -37,11 +36,13 @@ def clean_mongo_doc(doc: dict) -> dict:
             clean[k] = v
     return clean
 
+
 @router.post("/messenger/send")
-async def send_facebook_message(
-    payload: MessengerSendMessage,
-    user: dict = Depends(get_current_user(["admin"]))
-):
+async def send_facebook_message(payload: MessengerSendMessage):
+    """
+    Enviar mensaje a un usuario de Messenger sin autenticación.
+    Guarda contacto y mensaje como documento independiente en messages_collection.
+    """
     try:
         # 1️⃣ Enviar mensaje vía API de Messenger
         response = await send_messenger_message(payload.data.user_id, payload.data.text)
@@ -92,7 +93,7 @@ async def send_facebook_message(
             "content": last_message,
             "timestamp": now_utc.isoformat(),
             "direction": "outbound",
-            "remitente": user["name"]
+            "remitente": "Sistema"  # 👈 fijo, ya no depende de usuario logueado
         }
         await notify_all(ws_message)
 
