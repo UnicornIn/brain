@@ -8,21 +8,53 @@ import httpx
 import pytz
 from bson import ObjectId
 import os
+from pydantic import BaseModel
+from typing import List, Any, Tuple
 
 router = APIRouter()
 
 PAGE_ACCESS_TOKEN = os.getenv("PAGE_ACCESS_TOKEN")
 bogota_tz = pytz.timezone("America/Bogota")
 
+
 def utc_now():
     return datetime.now(timezone.utc)
 
-# --- Utilidad para limpiar documentos de Mongo ---
+
+def _parse_meta_response(resp: Any) -> Tuple[bool, int, dict]:
+    """
+    Normaliza la respuesta de la llamada a Meta (puede ser httpx.Response o dict).
+    Retorna (ok_bool, status_code, data_dict)
+    """
+    # httpx / requests response-like
+    if hasattr(resp, "status_code"):
+        status = getattr(resp, "status_code", 500)
+        try:
+            data = resp.json()
+        except Exception:
+            data = {}
+        ok = 200 <= status < 300
+        return ok, status, data
+
+    # dict already parsed
+    if isinstance(resp, dict):
+        data = resp
+        # consider success if contains these common keys
+        if any(k in data for k in ("message_id", "recipient_id", "id")) and not data.get("error"):
+            return True, 200, data
+        # otherwise treat as error
+        return False, 500, data
+
+    # unknown
+    return False, 500, {"error": "unknown_response", "raw": str(resp)}
+
+
+# --- Utilidad para limpiar documentos de Mongo (opcional) ---
 def clean_mongo_doc(doc: dict) -> dict:
-    """Convierte ObjectId y datetime en tipos serializables (str) y ajusta hora a Bogotá."""
+    from bson import ObjectId as _OID
     clean = {}
     for k, v in doc.items():
-        if isinstance(v, ObjectId):
+        if isinstance(v, _OID):
             clean[k] = str(v)
         elif isinstance(v, datetime):
             if v.tzinfo is not None:
@@ -40,93 +72,86 @@ def clean_mongo_doc(doc: dict) -> dict:
 @router.post("/messenger/send")
 async def send_facebook_message(payload: MessengerSendMessage):
     """
-    Enviar mensaje a un usuario de Messenger sin autenticación.
-    Guarda contacto y mensaje como documento independiente en messages_collection.
+    Enviar mensaje a un usuario de Messenger:
+    - Llama a la API de Facebook (controller)
+    - Asegura conversation_id único por contacto
+    - Actualiza contact
+    - Guarda en messages_collection
+    - Notifica por WebSocket
     """
     try:
-        # 1️⃣ Enviar mensaje vía API de Messenger
+        # 1) Llamar controlador
         response = await send_messenger_message(payload.data.user_id, payload.data.text)
 
-        if response.status_code != 200:
-            raise HTTPException(
-                status_code=response.status_code,
-                detail=f"Error enviando mensaje a Messenger: {response.text}"
-            )
+        ok, status_code, data = _parse_meta_response(response)
+        if not ok:
+            raise HTTPException(status_code=status_code, detail=f"Error enviando mensaje a Messenger: {data}")
 
         now_utc = utc_now()
         last_message = payload.data.text
         user_id = payload.data.user_id
 
-        # 2️⃣ Obtener o crear contacto
+        # 2) Obtener contacto y conversation_id (reusar si existe)
+        contact = await contacts_collection.find_one({"user_id": user_id, "platform": "messenger"})
+        
+        if contact:
+            conversation_id = str(contact["_id"])
+        else:
+            new_contact_id = ObjectId()
+            conversation_id = str(new_contact_id)
+
+        # 3) Nombre de contacto
         nombre_contacto = await get_messenger_user_name(user_id) or "Cliente"
-        contact_doc = await contacts_collection.find_one_and_update(
+
+        # 4) Actualizar/crear contacto
+        await contacts_collection.find_one_and_update(
             {"user_id": user_id, "platform": "messenger"},
             {
                 "$set": {
                     "last_message": last_message,
                     "timestamp": now_utc,
                     "name": nombre_contacto,
+                    "conversation_id": conversation_id,
                     "unread": 0
                 }
             },
-            upsert=True,
-            return_document=True
+            upsert=True
         )
-        conversation_id = str(contact_doc["_id"])
 
-        # 3️⃣ Guardar mensaje como documento independiente
-        new_message_doc = {
+        # 5) Guardar en messages_collection
+        message_doc = {
             "conversation_id": conversation_id,
             "sender": "system",
             "type": "text",
             "content": last_message,
-            "timestamp": now_utc
+            "timestamp": now_utc,
         }
-        inserted = await messages_collection.insert_one(new_message_doc)
-        new_message_doc["_id"] = inserted.inserted_id
+        await messages_collection.insert_one(message_doc)
 
-        # 4️⃣ Notificar al frontend
+        # 6) 🔥 CORREGIDO: Notificar frontend - Mismo formato que WhatsApp
         ws_message = {
             "user_id": user_id,
-            "platform": "messenger",
-            "type": "text",
-            "content": last_message,
+            "conversation_id": conversation_id,
+            "platform": "messenger",  # Mantener como "messenger"
+            "text": last_message,  # Usar "text" igual que WhatsApp
             "timestamp": now_utc.isoformat(),
-            "direction": "outbound",
-            "remitente": "Sistema"  # 👈 fijo, ya no depende de usuario logueado
+            "direction": "outbound",  # Esto es clave
+            "remitente": nombre_contacto,  # Usar el nombre real
+            "message_id": f"msg_{conversation_id}_{int(now_utc.timestamp())}"
         }
+        
+        print(f"📤 Enviando por WebSocket: {ws_message}")
         await notify_all(ws_message)
 
         return {
             "status": "sent",
-            "message": clean_mongo_doc(new_message_doc),
-            "facebook_response": response.json()
+            "facebook_status": status_code,
+            "facebook_response": data,
+            "conversation_id": conversation_id
         }
 
     except Exception as e:
+        print(f"❌ Error en /messenger/send: {e}")
         raise HTTPException(status_code=500, detail=f"Error interno: {str(e)}")
 
-
-async def obtener_nombre_usuario_facebook(psid: str):
-    url = f"https://graph.facebook.com/v19.0/{psid}"
-    params = {
-        "fields": "first_name,last_name",
-        "access_token": PAGE_ACCESS_TOKEN
-    }
-
-    async with httpx.AsyncClient() as client:
-        response = await client.get(url, params=params)
-
-    if response.status_code != 200:
-        print("⚠️ Error al obtener nombre de usuario Facebook:", response.text)
-        return None
-
-    data = response.json()
-    return f"{data.get('first_name', '')} {data.get('last_name', '')}".strip()
-
-
-@router.get("/messenger/userinfo")
-async def get_user_info(psid: str = Query(..., description="Page Scoped ID del usuario de Messenger")):
-    """Retorna el nombre y foto de perfil de un usuario de Messenger usando su PSID."""
-    user_info = await get_messenger_user_name(psid)
-    return user_info
+    
