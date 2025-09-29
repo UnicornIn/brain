@@ -1,11 +1,10 @@
 from app.instagram_integration.controllers import send_instagram_message
 from app.instagram_integration.models import InstagramSendMessage
-from app.database.mongo import contacts_collection, messages_collection
+from app.database.mongo import contacts_collection
 from app.websocket.routes import notify_all
 from fastapi import APIRouter, HTTPException
 from datetime import datetime, timezone
 import pytz
-from bson import ObjectId
 
 router = APIRouter()
 
@@ -15,31 +14,13 @@ bogota_tz = pytz.timezone("America/Bogota")
 def utc_now():
     return datetime.now(timezone.utc)
 
-# --- Utilidad para limpiar documentos de Mongo ---
-def clean_mongo_doc(doc: dict) -> dict:
-    """Convierte ObjectId y datetime en tipos serializables (str) y ajusta hora a Bogotá."""
-    clean = {}
-    for k, v in doc.items():
-        if isinstance(v, ObjectId):
-            clean[k] = str(v)
-        elif isinstance(v, datetime):
-            if v.tzinfo is not None:
-                bogota_time = v.astimezone(bogota_tz)
-            else:
-                utc_time = v.replace(tzinfo=pytz.UTC)
-                bogota_time = utc_time.astimezone(bogota_tz)
-            clean[k] = bogota_time.isoformat()
-            clean[f"{k}_pretty"] = bogota_time.strftime("%Y-%m-%d %H:%M:%S")
-        else:
-            clean[k] = v
-    return clean
-
-
 @router.post("/instagram/send")
 async def send_message_instagram(payload: InstagramSendMessage):
     """
-    Enviar mensaje a un usuario de Instagram sin autenticación.
-    Guarda contacto y mensaje como documento independiente en messages_collection.
+    Enviar mensaje a un usuario de Instagram.
+    - Envía a la API de Meta.
+    - Actualiza metadata en contacts_collection.
+    - No guarda en messages_collection (lo maneja el webhook).
     """
     try:
         # 1️⃣ Enviar mensaje a Instagram
@@ -56,49 +37,47 @@ async def send_message_instagram(payload: InstagramSendMessage):
         user_id = payload.data.user_id
         username = payload.data.username or "Cliente"
 
-        # 2️⃣ Guardar/actualizar contacto
-        contact_doc = await contacts_collection.find_one_and_update(
+        # 2️⃣ Buscar contacto existente o crear uno nuevo con conversation_id
+        contact = await contacts_collection.find_one({"user_id": user_id, "platform": "instagram"})
+        
+        if contact:
+            conversation_id = contact.get("conversation_id", str(contact["_id"]))
+        else:
+            from bson import ObjectId
+            new_contact_id = ObjectId()
+            conversation_id = str(new_contact_id)
+
+        # 3️⃣ Guardar/actualizar contacto CON conversation_id
+        await contacts_collection.find_one_and_update(
             {"user_id": user_id, "platform": "instagram"},
             {
                 "$set": {
                     "last_message": last_message,
                     "timestamp": now_utc,
                     "name": username,
-                    "unread": 0
+                    "unread": 0,
+                    "conversation_id": conversation_id  # ← AGREGAR ESTO
                 }
             },
             upsert=True,
             return_document=True
         )
-        conversation_id = str(contact_doc["_id"])
 
-        # 3️⃣ Guardar mensaje como documento independiente
-        new_message_doc = {
-            "conversation_id": conversation_id,
-            "sender": "system",
-            "type": "text",
-            "content": last_message,
-            "timestamp": now_utc
-        }
-        inserted = await messages_collection.insert_one(new_message_doc)
-        new_message_doc["_id"] = inserted.inserted_id
-
-        # 4️⃣ Notificar al frontend
+        # 4️⃣ Notificar al frontend CON conversation_id
         ws_message = {
             "user_id": user_id,
+            "conversation_id": conversation_id,  # ← AGREGAR ESTO
             "platform": "instagram",
-            "username": username,
-            "type": "text",
-            "content": last_message,
+            "text": last_message,  # ← Cambiar "content" por "text" para consistencia
             "timestamp": now_utc.isoformat(),
             "direction": "outbound",
-            "remitente": "Sistema"  # 👈 ya no depende de usuario logueado
+            "remitente": "Tú",  # ← Cambiar "Sistema" por "Tú"
+            "message_id": f"ig_{conversation_id}_{int(now_utc.timestamp())}"  # ← AGREGAR message_id
         }
         await notify_all(ws_message)
 
         return {
             "status": "sent",
-            "message": clean_mongo_doc(new_message_doc),
             "instagram_response": response.json()
         }
 

@@ -16,14 +16,12 @@ def clean_mongo_doc(doc: dict) -> dict:
         if isinstance(v, ObjectId):
             clean[k] = str(v)
         elif isinstance(v, datetime):
-            # Si ya tiene zona horaria, convertir a Bogotá
             if v.tzinfo is not None:
                 bogota_time = v.astimezone(bogota_tz)
             else:
-                # Asumir que es UTC si no tiene zona horaria
                 utc_time = v.replace(tzinfo=pytz.UTC)
                 bogota_time = utc_time.astimezone(bogota_tz)
-            
+
             clean[k] = bogota_time.isoformat()
             clean[f"{k}_pretty"] = bogota_time.strftime("%Y-%m-%d %H:%M:%S")
         else:
@@ -31,6 +29,7 @@ def clean_mongo_doc(doc: dict) -> dict:
     return clean
 
 
+# --- Obtener todas las conversaciones (SOLO último mensaje) ---
 @router.get("/get-conversations/")
 async def get_all_conversations():
     conversations_cursor = contacts_collection.find().sort("timestamp", -1).limit(100)
@@ -42,12 +41,12 @@ async def get_all_conversations():
         if not user_id:
             continue
 
-        msgs_cursor = messages_collection.find({"conversation_id": conv["_id"]}).sort("timestamp", 1)
-        all_messages = await msgs_cursor.to_list(length=None)
-        all_messages = [clean_mongo_doc(m) for m in all_messages]
-
-        last_message = all_messages[-1]["content"] if all_messages else ""
-        latest_timestamp = all_messages[-1]["timestamp"] if all_messages else None
+        # 🚀 Traer solo el último mensaje de esa conversación
+        last_msg_doc = await messages_collection.find_one(
+            {"conversation_id": conv["_id"]},
+            sort=[("timestamp", -1)]
+        )
+        last_msg = clean_mongo_doc(last_msg_doc) if last_msg_doc else None
 
         results.append({
             "_id": conv["_id"],
@@ -55,18 +54,18 @@ async def get_all_conversations():
             "name": conv.get("name", "Desconocido"),
             "platform": conv.get("platform", ""),
             "platform_icon": "🟢" if conv.get("platform") == "whatsapp" else "📘",
-            "last_message": last_message,
-            "timestamp": latest_timestamp,      # Bogotá
-            "pretty_time": all_messages[-1].get("timestamp_pretty") if all_messages else "",
+            "last_message": last_msg.get("content") if last_msg else "",
+            "timestamp": last_msg.get("timestamp") if last_msg else None,
+            "pretty_time": last_msg.get("timestamp_pretty") if last_msg else "",
             "unread": conv.get("unread", 0),
-            "estado": "Pendiente",
-            "messages": all_messages
+            "estado": "Pendiente"
         })
 
     results.sort(key=lambda r: r.get("timestamp") or "", reverse=True)
     return results
 
 
+# --- Obtener todos los mensajes de una conversación específica ---
 @router.get("/conversations/messages/{user_id}")
 async def get_messages_by_user(user_id: str):
     try:
@@ -103,6 +102,7 @@ async def get_messages_by_user(user_id: str):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error interno del servidor: {str(e)}")
+
 
 # --- Marcar contacto como gestionado ---
 @router.post("/contacts/{contact_id}/gestionado")
