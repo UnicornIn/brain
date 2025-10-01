@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from app.database.mongo import contacts_collection, messages_collection
-from datetime import datetime
+from datetime import datetime, timedelta
 from bson import ObjectId
 import pytz
 
@@ -27,6 +27,48 @@ def clean_mongo_doc(doc: dict) -> dict:
         else:
             clean[k] = v
     return clean
+
+
+# --- Función para filtrar mensajes duplicados de Instagram EN MEMORIA ---
+def filter_instagram_duplicates_in_memory(messages: list):
+    """Filtra mensajes duplicados de Instagram solo en memoria, sin borrar de BD"""
+    if not messages:
+        return messages
+        
+    seen_messages = set()
+    unique_messages = []
+    duplicates_count = 0
+    
+    for msg in messages:
+        content = msg.get("content", "")
+        sender = msg.get("sender", "")
+        timestamp = msg.get("timestamp", "")
+        
+        # Crear clave única basada en contenido, sender y timestamp (con margen de 5 segundos)
+        if timestamp:
+            try:
+                # Parsear timestamp y redondear a 5 segundos
+                dt = datetime.fromisoformat(timestamp.replace('Z', '+00:00'))
+                rounded_seconds = (dt.second // 5) * 5
+                timestamp_key = dt.replace(second=rounded_seconds, microsecond=0).isoformat()
+            except:
+                timestamp_key = timestamp[:19]  # Usar solo hasta segundos si hay error
+        else:
+            timestamp_key = ""
+            
+        message_key = f"{content}|{sender}|{timestamp_key}"
+        
+        if message_key in seen_messages:
+            duplicates_count += 1
+            print(f"🔍 Duplicado filtrado en memoria: {content}")
+        else:
+            seen_messages.add(message_key)
+            unique_messages.append(msg)
+    
+    if duplicates_count > 0:
+        print(f"✅ Filtrados {duplicates_count} mensajes duplicados de Instagram (solo en memoria)")
+    
+    return unique_messages
 
 
 # --- Obtener todas las conversaciones (SOLO último mensaje) ---
@@ -77,15 +119,25 @@ async def get_messages_by_user(user_id: str):
 
         msgs_cursor = messages_collection.find({"conversation_id": conv["_id"]}).sort("timestamp", 1)
         all_messages = await msgs_cursor.to_list(length=None)
-        all_messages = [clean_mongo_doc(m) for m in all_messages]
+        
+        # Limpiar todos los mensajes
+        cleaned_messages = [clean_mongo_doc(m) for m in all_messages]
+        
+        # ✅ SOLO PARA INSTAGRAM: Filtrar duplicados EN MEMORIA (sin borrar de BD)
+        if conv.get("platform") == "instagram":
+            final_messages = filter_instagram_duplicates_in_memory(cleaned_messages)
+            duplicates_removed = len(cleaned_messages) - len(final_messages)
+        else:
+            final_messages = cleaned_messages
+            duplicates_removed = 0
 
         response = {
             "user_id": user_id,
             "name": conv.get("name", ""),
             "platform": conv.get("platform", ""),
-            "last_message": all_messages[-1]["content"] if all_messages else "",
-            "timestamp": all_messages[-1]["timestamp"] if all_messages else "",
-            "pretty_time": all_messages[-1].get("timestamp_pretty") if all_messages else "",
+            "last_message": final_messages[-1]["content"] if final_messages else "",
+            "timestamp": final_messages[-1]["timestamp"] if final_messages else "",
+            "pretty_time": final_messages[-1].get("timestamp_pretty") if final_messages else "",
             "unread": conv.get("unread", 0),
             "messages": [
                 {
@@ -94,14 +146,50 @@ async def get_messages_by_user(user_id: str):
                     "timestamp": m.get("timestamp"),
                     "pretty_time": m.get("timestamp_pretty", "")
                 }
-                for m in all_messages
-            ]
+                for m in final_messages
+            ],
+            "total_messages": len(final_messages),
+            "duplicates_removed": duplicates_removed
         }
 
         return response
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error interno del servidor: {str(e)}")
+
+
+# --- Endpoint adicional para ver duplicados sin eliminarlos ---
+@router.get("/conversations/check-duplicates/{user_id}")
+async def check_duplicates(user_id: str):
+    """Endpoint para verificar duplicados sin eliminarlos"""
+    try:
+        conv = await contacts_collection.find_one({"user_id": user_id})
+        if not conv:
+            raise HTTPException(status_code=404, detail="No se encontró conversación para este usuario.")
+        
+        msgs_cursor = messages_collection.find({"conversation_id": conv["_id"]}).sort("timestamp", 1)
+        all_messages = await msgs_cursor.to_list(length=None)
+        cleaned_messages = [clean_mongo_doc(m) for m in all_messages]
+        
+        if conv.get("platform") == "instagram":
+            final_messages = filter_instagram_duplicates_in_memory(cleaned_messages)
+            duplicates_count = len(cleaned_messages) - len(final_messages)
+        else:
+            final_messages = cleaned_messages
+            duplicates_count = 0
+        
+        return {
+            "status": "success",
+            "user_id": user_id,
+            "platform": conv.get("platform", ""),
+            "total_messages_in_db": len(all_messages),
+            "duplicates_detected": duplicates_count,
+            "unique_messages_to_display": len(final_messages),
+            "message": f"Se detectaron {duplicates_count} duplicados (solo en visualización)"
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error verificando duplicados: {str(e)}")
 
 
 # --- Marcar contacto como gestionado ---

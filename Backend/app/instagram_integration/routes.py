@@ -1,7 +1,6 @@
 from app.instagram_integration.controllers import send_instagram_message
 from app.instagram_integration.models import InstagramSendMessage
 from app.database.mongo import contacts_collection
-from app.websocket.routes import notify_all
 from fastapi import APIRouter, HTTPException
 from datetime import datetime, timezone
 import pytz
@@ -18,9 +17,8 @@ def utc_now():
 async def send_message_instagram(payload: InstagramSendMessage):
     """
     Enviar mensaje a un usuario de Instagram.
-    - Envía a la API de Meta.
-    - Actualiza metadata en contacts_collection.
-    - No guarda en messages_collection (lo maneja el webhook).
+    - SOLO envía a la API de Meta y actualiza la base de datos
+    - NO envía WebSocket - el frontend ya muestra el mensaje localmente
     """
     try:
         # 1️⃣ Enviar mensaje a Instagram
@@ -56,25 +54,14 @@ async def send_message_instagram(payload: InstagramSendMessage):
                     "timestamp": now_utc,
                     "name": username,
                     "unread": 0,
-                    "conversation_id": conversation_id  # ← AGREGAR ESTO
+                    "conversation_id": conversation_id
                 }
             },
             upsert=True,
             return_document=True
         )
 
-        # 4️⃣ Notificar al frontend CON conversation_id
-        ws_message = {
-            "user_id": user_id,
-            "conversation_id": conversation_id,  # ← AGREGAR ESTO
-            "platform": "instagram",
-            "text": last_message,  # ← Cambiar "content" por "text" para consistencia
-            "timestamp": now_utc.isoformat(),
-            "direction": "outbound",
-            "remitente": "Tú",  # ← Cambiar "Sistema" por "Tú"
-            "message_id": f"ig_{conversation_id}_{int(now_utc.timestamp())}"  # ← AGREGAR message_id
-        }
-        await notify_all(ws_message)
+        # ❌ ELIMINADO: No enviar WebSocket - el frontend ya mostró el mensaje localmente
 
         return {
             "status": "sent",

@@ -2,7 +2,7 @@ from fastapi import APIRouter, Request, Query, Response
 from app.database.mongo import contacts_collection, messages_collection
 from app.websocket.routes import notify_all
 from app.meta_webhook.controllers import get_instagram_username, get_messenger_user
-from datetime import datetime
+from datetime import datetime, timedelta
 import pytz
 import os
 import json
@@ -177,7 +177,6 @@ async def meta_webhook(request: Request):
                         print("📤 Enviado a n8n:", payload)
                     except Exception as e:
                         print("⚠️ Error enviando a n8n:", str(e))
-
         # 💬 Messenger
         if object_type == "page" and "messaging" in entry:
             for event in entry.get("messaging", []):
@@ -215,6 +214,7 @@ async def meta_webhook(request: Request):
                 else:
                     continue
 
+                # 🔥 SOLUCIÓN: Solo colección separada, sin array
                 conv = await contacts_collection.find_one_and_update(
                     {"user_id": user_id, "platform": "messenger"},
                     {
@@ -224,15 +224,8 @@ async def meta_webhook(request: Request):
                             "name": remitente,
                             "gestionado": False
                         },
-                        "$inc": {"unread": 1 if not is_echo else 0},
-                        "$push": {
-                            "messages": {
-                                "text": content if msg_type == "text" else text_for_front,
-                                "timestamp": tz_now,
-                                "from": "user" if not is_echo else "system",
-                                "type": msg_type
-                            }
-                        }
+                        "$inc": {"unread": 1 if not is_echo else 0}
+                        # ❌ ELIMINADO: "$push" con array messages
                     },
                     upsert=True,
                     return_document=True
@@ -312,6 +305,21 @@ async def meta_webhook(request: Request):
                 else:
                     continue
 
+                # ✅ VERIFICACIÓN DE DUPLICADOS: Buscar si ya existe un mensaje idéntico reciente
+                if is_echo:
+                    # Para echo messages, verificar si ya existe un mensaje idéntico en los últimos 5 segundos
+                    existing_message = await messages_collection.find_one({
+                        "conversation_id": user_id,  # Usamos user_id como conversation_id temporalmente
+                        "content": content,
+                        "sender": "system",
+                        "timestamp": {"$gte": tz_now - timedelta(seconds=5)}
+                    })
+                    
+                    if existing_message:
+                        print("🚫 Echo message duplicado ignorado:", content)
+                        continue  # Ignorar este echo message porque ya existe
+
+                # 🔥 Buscar o crear conversación
                 conv = await contacts_collection.find_one_and_update(
                     {"user_id": user_id, "platform": "instagram"},
                     {
@@ -321,20 +329,13 @@ async def meta_webhook(request: Request):
                             "name": remitente,
                             "gestionado": False
                         },
-                        "$inc": {"unread": 1 if not is_echo else 0},
-                        "$push": {
-                            "messages": {
-                                "text": content if msg_type == "text" else text_for_front,
-                                "timestamp": tz_now,
-                                "from": "user" if not is_echo else "system",
-                                "type": msg_type
-                            }
-                        }
+                        "$inc": {"unread": 1 if not is_echo else 0}
                     },
                     upsert=True,
                     return_document=True
                 )
 
+                # 2️⃣ Guardar en colección separada
                 new_message = {
                     "conversation_id": str(conv["_id"]),
                     "sender": "user" if not is_echo else "system",
@@ -344,37 +345,42 @@ async def meta_webhook(request: Request):
                 }
                 await messages_collection.insert_one(new_message)
 
-                ws_message = {
-                    "user_id": user_id,
-                    "conversation_id": str(conv["_id"]),
-                    "platform": "instagram",
-                    "type": msg_type,
-                    "content": content,
-                    "timestamp": tz_now.isoformat(),
-                    "direction": "inbound" if not is_echo else "outbound",
-                    "remitente": remitente
-                }
-
-                if msg_type == "text":
-                    ws_message["text"] = content
-                else:
-                    ws_message["media_url"] = content
-
-                print(f"[Instagram] {remitente}: {content}")
-                await notify_all(ws_message)
-                try:
-                    n8n_url = os.getenv("N8N_WEBHOOK_URL_INSTAGRAM")
-                    payload = {
+                # 3️⃣ Notificar al front SOLO si no es echo message
+                if not is_echo:
+                    ws_message = {
                         "user_id": user_id,
-                        "name": remitente,
+                        "conversation_id": str(conv["_id"]),
+                        "platform": "instagram",
                         "type": msg_type,
                         "content": content,
                         "timestamp": tz_now.isoformat(),
+                        "direction": "inbound",
+                        "remitente": remitente
                     }
-                    requests.post(n8n_url, json=payload, timeout=5)
-                    print("📤 Enviado a n8n:", payload)
-                except Exception as e:
-                    print("⚠️ Error enviando a n8n:", str(e))
+
+                    if msg_type == "text":
+                        ws_message["text"] = content
+                    else:
+                        ws_message["media_url"] = content
+
+                    print(f"[Instagram] {remitente}: {content}")
+                    await notify_all(ws_message)
+
+                # 4️⃣ Reenviar a n8n SOLO mensajes entrantes
+                if not is_echo:
+                    try:
+                        n8n_url = os.getenv("N8N_WEBHOOK_URL_INSTAGRAM")
+                        payload = {
+                            "user_id": user_id,
+                            "name": remitente,
+                            "type": msg_type,
+                            "content": content,
+                            "timestamp": tz_now.isoformat(),
+                        }
+                        requests.post(n8n_url, json=payload, timeout=5)
+                        print("📤 Enviado a n8n:", payload)
+                    except Exception as e:
+                        print("⚠️ Error enviando a n8n:", str(e))
 
     return {"status": "received"}
 
