@@ -45,6 +45,13 @@ async def send_whatsapp_message(to: str, content: str, phone_number_id: str, mes
                 "caption": "Documento enviado"
             }
         }
+    elif message_type == "audio_id":  # 🎵 NUEVO: cuando subes un audio a Meta y usas el id
+        payload = {
+            "messaging_product": "whatsapp",
+            "to": to,
+            "type": "audio",
+            "audio": {"id": content}
+        }
     else:
         raise ValueError("Tipo de mensaje no soportado")
 
