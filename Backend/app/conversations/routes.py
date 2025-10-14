@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Query
 from app.database.mongo import contacts_collection, messages_collection
 from datetime import datetime, timedelta
 from bson import ObjectId
@@ -73,39 +73,54 @@ def filter_instagram_duplicates_in_memory(messages: list):
 
 # --- Obtener todas las conversaciones (SOLO último mensaje) ---
 @router.get("/get-conversations/")
-async def get_all_conversations():
-    conversations_cursor = contacts_collection.find().sort("timestamp", -1).limit(100)
-    results = []
-    async for conv in conversations_cursor:
-        conv = clean_mongo_doc(conv)
-
-        user_id = conv.get("user_id")
-        if not user_id:
-            continue
-
-        # 🚀 Traer solo el último mensaje de esa conversación
-        last_msg_doc = await messages_collection.find_one(
-            {"conversation_id": conv["_id"]},
-            sort=[("timestamp", -1)]
+async def get_all_conversations(
+    limit: int = Query(30, description="Cantidad de conversaciones a devolver"),
+    skip: int = Query(0, description="Cantidad de conversaciones a omitir al inicio")
+):
+    try:
+        # 🔹 Orden descendente por timestamp (estable)
+        conversations_cursor = (
+            contacts_collection
+            .find({"timestamp": {"$exists": True}})
+            .sort("timestamp", -1)
+            .skip(skip)
+            .limit(limit)
         )
-        last_msg = clean_mongo_doc(last_msg_doc) if last_msg_doc else None
 
-        results.append({
-            "_id": conv["_id"],
-            "user_id": user_id,
-            "name": conv.get("name", "Desconocido"),
-            "platform": conv.get("platform", ""),
-            "platform_icon": "🟢" if conv.get("platform") == "whatsapp" else "📘",
-            "last_message": last_msg.get("content") if last_msg else "",
-            "timestamp": last_msg.get("timestamp") if last_msg else None,
-            "pretty_time": last_msg.get("timestamp_pretty") if last_msg else "",
-            "unread": conv.get("unread", 0),
-            "estado": "Pendiente"
-        })
+        results = []
+        async for conv in conversations_cursor:
+            conv = clean_mongo_doc(conv)
 
-    results.sort(key=lambda r: r.get("timestamp") or "", reverse=True)
-    return results
+            user_id = conv.get("user_id")
+            if not user_id:
+                continue
 
+            # 🔹 Último mensaje asociado
+            last_msg_doc = await messages_collection.find_one(
+                {"conversation_id": conv["_id"]},
+                sort=[("timestamp", -1)]
+            )
+            last_msg = clean_mongo_doc(last_msg_doc) if last_msg_doc else None
+
+            results.append({
+                "_id": conv["_id"],
+                "user_id": user_id,
+                "name": conv.get("name", "Desconocido"),
+                "platform": conv.get("platform", ""),
+                "platform_icon": "🟢" if conv.get("platform") == "whatsapp" else "📘",
+                "last_message": last_msg.get("content") if last_msg else "",
+                "timestamp": last_msg.get("timestamp") if last_msg else None,
+                "pretty_time": last_msg.get("timestamp_pretty") if last_msg else "",
+                "unread": conv.get("unread", 0),
+                "estado": "Pendiente"
+            })
+
+        # 🔄 Aseguramos el orden final por timestamp
+        results.sort(key=lambda r: r.get("timestamp") or "", reverse=True)
+        return results
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error obteniendo conversaciones: {str(e)}")
 
 # --- Obtener todos los mensajes de una conversación específica ---
 @router.get("/conversations/messages/{user_id}")
