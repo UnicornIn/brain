@@ -9,9 +9,13 @@ import json
 import requests
 import boto3
 from dotenv import load_dotenv
+import hashlib
+
 
 load_dotenv()
 router = APIRouter()
+MESSAGE_CACHE_TTL = 3600
+processed_messages = {}
 
 # --- AWS S3 ---
 AWS_ACCESS_KEY = os.getenv("AWS_ACCESS_KEY")
@@ -28,6 +32,31 @@ s3 = boto3.client(
 
 # --- WhatsApp ---
 WHATSAPP_TOKEN = os.getenv("WHATSAPP_TOKEN")
+
+def get_message_hash(user_id: str, content: str, timestamp: int) -> str:
+    """Crear hash único para identificar duplicados"""
+    combined = f"{user_id}:{content}:{timestamp}"
+    return hashlib.md5(combined.encode()).hexdigest()
+
+
+def is_duplicate_message(user_id: str, content: str, timestamp: int) -> bool:
+    """Verificar si el mensaje ya fue procesado"""
+    msg_hash = get_message_hash(user_id, content, timestamp)
+    
+    # Limpiar cache antiguo
+    current_time = datetime.now().timestamp()
+    to_delete = [k for k, v in processed_messages.items() if current_time - v > MESSAGE_CACHE_TTL]
+    for k in to_delete:
+        del processed_messages[k]
+    
+    # Verificar si es duplicado
+    if msg_hash in processed_messages:
+        return True
+    
+    # Guardar como procesado
+    processed_messages[msg_hash] = current_time
+    return False
+
 
 
 def upload_to_s3(file_bytes: bytes, filename: str, content_type: str) -> str:
@@ -76,7 +105,7 @@ async def meta_webhook(request: Request):
 
     for entry in body["entry"]:
 
-        # 📲 WhatsApp
+        # 📲 WHATSAPP
         if "changes" in entry:
             for change in entry.get("changes", []):
                 value = change.get("value", {})
@@ -109,7 +138,7 @@ async def meta_webhook(request: Request):
                     else:
                         continue
 
-                    # 1️⃣ Asegurar conversación y guardar mensaje en array
+                    # Guardar conversación
                     conv = await contacts_collection.find_one_and_update(
                         {"user_id": wa_id, "platform": "whatsapp"},
                         {
@@ -117,7 +146,8 @@ async def meta_webhook(request: Request):
                                 "last_message": text_for_front,
                                 "timestamp": tz_now,
                                 "name": profile_name,
-                                "gestionado": False   # 👈 siempre se resetea a false
+                                "gestionado": False,
+                                "bot_active": True
                             },
                             "$inc": {"unread": 1},
                             "$push": {
@@ -133,7 +163,7 @@ async def meta_webhook(request: Request):
                         return_document=True
                     )
 
-                    # 2️⃣ Guardar mensaje en colección separada
+                    # Guardar mensaje
                     new_message = {
                         "conversation_id": str(conv["_id"]),
                         "sender": "user",
@@ -143,7 +173,7 @@ async def meta_webhook(request: Request):
                     }
                     await messages_collection.insert_one(new_message)
 
-                    # 3️⃣ Notificar al front
+                    # Notificar al front
                     ws_message = {
                         "user_id": wa_id,
                         "conversation_id": str(conv["_id"]),
@@ -152,18 +182,17 @@ async def meta_webhook(request: Request):
                         "content": content,
                         "timestamp": tz_now.isoformat(),
                         "direction": "inbound",
-                        "remitente": profile_name,
+                        "remitente": profile_name
                     }
-
                     if msg_type == "text":
                         ws_message["text"] = text_for_front
                     else:
                         ws_message["media_url"] = content
 
-                    print(f"[WhatsApp] {profile_name}: {content}")
                     await notify_all(ws_message)
+                    print(f"[WhatsApp] {profile_name}: {content}")
 
-                    # 4️⃣ Reenviar a n8n 🚀
+                    # Reenviar a n8n 🚀
                     try:
                         n8n_url = os.getenv("N8N_WEBHOOK_URL_WHATSAPP")
                         payload = {
@@ -172,12 +201,20 @@ async def meta_webhook(request: Request):
                             "type": msg_type,
                             "content": content,
                             "timestamp": tz_now.isoformat(),
+                            "bot_active": bool(True)  # ✅ Asegura tipo booleano real
                         }
-                        requests.post(n8n_url, json=payload, timeout=5)
+                        print("🧠 Tipo bot_active:", type(payload["bot_active"]))  # Debug
+                        requests.post(
+                            n8n_url,
+                            json=payload,
+                            headers={"Content-Type": "application/json"},
+                            timeout=5
+                        )
                         print("📤 Enviado a n8n:", payload)
                     except Exception as e:
                         print("⚠️ Error enviando a n8n:", str(e))
-        # 💬 Messenger
+
+        # 💬 MESSENGER
         if object_type == "page" and "messaging" in entry:
             for event in entry.get("messaging", []):
                 sender_id = event.get("sender", {}).get("id")
@@ -214,7 +251,6 @@ async def meta_webhook(request: Request):
                 else:
                     continue
 
-                # 🔥 SOLUCIÓN: Solo colección separada, sin array
                 conv = await contacts_collection.find_one_and_update(
                     {"user_id": user_id, "platform": "messenger"},
                     {
@@ -222,10 +258,10 @@ async def meta_webhook(request: Request):
                             "last_message": text_for_front,
                             "timestamp": tz_now,
                             "name": remitente,
-                            "gestionado": False
+                            "gestionado": False,
+                            "bot_active": True
                         },
                         "$inc": {"unread": 1 if not is_echo else 0}
-                        # ❌ ELIMINADO: "$push" con array messages
                     },
                     upsert=True,
                     return_document=True
@@ -250,14 +286,14 @@ async def meta_webhook(request: Request):
                     "direction": "inbound" if not is_echo else "outbound",
                     "remitente": remitente
                 }
-
                 if msg_type == "text":
                     ws_message["text"] = content
                 else:
                     ws_message["media_url"] = content
 
-                print(f"[Messenger] {remitente}: {content}")
                 await notify_all(ws_message)
+                print(f"[Messenger] {remitente}: {content}")
+
                 try:
                     n8n_url = os.getenv("N8N_WEBHOOK_URL_FACEBOOK")
                     payload = {
@@ -266,13 +302,19 @@ async def meta_webhook(request: Request):
                         "type": msg_type,
                         "content": content,
                         "timestamp": tz_now.isoformat(),
+                        "bot_active": bool(True)
                     }
-                    requests.post(n8n_url, json=payload, timeout=5)
+                    requests.post(
+                        n8n_url,
+                        json=payload,
+                        headers={"Content-Type": "application/json"},
+                        timeout=5
+                    )
                     print("📤 Enviado a n8n:", payload)
                 except Exception as e:
                     print("⚠️ Error enviando a n8n:", str(e))
-                
-        # 📷 Instagram
+
+        # 📷 INSTAGRAM
         if object_type == "instagram":
             messaging_events = entry.get("messaging", []) or entry.get("standby", [])
             for event in messaging_events:
@@ -281,6 +323,7 @@ async def meta_webhook(request: Request):
                 message = event.get("message", {}) or {}
                 message_text = message.get("text", "")
                 attachments = message.get("attachments", [])
+                timestamp = event.get("timestamp", 0)
                 tz_now = datetime.now(pytz.timezone("America/Bogota"))
 
                 if not sender_id:
@@ -305,21 +348,10 @@ async def meta_webhook(request: Request):
                 else:
                     continue
 
-                # ✅ VERIFICACIÓN DE DUPLICADOS: Buscar si ya existe un mensaje idéntico reciente
-                if is_echo:
-                    # Para echo messages, verificar si ya existe un mensaje idéntico en los últimos 5 segundos
-                    existing_message = await messages_collection.find_one({
-                        "conversation_id": user_id,  # Usamos user_id como conversation_id temporalmente
-                        "content": content,
-                        "sender": "system",
-                        "timestamp": {"$gte": tz_now - timedelta(seconds=5)}
-                    })
-                    
-                    if existing_message:
-                        print("🚫 Echo message duplicado ignorado:", content)
-                        continue  # Ignorar este echo message porque ya existe
+                if is_duplicate_message(user_id, content, timestamp):
+                    print(f"🚫 Mensaje duplicado ignorado: {remitente}: {content}")
+                    continue
 
-                # 🔥 Buscar o crear conversación
                 conv = await contacts_collection.find_one_and_update(
                     {"user_id": user_id, "platform": "instagram"},
                     {
@@ -327,7 +359,8 @@ async def meta_webhook(request: Request):
                             "last_message": text_for_front,
                             "timestamp": tz_now,
                             "name": remitente,
-                            "gestionado": False
+                            "gestionado": False,
+                            "bot_active": True
                         },
                         "$inc": {"unread": 1 if not is_echo else 0}
                     },
@@ -335,7 +368,6 @@ async def meta_webhook(request: Request):
                     return_document=True
                 )
 
-                # 2️⃣ Guardar en colección separada
                 new_message = {
                     "conversation_id": str(conv["_id"]),
                     "sender": "user" if not is_echo else "system",
@@ -345,7 +377,6 @@ async def meta_webhook(request: Request):
                 }
                 await messages_collection.insert_one(new_message)
 
-                # 3️⃣ Notificar al front SOLO si no es echo message
                 if not is_echo:
                     ws_message = {
                         "user_id": user_id,
@@ -357,17 +388,20 @@ async def meta_webhook(request: Request):
                         "direction": "inbound",
                         "remitente": remitente
                     }
-
                     if msg_type == "text":
                         ws_message["text"] = content
                     else:
                         ws_message["media_url"] = content
 
-                    print(f"[Instagram] {remitente}: {content}")
                     await notify_all(ws_message)
+                    print(f"[Instagram] {remitente}: {content}")
 
-                # 4️⃣ Reenviar a n8n SOLO mensajes entrantes
+                # 🔒 No enviar a n8n si el mensaje es una respuesta o mención (reply_to)
                 if not is_echo:
+                    if message.get("reply_to"):
+                        print(f"🚫 Mención o respuesta detectada, no se envía a n8n: {remitente}")
+                        continue  # ⛔ se salta este mensaje completamente
+
                     try:
                         n8n_url = os.getenv("N8N_WEBHOOK_URL_INSTAGRAM")
                         payload = {
@@ -376,12 +410,17 @@ async def meta_webhook(request: Request):
                             "type": msg_type,
                             "content": content,
                             "timestamp": tz_now.isoformat(),
+                            "bot_active": bool(True)
                         }
-                        requests.post(n8n_url, json=payload, timeout=5)
+                        requests.post(
+                            n8n_url,
+                            json=payload,
+                            headers={"Content-Type": "application/json"},
+                            timeout=5
+                        )
                         print("📤 Enviado a n8n:", payload)
                     except Exception as e:
                         print("⚠️ Error enviando a n8n:", str(e))
-
     return {"status": "received"}
 
 
