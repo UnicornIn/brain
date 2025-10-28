@@ -83,16 +83,16 @@ async def send_message(
         last_message = None
         msg_type = "text"
         content = None
-        media_url_s3 = None  # 🆕 URL de S3 para guardar en la base de datos
+        media_url_s3 = None
 
+        # =============================
+        # 📷 IMAGEN
+        # =============================
         if image:
-            # 📤 Subir la imagen a Meta para enviar por WhatsApp
             upload_url = f"https://graph.facebook.com/v19.0/{phone_number_id}/media"
             headers = {"Authorization": f"Bearer {WHATSAPP_TOKEN}"}
             
-            # Leer el archivo de imagen
             image_bytes = await image.read()
-            
             files = {"file": (image.filename, image_bytes, image.content_type)}
             data = {"messaging_product": "whatsapp"}
 
@@ -106,23 +106,22 @@ async def send_message(
             media_id = upload_json["id"]
             result = await send_whatsapp_message(wa_id, media_id, phone_number_id, "image_id")
 
-            # 🆕 GUARDAR IMAGEN EN S3 (igual que en el webhook)
             ext = image.content_type.split("/")[-1] if "/" in image.content_type else "jpg"
             filename = f"whatsapp/{wa_id}/{media_id}.{ext}"
             media_url_s3 = upload_to_s3(image_bytes, filename, image.content_type)
             
             last_message = "📷 Imagen"
-            content = media_url_s3  # 🆕 Guardar URL de S3 en lugar del media_id
+            content = media_url_s3
             msg_type = "image"
 
+        # =============================
+        # 📎 DOCUMENTO
+        # =============================
         elif document:
-            # 📤 Subir documento a Meta para enviar por WhatsApp
             upload_url = f"https://graph.facebook.com/v19.0/{phone_number_id}/media"
             headers = {"Authorization": f"Bearer {WHATSAPP_TOKEN}"}
             
-            # Leer el archivo de documento
             document_bytes = await document.read()
-            
             files = {"file": (document.filename, document_bytes, document.content_type)}
             data = {"messaging_product": "whatsapp"}
 
@@ -138,23 +137,22 @@ async def send_message(
                 wa_id, media_id, phone_number_id, "document_id", document.filename
             )
 
-            # 🆕 GUARDAR DOCUMENTO EN S3
             ext = document.filename.split(".")[-1] if "." in document.filename else "pdf"
             filename = f"whatsapp/{wa_id}/{media_id}.{ext}"
             media_url_s3 = upload_to_s3(document_bytes, filename, document.content_type)
 
             last_message = "📎 Documento"
-            content = media_url_s3  # 🆕 Guardar URL de S3
+            content = media_url_s3
             msg_type = "document"
 
-        elif audio:  # 🎵 NUEVO: Manejo de audio
-            # 📤 Subir audio a Meta para enviar por WhatsApp
+        # =============================
+        # 🎵 AUDIO
+        # =============================
+        elif audio:
             upload_url = f"https://graph.facebook.com/v19.0/{phone_number_id}/media"
             headers = {"Authorization": f"Bearer {WHATSAPP_TOKEN}"}
             
-            # Leer el archivo de audio
             audio_bytes = await audio.read()
-            
             files = {"file": (audio.filename, audio_bytes, audio.content_type)}
             data = {"messaging_product": "whatsapp"}
 
@@ -168,17 +166,18 @@ async def send_message(
             media_id = upload_json["id"]
             result = await send_whatsapp_message(wa_id, media_id, phone_number_id, "audio_id")
 
-            # 🆕 GUARDAR AUDIO EN S3
             ext = audio.content_type.split("/")[-1] if "/" in audio.content_type else "mp3"
             filename = f"whatsapp/{wa_id}/{media_id}.{ext}"
             media_url_s3 = upload_to_s3(audio_bytes, filename, audio.content_type)
 
             last_message = "🎵 Audio"
-            content = media_url_s3  # 🆕 Guardar URL de S3
+            content = media_url_s3
             msg_type = "audio"
 
+        # =============================
+        # ✉️ TEXTO
+        # =============================
         elif text:
-            # 📩 Texto
             result = await send_whatsapp_message(wa_id, text, phone_number_id, "text")
 
             last_message = text
@@ -188,11 +187,12 @@ async def send_message(
         else:
             raise HTTPException(status_code=400, detail="Debe enviar texto, imagen, documento o audio")
 
-        # 1️⃣ Obtener nombre real del contacto
+        # =============================
+        # 💬 CONTACTO Y CONVERSACIÓN
+        # =============================
         existing_conv = await contacts_collection.find_one({"user_id": wa_id, "platform": "whatsapp"})
         nombre_contacto = existing_conv.get("name", "Cliente") if existing_conv else "Cliente"
 
-        # 2️⃣ Actualizar conversación
         conv = await contacts_collection.find_one_and_update(
             {"user_id": wa_id, "platform": "whatsapp"},
             {
@@ -206,22 +206,45 @@ async def send_message(
             return_document=True
         )
 
-        # 3️⃣ Guardar mensaje con URL de S3
         new_message = {
             "conversation_id": str(conv["_id"]),
             "sender": "system",
             "name": nombre_contacto,
             "type": msg_type,
-            "content": content,  # 🆕 Ahora contiene la URL de S3 para imágenes/documentos/audio
+            "content": content,
             "timestamp": utc_now
         }
         await messages_collection.insert_one(new_message)
 
-        # Convertir timestamp a Bogotá
+        # =============================
+        # 🧠 DESACTIVAR BOT Y AVISAR A N8N
+        # =============================
+        await contacts_collection.update_one(
+            {"user_id": wa_id, "platform": "whatsapp"},
+            {"$set": {"bot_active": False}}
+        )
+
+        n8n_url = os.getenv("N8N_WEBHOOK_URL")  # 📡 webhook de n8n
+        if n8n_url:
+            payload = {
+                "user_id": wa_id,
+                "platform": "whatsapp",
+                "bot_active": False,
+                "last_message": last_message,
+                "timestamp": utc_now.isoformat()
+            }
+            try:
+                async with httpx.AsyncClient() as client:
+                    await client.post(n8n_url, json=payload)
+            except Exception as err:
+                print(f"⚠️ Error enviando estado a N8N: {err}")
+
+        # =============================
+        # 🔔 NOTIFICAR POR WEBSOCKET
+        # =============================
         bogota_tz = pytz.timezone("America/Bogota")
         bogota_time = utc_now.astimezone(bogota_tz)
 
-        # 4️⃣ Notificar a WebSocket
         notification_message = {
             "type": "new_message",
             "user_id": wa_id,
@@ -231,7 +254,7 @@ async def send_message(
             "direction": "outbound",
             "remitente": nombre_contacto,
             "message_type": msg_type,
-            "content": content  # 🆕 URL de S3 para que el frontend pueda mostrar la imagen
+            "content": content
         }
         await notify_all(notification_message)
 
@@ -246,3 +269,4 @@ async def send_message(
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+   
