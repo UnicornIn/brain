@@ -338,20 +338,34 @@ async def meta_webhook(request: Request):
                 content = ""
                 text_for_front = ""
 
+                # 📄 Mensaje de texto normal
                 if message_text:
                     content = message_text
                     text_for_front = content
+
+                # 📎 Si tiene adjuntos
                 elif attachments:
-                    content = attachments[0]["payload"].get("url", "")
+                    first_attachment = attachments[0]
+                    att_type = first_attachment.get("type")
+
+                    # 🚫 Si es una historia o mención (share), no enviar a n8n
+                    if att_type == "share":
+                        print(f"🚫 Mención o historia detectada (share), no se envía a n8n: {remitente}")
+                        continue
+
+                    # 🖼️ Otros archivos válidos
+                    content = first_attachment.get("payload", {}).get("url", "")
                     msg_type = "file"
                     text_for_front = "📎 Archivo"
                 else:
                     continue
 
+                # 🔁 Evitar duplicados
                 if is_duplicate_message(user_id, content, timestamp):
                     print(f"🚫 Mensaje duplicado ignorado: {remitente}: {content}")
                     continue
 
+                # 💾 Guardar conversación / contacto
                 conv = await contacts_collection.find_one_and_update(
                     {"user_id": user_id, "platform": "instagram"},
                     {
@@ -377,6 +391,7 @@ async def meta_webhook(request: Request):
                 }
                 await messages_collection.insert_one(new_message)
 
+                # 🔔 Notificar a frontend (solo si no es eco)
                 if not is_echo:
                     ws_message = {
                         "user_id": user_id,
@@ -396,11 +411,11 @@ async def meta_webhook(request: Request):
                     await notify_all(ws_message)
                     print(f"[Instagram] {remitente}: {content}")
 
-                # 🔒 No enviar a n8n si el mensaje es una respuesta o mención (reply_to)
+                # 🔒 No enviar a n8n si el mensaje es respuesta o mención
                 if not is_echo:
                     if message.get("reply_to"):
-                        print(f"🚫 Mención o respuesta detectada, no se envía a n8n: {remitente}")
-                        continue  # ⛔ se salta este mensaje completamente
+                        print(f"🚫 Respuesta detectada, no se envía a n8n: {remitente}")
+                        continue
 
                     try:
                         n8n_url = os.getenv("N8N_WEBHOOK_URL_INSTAGRAM")
@@ -410,7 +425,7 @@ async def meta_webhook(request: Request):
                             "type": msg_type,
                             "content": content,
                             "timestamp": tz_now.isoformat(),
-                            "bot_active": bool(True)
+                            "bot_active": True
                         }
                         requests.post(
                             n8n_url,
