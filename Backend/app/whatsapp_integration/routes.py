@@ -19,6 +19,7 @@ router = APIRouter()
 
 WHATSAPP_TOKEN = os.getenv("WHATSAPP_TOKEN")
 
+
 # --- AWS S3 ---
 AWS_ACCESS_KEY = os.getenv("AWS_ACCESS_KEY")
 AWS_SECRET_KEY = os.getenv("AWS_SECRET_KEY")
@@ -224,7 +225,7 @@ async def send_message(
             {"$set": {"bot_active": False}}
         )
 
-        n8n_url = os.getenv("N8N_WEBHOOK_URL")  # 📡 webhook de n8n
+        n8n_url = os.getenv("N8N_WEBHOOK_URL_BOT_ACTIVE")  # 📡 webhook de n8n
         if n8n_url:
             payload = {
                 "user_id": wa_id,

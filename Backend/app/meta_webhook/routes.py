@@ -396,11 +396,17 @@ async def meta_webhook(request: Request):
                     await notify_all(ws_message)
                     print(f"[Instagram] {remitente}: {content}")
 
-                # 🔒 No enviar a n8n si el mensaje es una respuesta o mención (reply_to)
+                # 🔒 No enviar a n8n si el mensaje es una respuesta (reply_to) o un share
                 if not is_echo:
                     if message.get("reply_to"):
                         print(f"🚫 Mención o respuesta detectada, no se envía a n8n: {remitente}")
-                        continue  # ⛔ se salta este mensaje completamente
+                        continue
+
+                    # 🧩 Revisar si el mensaje contiene un share
+                    has_share = any(a.get("type") == "share" for a in attachments)
+                    if has_share:
+                        print(f"🚫 Mensaje con 'share' detectado, no se envía a n8n: {remitente}")
+                        continue  # ⛔ no se envía a n8n, pero ya se guardó en la BD y se notificó
 
                     try:
                         n8n_url = os.getenv("N8N_WEBHOOK_URL_INSTAGRAM")
@@ -421,6 +427,6 @@ async def meta_webhook(request: Request):
                         print("📤 Enviado a n8n:", payload)
                     except Exception as e:
                         print("⚠️ Error enviando a n8n:", str(e))
-    return {"status": "received"}
+        return {"status": "received"}
 
 
