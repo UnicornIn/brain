@@ -398,16 +398,19 @@ async def meta_webhook(request: Request):
 
                 # 🔒 No enviar a n8n si el mensaje es una respuesta (reply_to) o un share
                 if not is_echo:
+                    # 🚫 Si es respuesta o mención
                     if message.get("reply_to"):
                         print(f"🚫 Mención o respuesta detectada, no se envía a n8n: {remitente}")
                         continue
 
-                    # 🧩 Revisar si el mensaje contiene un share
-                    has_share = any(a.get("type") == "share" for a in attachments)
-                    if has_share:
-                        print(f"🚫 Mensaje con 'share' detectado, no se envía a n8n: {remitente}")
-                        continue  # ⛔ no se envía a n8n, pero ya se guardó en la BD y se notificó
+                    # 🚫 Si tiene attachments con tipo 'share'
+                    if attachments and any(a.get("type") == "share" for a in attachments):
+                        print(f"🚫 Mensaje con attachment tipo 'share' detectado, no se envía a n8n: {remitente}")
+                        # 👇 Importante: continúa el flujo (ya se guardó en BD y se notificó),
+                        # pero no hace el POST a n8n
+                        continue
 
+                    # ✅ Si pasa todos los filtros, enviarlo a n8n
                     try:
                         n8n_url = os.getenv("N8N_WEBHOOK_URL_INSTAGRAM")
                         payload = {
@@ -427,6 +430,7 @@ async def meta_webhook(request: Request):
                         print("📤 Enviado a n8n:", payload)
                     except Exception as e:
                         print("⚠️ Error enviando a n8n:", str(e))
+
         return {"status": "received"}
 
 
